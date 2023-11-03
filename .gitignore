@@ -1,5 +1,6 @@
-bin/*
-generated/*
-obj/*
+bin
+generated
+obj
 Assembly.csproj
-build/*
+build
+.scene_backups
