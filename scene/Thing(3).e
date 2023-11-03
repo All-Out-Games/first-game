@@ -1,5 +1,5 @@
 7
-1
+12884901889
 {
   "name": "Thing",
   "local_enabled": true,
@@ -13,7 +13,7 @@
     "Y": 1
   },
   "sibling_index": 0,
-  "parent": 4294967297
+  "parent": 8589934593
 }
 {
   "component_type": "Internal_Component",
@@ -33,6 +33,6 @@
   "component_type": "Mono_Component",
   "mono_component_type": "TestComponent",
   "data": {
-    "Speed": 0.2000000029802322
+    "Speed": 0.4000000059604645
   }
 }

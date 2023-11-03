@@ -4,3 +4,4 @@ obj
 Assembly.csproj
 build
 .scene_backups
+.idea
