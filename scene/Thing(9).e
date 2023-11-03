@@ -19,7 +19,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Sprite_Renderer",
   "data": {
-    "texture": "",
+    "texture": "gold.png",
     "depth_offset": 0,
     "tint": {
       "X": 1,
