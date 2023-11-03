@@ -29,10 +29,3 @@
     }
   }
 }
-{
-  "component_type": "Mono_Component",
-  "mono_component_type": "TestComponent",
-  "data": {
-    "Speed": 0.2000000029802322
-  }
-}
