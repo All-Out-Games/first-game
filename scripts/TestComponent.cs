@@ -13,5 +13,6 @@ public class TestComponent : Component
         position.X = (float)Math.Sin(t * 2 * Math.PI * Speed) * Distance;
         position.Y = (float)Math.Cos(t * 2 * Math.PI * Speed) * Distance;
         EntityToSpin.Position = position;
+        EntityToSpin.Rotation = (float)((t * 45) % 360);
     }
 }

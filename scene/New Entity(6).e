@@ -4,16 +4,15 @@
   "name": "New Entity",
   "local_enabled": true,
   "local_position": {
-    "X": 0,
-    "Y": 0
+    "X": 0.9598101377487183,
+    "Y": 2.3995261192321777
   },
   "local_rotation": 0,
   "local_scale": {
     "X": 1,
     "Y": 1
   },
-  "sibling_index": 0,
-  "parent": 21474836481
+  "sibling_index": 1
 }
 {
   "component_type": "Mono_Component",
