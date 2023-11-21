@@ -1,20 +1,18 @@
 7
-34359738374
+34359738369
 {
   "name": "New Entity",
   "local_enabled": true,
   "local_position": {
     "X": 0,
-    "Y": 0.0143736600875854
+    "Y": 0
   },
   "local_rotation": 0,
   "local_scale": {
     "X": 1,
     "Y": 1
   },
-  "sibling_index": 0,
-  "spawn_as_networked_entity": true,
-  "linked_prefab": "Food1.prefab"
+  "sibling_index": 0
 },
 {
   "cid": 1,
