@@ -14,8 +14,9 @@
   },
   "sibling_index": 0,
   "parent": 34359738369
-}
+},
 {
+  "cid": 1,
   "component_type": "Internal_Component",
   "internal_component_type": "Sprite_Renderer",
   "data": {

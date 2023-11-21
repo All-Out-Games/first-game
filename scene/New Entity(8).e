@@ -14,12 +14,3 @@
   },
   "sibling_index": 0
 }
-{
-  "component_type": "Mono_Component",
-  "mono_component_type": "TestComponent",
-  "data": {
-    "EntityToSpin": 38654705665,
-    "Speed": 1,
-    "Distance": 2
-  }
-}

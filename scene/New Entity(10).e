@@ -1,26 +1,25 @@
 7
-30064771073
+42949672961
 {
-  "name": "Thing",
+  "name": "New Entity",
   "local_enabled": true,
   "local_position": {
-    "X": 0,
-    "Y": 0
+    "X": 0.7900255918502808,
+    "Y": 2.2230963706970215
   },
   "local_rotation": 0,
   "local_scale": {
     "X": 1,
     "Y": 1
   },
-  "sibling_index": 0,
-  "parent": 25769803777
+  "sibling_index": 5
 },
 {
   "cid": 1,
   "component_type": "Internal_Component",
   "internal_component_type": "Sprite_Renderer",
   "data": {
-    "texture": "bow.png",
+    "texture": "",
     "depth_offset": 0,
     "tint": {
       "X": 1,
@@ -28,5 +27,13 @@
       "Z": 1,
       "W": 1
     }
+  }
+},
+{
+  "cid": 2,
+  "component_type": "Mono_Component",
+  "mono_component_type": "WackyComponent",
+  "data": {
+    "Testerino": 2
   }
 }
