@@ -1,5 +1,5 @@
 7
-21474836481
+38654705665
 {
   "name": "Thing",
   "local_enabled": true,
@@ -13,7 +13,7 @@
     "Y": 1
   },
   "sibling_index": 0,
-  "parent": 34359738369
+  "parent": 17179869185
 },
 {
   "cid": 1,

@@ -12,8 +12,12 @@ public class Food : Component
         Interactable.OnInteract += OnInteract;
     }
 
-    public void OnInteract(Player player)
+    public void OnInteract(Player p)
     {
+        if (Network.IsClient) return;
+        
+        var player = (FatPlayer) p;
+        player.Food += Value;
         Network.Despawn(this.Entity);
         Log.Info("Interact with food!");
     }

@@ -1,10 +1,10 @@
 7
-34359738369
+17179869185
 {
   "name": "New Entity",
   "local_enabled": true,
   "local_position": {
-    "X": -0.0431211702525616,
+    "X": 1.6242296695709229,
     "Y": 0.0287473201751709
   },
   "local_rotation": 0,
@@ -12,7 +12,7 @@
     "X": 1,
     "Y": 1
   },
-  "sibling_index": 0,
+  "sibling_index": 5,
   "spawn_as_networked_entity": true,
   "linked_prefab": "Food1.prefab"
 },

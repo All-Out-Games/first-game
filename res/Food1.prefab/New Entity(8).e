@@ -19,7 +19,7 @@
   "component_type": "Mono_Component",
   "mono_component_type": "Food",
   "data": {
-    "Value": 0
+    "Value": 5
   }
 },
 {
