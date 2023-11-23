@@ -17,7 +17,7 @@ public class Food : Component
         if (Network.IsClient) return;
         
         var player = (FatPlayer) p;
-        player.Food += Value;
+        player.Coins += Value;
         Network.Despawn(this.Entity);
         Log.Info("Interact with food!");
     }
