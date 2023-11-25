@@ -12,5 +12,5 @@
     "X": 1,
     "Y": 1
   },
-  "sibling_index": 2
+  "sibling_index": 1
 }
