@@ -25,7 +25,7 @@ public class GameUI : System<GameUI>
             font = UI.TextSettings.Font.AlphaKind,
             size = 48,
             color = Vector4.Black,
-            horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
+            horizontalAlignment = UI.TextSettings.HorizontalAlignment.Right,
             verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
             wordWrap = false,
             wordWrapOffset = 0,
@@ -36,18 +36,26 @@ public class GameUI : System<GameUI>
         
         var coinsRect = topBarRect.CutLeftUnscaled(w).Inset(0, 10, 0, 10);
         UI.Image(coinsRect, null, Vector4.White, new UI.NineSlice());
+        var coinsIconRect = coinsRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3);
+        UI.Image(coinsIconRect, References.Instance.CoinIcon, Vector4.White, new UI.NineSlice());
         UI.Text(coinsRect, $"{localPlayer.Coins}", textSettings);
         
         var foodRect = topBarRect.CutLeftUnscaled(w).Inset(0, 10, 0, 10);
         UI.Image(foodRect, null, Vector4.White, new UI.NineSlice());
+        var foodIconRect = foodRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3);
+        UI.Image(foodIconRect, References.Instance.FoodIcon, Vector4.White, new UI.NineSlice());
         UI.Text(foodRect, $"{localPlayer.Food}/{localPlayer.MaxFood}", textSettings);
         
         var mouthSizeRect = topBarRect.CutLeftUnscaled(w).Inset(0, 10, 0, 10);
         UI.Image(mouthSizeRect, null, Vector4.White, new UI.NineSlice());
+        var mouthSizeIconRect = mouthSizeRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3);
+        UI.Image(mouthSizeIconRect, References.Instance.MouthSizeIcon, Vector4.White, new UI.NineSlice());
         UI.Text(mouthSizeRect, $"{localPlayer.MouthSize}", textSettings);
         
         var chewSpeedRect = topBarRect.CutLeftUnscaled(w).Inset(0, 10, 0, 10);
         UI.Image(chewSpeedRect, null, Vector4.White, new UI.NineSlice());
+        var chewSpeedIconRect = chewSpeedRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3);
+        UI.Image(chewSpeedIconRect, References.Instance.ChewSpeedIcon, Vector4.White, new UI.NineSlice());
         UI.Text(chewSpeedRect, $"{localPlayer.ChewSpeed}", textSettings);
     }
 

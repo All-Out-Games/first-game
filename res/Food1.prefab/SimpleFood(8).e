@@ -1,7 +1,7 @@
 7
 34359738369
 {
-  "name": "New Entity",
+  "name": "SimpleFood",
   "local_enabled": true,
   "local_position": {
     "X": 0,

@@ -12,7 +12,7 @@
     "X": 1,
     "Y": 1
   },
-  "sibling_index": 4
+  "sibling_index": 0
 },
 {
   "cid": 1,
