@@ -40,7 +40,7 @@ public partial class FatPlayer : Player
             UI.Image(chewRect, null, Vector4.White, new UI.NineSlice());
 
             var chewProgress = FoodBeingEaten.EatingTime / FoodBeingEaten.ConsumptionTime;
-            var chewProgressRect = chewRect.SubRect(0, 0, chewProgress, 1);
+            var chewProgressRect = chewRect.SubRect(0, 0, chewProgress, 1, 0, 0, 0, 0);
             UI.Image(chewProgressRect, null, Vector4.HSVLerp(Vector4.Red, Vector4.Green, chewProgress), new UI.NineSlice());
         }
 
