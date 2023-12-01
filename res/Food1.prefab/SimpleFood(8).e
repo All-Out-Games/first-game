@@ -19,7 +19,8 @@
   "component_type": "Mono_Component",
   "mono_component_type": "Food",
   "data": {
-    "Value": 5
+    "NutritionValue": 5,
+    "ConsumptionTime": 2
   }
 },
 {

@@ -2,7 +2,81 @@ using AO;
 
 public partial class FatPlayer : Player 
 {
+    public const int MinStomachSize = 10;
+
     private int _trophies;
+    private int _coins;
+    private int _food;
+    private int _maxFood;
+    private int _mouthSize;
+    private int _chewSpeed;
+
+    public Food FoodBeingEaten;
+    
+    private PetManager _petManager;
+    public PetManager PetManager 
+    {
+        get 
+        {
+            if (_petManager == null) {
+                _petManager = Entity.AddComponent<PetManager>();
+                _petManager.Player = this;
+            }
+            return _petManager;
+        }
+    }
+
+    public override void Start()
+    {
+    }
+
+    public override void Update()
+    {
+        if (FoodBeingEaten != null)
+        {
+            var chewRect = UI.GetPlayerRect(this);
+            chewRect = chewRect.Grow(50, 50, 0, 50).Offset(0, 10);
+
+            UI.Image(chewRect, null, Vector4.White, new UI.NineSlice());
+
+            var chewProgress = FoodBeingEaten.EatingTime / FoodBeingEaten.ConsumptionTime;
+            var chewProgressRect = chewRect.SubRect(0, 0, chewProgress, 1);
+            UI.Image(chewProgressRect, null, Vector4.HSVLerp(Vector4.Red, Vector4.Green, chewProgress), new UI.NineSlice());
+        }
+
+        if (this.IsLocal) 
+        {
+            if (FoodBeingEaten != null && Input.GetKeyDown(Input.Keycode.KEYCODE_ESCAPE, true)) {
+                FoodBeingEaten.CallClient_FinishEating(false);
+            }
+        }
+    }
+
+    public override void OnDestroy()
+    {
+        if (FoodBeingEaten != null && Network.IsServer) {
+            FoodBeingEaten.CallClient_FinishEating(false);
+        }
+
+        Pet.AllPets.RemoveAll(p => p.OwnerId == this.Entity.NetworkId);
+    }
+
+    public void OnLoad()
+    {
+        if (Network.IsServer)
+        {
+            Trophies = Save.GetInt(this, "Trophies", 0);
+            Coins = Save.GetInt(this, "Coins", 0);
+            Food = Save.GetInt(this, "Food", 0);
+            MaxFood = Save.GetInt(this, "MaxFood", 10);
+            MouthSize = Save.GetInt(this, "MouthSize", 0);
+            ChewSpeed = Save.GetInt(this, "ChewSpeed", 0);
+
+            var pets = Save.GetString(this, "AllPets", "[]");
+            CallClient_LoadPetData(pets);
+        }
+    }
+
     public int Trophies 
     { 
         get => _trophies; 
@@ -17,7 +91,6 @@ public partial class FatPlayer : Player
         } 
     }
 
-    private int _coins;
     public int Coins 
     { 
         get => _coins; 
@@ -32,7 +105,6 @@ public partial class FatPlayer : Player
         } 
     }
 
-    private int _food;
     public int Food 
     { 
         get => _food; 
@@ -47,10 +119,9 @@ public partial class FatPlayer : Player
         } 
     }
 
-    private int _maxFood;
     public int MaxFood 
     { 
-        get => _maxFood; 
+        get => Math.Max(MinStomachSize, _maxFood); 
         set 
         { 
             _maxFood = value; 
@@ -62,7 +133,6 @@ public partial class FatPlayer : Player
         } 
     }
 
-    private int _mouthSize;
     public int MouthSize 
     { 
         get => _mouthSize; 
@@ -77,7 +147,6 @@ public partial class FatPlayer : Player
         } 
     }
 
-    private int _chewSpeed;
     public int ChewSpeed 
     { 
         get => _chewSpeed; 
@@ -92,23 +161,40 @@ public partial class FatPlayer : Player
         } 
     }
 
-
-    public override void Start()
+    [ClientRpc]
+    public void LoadPetData(string data)
     {
-        
+        PetManager.LoadPetData(data);
     }
 
-    public void OnLoad()
+    [ClientRpc]
+    public void AddPet(string petId, string petDefinitionId)
     {
-        if (Network.IsServer)
-        {
-            Trophies = Save.GetInt(this, "Trophies", 0);
-            Coins = Save.GetInt(this, "Coins", 0);
-            Food = Save.GetInt(this, "Food", 0);
-            MaxFood = Save.GetInt(this, "MaxFood", 0);
-            MouthSize = Save.GetInt(this, "MouthSize", 0);
-            ChewSpeed = Save.GetInt(this, "ChewSpeed", 0);
-        }
+        PetManager.AddPet(petId, petDefinitionId);
+    }
+
+    [ClientRpc]
+    public void EquipPet(string petId)
+    {
+        PetManager.EquipPet(petId);
+    }
+
+    [ClientRpc]
+    public void UnequipPet(string id)
+    {
+        PetManager.UnequipPet(id);
+    }
+
+    [ServerRpc]
+    public void RequestEquipPet(string id)
+    {
+        CallClient_EquipPet(id);
+    }
+
+    [ServerRpc]
+    public void RequestUnequipPet(string id)
+    {
+        CallClient_UnequipPet(id);
     }
 
     [ClientRpc] public void NotifyTrophiesUpdate(int val)  { if (Network.IsClient) Trophies = val;  }
@@ -117,4 +203,40 @@ public partial class FatPlayer : Player
     [ClientRpc] public void NotifyMaxFoodUpdate(int val)   { if (Network.IsClient) MaxFood = val;   }
     [ClientRpc] public void NotifyMouthSizeUpdate(int val) { if (Network.IsClient) MouthSize = val; }
     [ClientRpc] public void NotifyChewSpeedUpdate(int val) { if (Network.IsClient) ChewSpeed = val; }
+
+    [ServerRpc]
+    public void RequestPurchaseStoachSize()
+    {
+        if (Network.IsClient) return;
+        if (Coins < 10) return;
+
+        Coins -= 10;
+        MaxFood += 1;
+    }
+
+    [ServerRpc]
+    public void RequestPurchaseMouthSize()
+    {
+        if (Network.IsClient) return;
+        if (Coins < 10) return;
+
+        Coins -= 10;
+        MouthSize += 1;
+    }
+
+    [ServerRpc]
+    public void RequestPurchaseChewSpeed()
+    {
+        if (Network.IsClient) return;
+        if (Coins < 10) return;
+
+        Coins -= 10;
+        ChewSpeed += 1;
+    }
+
+    [ServerRpc]
+    public void RequestPurchaseItem(string id)
+    {
+        Shop.Instance.Purchase(this, id);
+    }
 }
