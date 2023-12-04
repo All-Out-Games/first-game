@@ -4,8 +4,8 @@
   "name": "Z1",
   "local_enabled": true,
   "local_position": {
-    "X": -3.8347425460815430,
-    "Y": -3.3496255874633789
+    "X": 0,
+    "Y": 0
   },
   "local_rotation": 0,
   "local_scale": {

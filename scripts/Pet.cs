@@ -25,14 +25,35 @@ public class Pet : Component
             return;
         }
 
+        var totalAccel = Vector2.Zero;
+
+        var otherOwnerPets = AllPets.Where(p => p.OwnerId == OwnerId && p != this);
+        foreach (var other in otherOwnerPets) {
+            var vectorToPet = other.Entity.Position - Entity.Position;
+            if (other.Entity.Position == Entity.Position) {
+                vectorToPet = new Vector2(1, 0);
+            }
+            var dist = vectorToPet.Length;
+            if (dist <= 1f) {       
+                var modifier = 1 - (dist / 1f) + 1;
+                totalAccel -= vectorToPet.Normalized * modifier;
+            }
+        }
+
         var targetPosition = ownerEntity.Position + new Vector2(-ownerEntity.LocalScale.X, 0.5f);
         // Move towards
         var distance = (Entity.Position - targetPosition).Length;
         if (distance > 0.1f) {
-            var direction = (targetPosition - Entity.Position).Normalized;
-            var speed = 5f;
-            
-            Entity.Position += direction * Time.DeltaTime * speed;
+            var direction = (targetPosition - Entity.Position).Normalized;    
+            totalAccel += direction;
         }
+
+        var speed = 5f;
+        Entity.Position += totalAccel * Time.DeltaTime * speed;
+    }
+
+    public override void OnDestroy()
+    {
+        AllPets.Remove(this);
     }
 }

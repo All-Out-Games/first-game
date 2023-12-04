@@ -1,27 +1,28 @@
 7
-4294967297
+12884901889
 {
-  "name": "Sell",
+  "name": "Boss1",
   "local_enabled": true,
   "local_position": {
-    "X": 0,
-    "Y": 6.6306958198547363
+    "X": 3.6258981227874756,
+    "Y": 6.5131897926330566
   },
   "local_rotation": 0,
   "local_scale": {
     "X": 1,
     "Y": 1
   },
-  "sibling_index": 0,
+  "sibling_index": 2,
   "parent": 8589934593,
   "spawn_as_networked_entity": true
 },
 {
   "cid": 1,
   "component_type": "Mono_Component",
-  "mono_component_type": "SellArea",
+  "mono_component_type": "Boss",
   "data": {
-
+    "Name": "",
+    "Speed": 10
   }
 },
 {
@@ -37,12 +38,12 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Sprite_Renderer",
   "data": {
-    "texture": "sword.png",
+    "texture": "",
     "depth_offset": 0,
     "tint": {
-      "X": 0.4470588266849518,
-      "Y": 1,
-      "Z": 0.5058823823928833,
+      "X": 1,
+      "Y": 0.3037037253379822,
+      "Z": 0.3037037253379822,
       "W": 1
     },
     "layer": 0

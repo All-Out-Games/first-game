@@ -92,24 +92,29 @@ public class GameUI : System<GameUI>
     
         var upgradesButtonRect = sideBarRect.CutTop(100).Inset(10, 10, 10, 10);
         var upgradesButtonResult = UI.Button(upgradesButtonRect, "Upgrades", buttonSettings, buttonTextSettings);
-        if (upgradesButtonResult.clicked) {
+        if (upgradesButtonResult.clicked) 
+        {
             IsShowingUpgradesWindow = !IsShowingUpgradesWindow;
         }
 
         var shopButtonRect = sideBarRect.CutTop(100).Inset(10, 10, 10, 10);
         var shopButtonResult = UI.Button(shopButtonRect, "Shop", buttonSettings, buttonTextSettings);
-        if (shopButtonResult.clicked) {
+        if (shopButtonResult.clicked) 
+        {
             IsShowingShopWindow = !IsShowingShopWindow;
         }
 
         var petsButtonRect = sideBarRect.CutTop(100).Inset(10, 10, 10, 10);
         var petsButtonResult = UI.Button(petsButtonRect, "Pets", buttonSettings, buttonTextSettings);
-        if (petsButtonResult.clicked) {
+        if (petsButtonResult.clicked) 
+        {
             IsShowingPetsWindow = !IsShowingPetsWindow;
         }
 
-        if (IsShowingUpgradesWindow) {
-            if (UI.Button(UI.ScreenRect, "", new UI.ButtonSettings(), new UI.TextSettings()).clicked) {
+        if (IsShowingUpgradesWindow) 
+        {
+            if (UI.Button(UI.ScreenRect, "", new UI.ButtonSettings(), new UI.TextSettings()).clicked) 
+            {
                 IsShowingUpgradesWindow = false;
             }
 
@@ -119,29 +124,35 @@ public class GameUI : System<GameUI>
             
             var upgradeStomachRect = windowRect.CutTopUnscaled(100).Inset(10, 10, 10, 10);
             var upgradeStomachResult = UI.Button(upgradeStomachRect, "Stomach", buttonSettings, buttonTextSettings);
-            if (upgradeStomachResult.clicked) {
+            if (upgradeStomachResult.clicked) 
+            {
                 localPlayer.CallServer_RequestPurchaseStoachSize();
             }
 
             var upgradeMouthSizeRect = windowRect.CutTopUnscaled(100).Inset(10, 10, 10, 10);
             var upgradeMouthSizeResult = UI.Button(upgradeMouthSizeRect, "Mouth Size", buttonSettings, buttonTextSettings);
-            if (upgradeMouthSizeResult.clicked) {
+            if (upgradeMouthSizeResult.clicked) 
+            {
                 localPlayer.CallServer_RequestPurchaseMouthSize();
             }
 
             var upgradeChewSpeedRect = windowRect.CutTopUnscaled(100).Inset(10, 10, 10, 10);
             var upgradeChewSpeedResult = UI.Button(upgradeChewSpeedRect, "Chew Speed", buttonSettings, buttonTextSettings);
-            if (upgradeChewSpeedResult.clicked) {
+            if (upgradeChewSpeedResult.clicked) 
+            {
                 localPlayer.CallServer_RequestPurchaseChewSpeed();
             }
         }
 
-        if (IsShowingShopWindow) {
+        if (IsShowingShopWindow) 
+        {
             IsShowingShopWindow = Shop.Instance.DrawShop();
         }
 
-        if (IsShowingPetsWindow) {
-            if (UI.Button(UI.ScreenRect, "", new UI.ButtonSettings(), new UI.TextSettings()).clicked) {
+        if (IsShowingPetsWindow) 
+        {
+            if (UI.Button(UI.ScreenRect, "", new UI.ButtonSettings(), new UI.TextSettings()).clicked) 
+            {
                 IsShowingPetsWindow = false;
             }
 
@@ -149,7 +160,11 @@ public class GameUI : System<GameUI>
             windowRect = windowRect.Grow(200, 300, 200, 300);
             UI.Image(windowRect, References.Instance.WindowBg, Vector4.White, new UI.NineSlice(){ slice = new Vector4(20, 20, 50, 50), sliceScale = 1f});
 
-            foreach (var pet in localPlayer.PetManager.OwnedPets) {
+            foreach (var pet in localPlayer.PetManager.OwnedPets) 
+            {
+                UI.PushId(pet.Id);
+                using var _ = AllOut.Defer(UI.PopId);
+
                 var petRect = windowRect.CutTopUnscaled(100).Inset(10, 10, 10, 10);
                 buttonSettings.sprite = pet.Equipped ? References.Instance.GreenButton : References.Instance.RedButton;
                 var petButtonResult = UI.Button(petRect, pet.Name, buttonSettings, buttonTextSettings);
@@ -164,7 +179,15 @@ public class GameUI : System<GameUI>
                     }
                 }
             }
+        }
 
+        if (localPlayer.CurrentBoss != null)
+        {
+            var chewRect = UI.GetPlayerRect(localPlayer);
+            chewRect = chewRect.Grow(50, 100, 0, 100).Offset(0, 10);
+            UI.Image(chewRect, null, Vector4.White, new UI.NineSlice());
+            var chewProgressRect = chewRect.SubRect(0, 0, localPlayer.BossProgress/100, 1, 0, 0, 0, 0);
+            UI.Image(chewProgressRect, null, Vector4.HSVLerp(Vector4.Red, Vector4.Green, localPlayer.BossProgress/100), new UI.NineSlice());
         }
     }
 

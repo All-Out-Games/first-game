@@ -26,12 +26,62 @@ public partial class FatPlayer : Player
         }
     }
 
+    public Boss CurrentBoss;
+    public float BossProgress;
+
     public override void Start()
     {
     }
 
+    [ClientRpc]
+    public void BossFightOver(bool won)
+    {
+        if (won) 
+        {
+            Trophies += 1;
+            if (Network.IsClient)
+                Notifications.Show("You won the boss fight!");
+        }
+        else 
+        {
+            if (Network.IsClient)
+                Notifications.Show("You lost the boss fight!");
+        }
+
+
+        CurrentBoss = null;
+        this.RemoveFreezeReason("BossFight");
+    }
+
     public override void Update()
     {
+        if (CurrentBoss != null)
+        {
+            var bossMultiplier = CurrentBoss.Speed;
+
+            if (this.IsMouseUpLeft()) 
+            {
+                var myMultiplier = ChewSpeed + MouthSize;
+                BossProgress += myMultiplier / bossMultiplier;
+            }
+
+            BossProgress -= Time.DeltaTime * bossMultiplier;
+            BossProgress = Math.Clamp(BossProgress, 0, 100);
+
+            if (Network.IsServer)
+            {
+                if (BossProgress <= 0) 
+                {
+                    CallClient_BossFightOver(false);
+                }
+
+                if (BossProgress >= 100) 
+                {
+                    CallClient_BossFightOver(true);
+                }
+            }
+        }
+
         if (FoodBeingEaten != null)
         {
             var chewRect = UI.GetPlayerRect(this);
@@ -75,6 +125,19 @@ public partial class FatPlayer : Player
             var pets = Save.GetString(this, "AllPets", "[]");
             CallClient_LoadPetData(pets);
         }
+    }
+
+    [ClientRpc]
+    public void StartBossFight(ulong bossNetworkId)
+    {
+        Log.Info("Really starting boss fight");
+        var entity = Entity.FindByNetworkId(bossNetworkId);
+        if (entity == null) return;
+
+        Log.Info("Found boss entity and actually starting the fight this time for real");
+        CurrentBoss = entity.GetComponent<Boss>();
+        this.AddFreezeReason("BossFight");
+        BossProgress = 50f;
     }
 
     public int Trophies 
