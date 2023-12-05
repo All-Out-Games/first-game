@@ -23,7 +23,8 @@ public partial class Food : Component
     public override void Update()
     {
         if (CurrentEater == null) return;
-        EatingTime += Time.DeltaTime * CurrentEater.ChewSpeed;
+        // var mult = CurrentEater.ChewSpeed /;
+        EatingTime += Time.DeltaTime;
 
         if (Network.IsClient) return;
         if (EatingTime >= ConsumptionTime) {

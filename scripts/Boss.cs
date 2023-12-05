@@ -2,8 +2,12 @@ using AO;
 
 public class Boss : Component
 {
+    public const float BOSS_TIMER = 10f;
+
     [Serialized] public string Name;
-    [Serialized] public float Speed;
+    [Serialized] public int Increment;
+    [Serialized] public float Tick;
+    [Serialized] public int Reward;
 
     public override void Start()
     {

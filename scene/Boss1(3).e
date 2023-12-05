@@ -21,8 +21,10 @@
   "component_type": "Mono_Component",
   "mono_component_type": "Boss",
   "data": {
-    "Name": "",
-    "Speed": 10
+    "Name": "Big Boss",
+    "Increment": 1,
+    "Tick": 0.5000000000000000,
+    "Reward": 1
   }
 },
 {

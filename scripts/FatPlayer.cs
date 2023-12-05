@@ -10,6 +10,7 @@ public partial class FatPlayer : Player
     private int _maxFood;
     private int _mouthSize;
     private int _chewSpeed;
+    private int _rebirth;
 
     public Food FoodBeingEaten;
     
@@ -27,7 +28,10 @@ public partial class FatPlayer : Player
     }
 
     public Boss CurrentBoss;
-    public float BossProgress;
+    public float BossTimer;
+    public float BossAccumulator;
+    public int BossProgress;
+    public int MyProgress;
 
     public override void Start()
     {
@@ -36,9 +40,14 @@ public partial class FatPlayer : Player
     [ClientRpc]
     public void BossFightOver(bool won)
     {
+        if (CurrentBoss == null) {
+            Log.Info("Boss fight over but no boss?");
+            return;
+        }
+
         if (won) 
         {
-            Trophies += 1;
+            Trophies += CurrentBoss.Reward;
             if (Network.IsClient)
                 Notifications.Show("You won the boss fight!");
         }
@@ -57,28 +66,22 @@ public partial class FatPlayer : Player
     {
         if (CurrentBoss != null)
         {
-            var bossMultiplier = CurrentBoss.Speed;
-
             if (this.IsMouseUpLeft()) 
             {
-                var myMultiplier = ChewSpeed + MouthSize;
-                BossProgress += myMultiplier / bossMultiplier;
+                MyProgress += (ChewSpeed + MouthSize) / 2;
             }
 
-            BossProgress -= Time.DeltaTime * bossMultiplier;
-            BossProgress = Math.Clamp(BossProgress, 0, 100);
-
-            if (Network.IsServer)
+            BossAccumulator += Time.DeltaTime;
+            if (BossAccumulator >= CurrentBoss.Tick) 
             {
-                if (BossProgress <= 0) 
-                {
-                    CallClient_BossFightOver(false);
-                }
+                BossProgress += CurrentBoss.Increment;
+                BossAccumulator = 0;
+            }
 
-                if (BossProgress >= 100) 
-                {
-                    CallClient_BossFightOver(true);
-                }
+            BossTimer -= Time.DeltaTime;
+            if (Network.IsServer && BossTimer <= 0) 
+            {
+                CallClient_BossFightOver(MyProgress > BossProgress);
             }
         }
 
@@ -119,8 +122,9 @@ public partial class FatPlayer : Player
             Coins = Save.GetInt(this, "Coins", 0);
             Food = Save.GetInt(this, "Food", 0);
             MaxFood = Save.GetInt(this, "MaxFood", 10);
-            MouthSize = Save.GetInt(this, "MouthSize", 0);
-            ChewSpeed = Save.GetInt(this, "ChewSpeed", 0);
+            MouthSize = Math.Max(1, Save.GetInt(this, "MouthSize", 1));
+            ChewSpeed = Math.Max(1, Save.GetInt(this, "ChewSpeed", 1));
+            Rebirth = Save.GetInt(this, "Rebirth", 0);
 
             var pets = Save.GetString(this, "AllPets", "[]");
             CallClient_LoadPetData(pets);
@@ -137,7 +141,11 @@ public partial class FatPlayer : Player
         Log.Info("Found boss entity and actually starting the fight this time for real");
         CurrentBoss = entity.GetComponent<Boss>();
         this.AddFreezeReason("BossFight");
-        BossProgress = 50f;
+        
+        MyProgress = 0;
+        BossProgress = 0;
+        BossTimer = Boss.BOSS_TIMER;
+        BossAccumulator = 0;
     }
 
     public int Trophies 
@@ -222,6 +230,19 @@ public partial class FatPlayer : Player
                 CallClient_NotifyChewSpeedUpdate(value);
             }
         } 
+    }
+
+    public int Rebirth
+    {
+        get => _rebirth;
+        set
+        {
+            _rebirth = value;
+            if (Network.IsServer)
+            {
+                Save.SetInt(this, "Rebirth", value);
+            }
+        }
     }
 
     [ClientRpc]
