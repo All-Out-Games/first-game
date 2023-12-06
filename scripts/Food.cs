@@ -36,7 +36,7 @@ public partial class Food : Component
     {
         var player = (FatPlayer) p;
         
-        var stomachRoom = player.MaxFood - player.Food;
+        var stomachRoom = player.ModifiedMaxFood - player.Food;
         if (stomachRoom < NutritionValue) {
             if (Network.IsClient) {
                 Notifications.Show("You are too full to eat this food!");

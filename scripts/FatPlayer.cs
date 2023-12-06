@@ -262,7 +262,6 @@ public partial class FatPlayer : Player
     public const float MouthSizePerLevel = 0.05f;
     public const float MaxFoodPerLevel   = 1;
 
-
     public float ModifiedChewSpeed => 1.0f + CalculateModifiedStat(PetData.StatModifierKind.ChewSpeedMultiply, PetData.StatModifierKind.ChewSpeedAdd, _chewSpeed, ChewSpeedPerLevel);
     public float ModifiedMouthSize => 1.0f + CalculateModifiedStat(PetData.StatModifierKind.MouthSizeMultiply, PetData.StatModifierKind.MouthSizeAdd, _mouthSize, MouthSizePerLevel);
     public int   ModifiedMaxFood   =>   (int)CalculateModifiedStat(PetData.StatModifierKind.MaxFoodMultiply,   PetData.StatModifierKind.MaxFoodAdd,   _maxFood,   MaxFoodPerLevel);
