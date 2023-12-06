@@ -281,6 +281,35 @@ public partial class FatPlayer : Player
         CallClient_UnequipPet(id);
     }
 
+    [ClientRpc]
+    public void DoRebirth(int rebirth)
+    {
+        var rbd = global::Rebirth.Instance.GetRebirthData(rebirth);
+        
+        this.Rebirth = rebirth;
+        Notifications.Show($"You have been reborn! You are now a {rbd.RankName}!");
+        // TODO show an anim or something
+    }
+
+    [ServerRpc]
+    public void RequestRebirth()
+    {
+        var rbd = global::Rebirth.Instance.GetRebirthData(this.Rebirth + 1);
+        if (this.Trophies < rbd.TrophiesCost) {
+            // TODO alert user
+            return;
+        }
+
+        this.Trophies -= rbd.TrophiesCost;
+        this.Rebirth += 1;
+        this.Coins = 0;
+        this.ChewSpeed = 1;
+        this.MouthSize = 1;
+        this.MaxFood = 10;
+        
+        CallClient_DoRebirth(this.Rebirth);
+    }
+
     [ClientRpc] public void NotifyTrophiesUpdate(int val)  { if (Network.IsClient) Trophies = val;  }
     [ClientRpc] public void NotifyCoinsUpdate(int val)     { if (Network.IsClient) Coins = val;     }
     [ClientRpc] public void NotifyFoodUpdate(int val)      { if (Network.IsClient) { Food = val; Log.Info("Updating food via RPC"); }     }

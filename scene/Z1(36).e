@@ -1,5 +1,6 @@
-7
+9
 154618822657
+42347968130896 1701806595502590800
 {
   "name": "Z1",
   "local_enabled": true,
@@ -13,10 +14,11 @@
     "Y": 10
   },
   "sibling_index": 0,
-  "parent": 150323855361
+  "parent": "42347967936764:1701806595502535800"
 },
 {
   "cid": 1,
+  "aoid": "42347970672528:1701806595503316200",
   "component_type": "Internal_Component",
   "internal_component_type": "Zone",
   "data": {

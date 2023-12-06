@@ -1,5 +1,6 @@
-7
+9
 1
+42347968035984 1701806595502563700
 {
   "name": "References",
   "local_enabled": true,
@@ -16,6 +17,7 @@
 },
 {
   "cid": 1,
+  "aoid": "42347969374754:1701806595502945900",
   "component_type": "Mono_Component",
   "mono_component_type": "References",
   "data": {
@@ -33,8 +35,6 @@
     "OrangeFill": "ui/UI_Fill_Orange.png",
     "FrameDark": "ui/UI_Frame_Dark_Transparent.png",
     "FrameWhite": "ui/UI_Frame_Dark_White.png",
-    "PanelContent": "ui/UI_Panel_Content.png",
-    "WindowBg": "ui/UI_Panel_Window.png",
     "PetPrefab": "Pet.prefab"
   }
 }

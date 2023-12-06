@@ -19,9 +19,8 @@ public class Rebirth : System<Rebirth>
         new () { RankName = "Infinite",     CashMultiplier = 2.1f, TrophiesCost = 1100 },
     };
 
-    public RebirthData GetRebirthData(FatPlayer player)
+    public RebirthData GetRebirthData(int rebirth)
     {
-        var rebirth = player.Rebirth;
         if (rebirth >= RebirthData.Count)
             rebirth = RebirthData.Count - 1;
         return RebirthData[rebirth];

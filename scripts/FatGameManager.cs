@@ -8,26 +8,27 @@ public class FatGameManager : Component
         {
             Array.Sort(players, (a, b) =>
             {
-                return ((FatPlayer)b).Food.CompareTo(((FatPlayer)a).Food);
+                return ((FatPlayer)b).Rebirth.CompareTo(((FatPlayer)a).Rebirth);
             });
         });
 
-        Leaderboard.Register("Food", (Player[] players, string[] scores) =>
-        {
-            for (int i = 0; i < players.Length; i++)
-            {
-                FatPlayer fatPlayer = (FatPlayer)players[i];
-                scores[i] = fatPlayer.Food.ToString();
-            }
-        });
-
-        Leaderboard.Register("Position", (Player[] players, string[] scores) =>
+        Leaderboard.Register("Rank", (Player[] players, string[] scores) =>
         {
             for (int i = 0; i < players.Length; i++)
             {
                 FatPlayer fatPlayer = (FatPlayer)players[i];
                 var p = fatPlayer.Entity.Position;
-                scores[i] = $"({p.X:F1}, {p.Y:F1})";
+                var rbd = Rebirth.Instance.GetRebirthData(fatPlayer.Rebirth);
+                scores[i] = rbd.RankName;
+            }
+        });
+
+        Leaderboard.Register("Trophies", (Player[] players, string[] scores) =>
+        {
+            for (int i = 0; i < players.Length; i++)
+            {
+                FatPlayer fatPlayer = (FatPlayer)players[i];
+                scores[i] = fatPlayer.Trophies.ToString();
             }
         });
     }

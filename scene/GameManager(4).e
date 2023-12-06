@@ -1,5 +1,6 @@
-7
+9
 17179869185
+42347967996028 1701806595502552300
 {
   "name": "GameManager",
   "local_enabled": true,
@@ -16,6 +17,7 @@
 },
 {
   "cid": 1,
+  "aoid": "42347970909378:1701806595503383900",
   "component_type": "Mono_Component",
   "mono_component_type": "FatGameManager",
   "data": {

@@ -39,7 +39,6 @@ public class GameUI : System<GameUI>
             verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
             wordWrap = false,
             wordWrapOffset = 0,
-            offset = new Vector2(0, 7),
             outline = true,
             outlineThickenss = 2,
             // dropShadow = false,
@@ -89,7 +88,7 @@ public class GameUI : System<GameUI>
             font = UI.TextSettings.Font.AlphaKind,
             size = 48,
             color = Vector4.Black,
-            horizontalAlignment = UI.TextSettings.HorizontalAlignment.Right,
+            horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
             verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
             wordWrap = false,
             wordWrapOffset = 0,
@@ -222,14 +221,16 @@ public class GameUI : System<GameUI>
             upgradeItemTextSettings.size = 36;
 
             var windowRect = UI.SafeRect;
-            windowRect = windowRect.Inset(200, 250, 150, 250);
+            windowRect = windowRect.Inset(200, 350, 200, 350);
             UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
 
             var halfWidth = windowRect.Width / 2;
 
             // Before
             {
-                var beforeRect = windowRect.LeftRect().GrowRightUnscaled(halfWidth).Inset(90, 165, 175, 100);
+                var rbd = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth);
+
+                var beforeRect = windowRect.LeftRect().GrowRightUnscaled(halfWidth).Inset(50, 200, 225, 50);
                 UI.Image(beforeRect, References.Instance.FrameDark, Vector4.White, References.Instance.FrameSlice);
                 
                 beforeRect = beforeRect.SubRect(0, 0, 1, 1, 0, 0, 10, 0);
@@ -242,29 +243,31 @@ public class GameUI : System<GameUI>
                 var trophiesRect = beforeRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
                 UI.Image(trophiesRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
                 upgradeItemTextSettings.color = References.Instance.YellowText;
-                UI.Text(trophiesRect, $"10.0k", upgradeItemTextSettings);
+                UI.Text(trophiesRect, $"{Util.FormatDouble(localPlayer.Trophies)}", upgradeItemTextSettings);
 
                 var cashRect = beforeRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
                 UI.Image(cashRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
                 upgradeItemTextSettings.color = References.Instance.GreenText;
-                UI.Text(cashRect, $"10.0k", upgradeItemTextSettings);
+                UI.Text(cashRect, $"{Util.FormatDouble(localPlayer.Coins)}", upgradeItemTextSettings);
 
                 var cashMultiplierRect = beforeRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
                 UI.Image(cashMultiplierRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
                 upgradeItemTextSettings.color = References.Instance.BlueText;
-                UI.Text(cashMultiplierRect, $"1x Cash", upgradeItemTextSettings);
+                UI.Text(cashMultiplierRect, $"{rbd.CashMultiplier:0.##}", upgradeItemTextSettings);
 
                 var rankRect = beforeRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
                 UI.Image(rankRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
                 upgradeItemTextSettings.color = References.Instance.YellowText;
-                UI.Text(rankRect, $"Noob", upgradeItemTextSettings);
+                UI.Text(rankRect, $"{rbd.RankName}", upgradeItemTextSettings);
             }
             
 
             // After
             {
-                var afterRect = windowRect.RightRect().GrowLeftUnscaled(halfWidth).Inset(90, 100, 175, 165);
-                UI.Image(afterRect, References.Instance.FrameDark, Vector4.White, References.Instance.FrameSlice);
+                var rbd = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth + 1);
+
+                var afterRect = windowRect.RightRect().GrowLeftUnscaled(halfWidth).Inset(50, 50, 225, 200);
+                UI.Image(afterRect, References.Instance.FrameWhite, References.Instance.BlueBg, References.Instance.FrameSlice);
 
                 afterRect = afterRect.SubRect(0, 0, 1, 1, 0, 0, 10, 0);
                 var h = afterRect.Height / 5;
@@ -276,7 +279,7 @@ public class GameUI : System<GameUI>
                 var trophiesRect = afterRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
                 UI.Image(trophiesRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
                 upgradeItemTextSettings.color = References.Instance.YellowText;
-                UI.Text(trophiesRect, $"10.0k", upgradeItemTextSettings);
+                UI.Text(trophiesRect, $"{Util.FormatDouble(localPlayer.Trophies - rbd.TrophiesCost)}", upgradeItemTextSettings);
 
                 var cashRect = afterRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
                 UI.Image(cashRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
@@ -286,12 +289,45 @@ public class GameUI : System<GameUI>
                 var cashMultiplierRect = afterRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
                 UI.Image(cashMultiplierRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
                 upgradeItemTextSettings.color = References.Instance.BlueText;
-                UI.Text(cashMultiplierRect, $"1.1x Cash", upgradeItemTextSettings);
+                UI.Text(cashMultiplierRect, $"{rbd.CashMultiplier:0.##}", upgradeItemTextSettings);
 
                 var rankRect = afterRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
                 UI.Image(rankRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
                 upgradeItemTextSettings.color = References.Instance.YellowText;
-                UI.Text(rankRect, $"Rookie", upgradeItemTextSettings);
+                UI.Text(rankRect, $"{rbd.RankName}", upgradeItemTextSettings);
+            }
+
+            {
+                var rbd = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth + 1);
+
+                var bottomRect = windowRect.BottomRect()
+                                           .GrowTopUnscaled(75)
+                                           .Offset(0, 50)
+                                           .Inset(0, 50, 0, 50);
+
+                var sliderRect = bottomRect.CutLeftUnscaled((bottomRect.Width / 3) * 2);
+                UI.Image(sliderRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+
+                var has = localPlayer.Trophies;
+                var needs = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth + 1).TrophiesCost;
+
+                var rebirthProgress = has / needs;
+                var rebirthProgressRect = sliderRect.SubRect(0, 0, rebirthProgress, 1, 0, 0, 0, 0);
+                UI.Image(rebirthProgressRect, References.Instance.BlueFill, Vector4.Black, new UI.NineSlice());
+                UI.Text(sliderRect, $"{Util.FormatDouble(localPlayer.Trophies)} / {Util.FormatDouble(rbd.TrophiesCost)}", upgradeItemTextSettings);
+
+                var confirmRebirthButtonRect = bottomRect.CutLeftUnscaled(bottomRect.Width * 0.6f).Inset(0, 25, 0, 15);
+                if (UI.Button(confirmRebirthButtonRect, "Rebirth", buttonSettings, buttonTextSettings).clicked)
+                {
+                    localPlayer.CallServer_RequestRebirth();
+                }
+
+                buttonSettings.sprite = References.Instance.OrangeButton;
+                var skipRebirthButtonRect = bottomRect;
+                if (UI.Button(skipRebirthButtonRect, "Skip", buttonSettings, buttonTextSettings).clicked)
+                {
+                    // ?
+                }
             }
         }
 

@@ -1,5 +1,6 @@
-7
+9
 4294967297
+42347968084698 1701806595502577600
 {
   "name": "Sell",
   "local_enabled": true,
@@ -13,11 +14,12 @@
     "Y": 1
   },
   "sibling_index": 0,
-  "parent": 8589934593,
+  "parent": "42347968170958:1701806595502602200",
   "spawn_as_networked_entity": true
 },
 {
   "cid": 1,
+  "aoid": "42347968294914:1701806595502637600",
   "component_type": "Mono_Component",
   "mono_component_type": "SellArea",
   "data": {
@@ -26,6 +28,7 @@
 },
 {
   "cid": 2,
+  "aoid": "42347968763896:1701806595502771600",
   "component_type": "Internal_Component",
   "internal_component_type": "Interactable",
   "data": {
@@ -34,6 +37,7 @@
 },
 {
   "cid": 3,
+  "aoid": "42347969089242:1701806595502864400",
   "component_type": "Internal_Component",
   "internal_component_type": "Sprite_Renderer",
   "data": {
