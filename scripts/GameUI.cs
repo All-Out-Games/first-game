@@ -67,7 +67,7 @@ public class GameUI : System<GameUI>
             var foodIconRect = foodRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(6, 0);
             UI.Image(foodIconRect, References.Instance.FoodIcon, Vector4.White, new UI.NineSlice());
             textSettings.color = References.Instance.RedText;
-            UI.Text(foodRect, $"{localPlayer.Food}/{localPlayer.MaxFood}", textSettings);
+            UI.Text(foodRect, $"{localPlayer.Food}/{localPlayer.ModifiedMaxFood}", textSettings);
         }
 
 

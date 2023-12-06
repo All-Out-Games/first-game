@@ -64,11 +64,24 @@ public partial class FatPlayer : Player
 
     public override void Update()
     {
+        Log.Info($"ModifiedChewSpeed: {ModifiedChewSpeed}");
+        Log.Info($"ModifiedMouthSize: {ModifiedMouthSize} {_mouthSize}");
+        Log.Info($"ModifiedMaxFood:   {ModifiedMaxFood}");
+
+        foreach (var pet in Pet.AllPets)
+        {
+            if (pet.OwnerId != Entity.NetworkId)
+            {
+                continue;
+            }
+            pet.Arrived = false;
+        }
+
         if (CurrentBoss != null)
         {
             if (this.IsMouseUpLeft()) 
             {
-                MyProgress += (ChewSpeed + MouthSize) / 2;
+                MyProgress += (int)(((float)MouthSize / 2) * ModifiedChewSpeed);
             }
 
             BossAccumulator += Time.DeltaTime;
@@ -243,6 +256,60 @@ public partial class FatPlayer : Player
                 Save.SetInt(this, "Rebirth", value);
             }
         }
+    }
+
+    public const float ChewSpeedPerLevel = 0.05f;
+    public const float MouthSizePerLevel = 0.05f;
+    public const float MaxFoodPerLevel   = 1;
+
+
+    public float ModifiedChewSpeed => 1.0f + CalculateModifiedStat(PetData.StatModifierKind.ChewSpeedMultiply, PetData.StatModifierKind.ChewSpeedAdd, _chewSpeed, ChewSpeedPerLevel);
+    public float ModifiedMouthSize => 1.0f + CalculateModifiedStat(PetData.StatModifierKind.MouthSizeMultiply, PetData.StatModifierKind.MouthSizeAdd, _mouthSize, MouthSizePerLevel);
+    public int   ModifiedMaxFood   =>   (int)CalculateModifiedStat(PetData.StatModifierKind.MaxFoodMultiply,   PetData.StatModifierKind.MaxFoodAdd,   _maxFood,   MaxFoodPerLevel);
+
+    public float CalculateModifiedStat(PetData.StatModifierKind multiplyKind, PetData.StatModifierKind addKind, int baseValue, float amountPerLevel)
+    {
+        foreach (var pet in PetManager.OwnedPets)
+        {
+            if (!pet.Equipped)
+            {
+                continue;
+            }
+            var defn = pet.GetDefinition();
+            if (defn == null)
+            {
+                continue;
+            }
+            foreach (var modifier in defn.StatModifiers)
+            {
+                if (modifier.Kind == addKind)
+                {
+                    baseValue += modifier.AddValue;
+                }
+            }
+        }
+
+        float modified = (float)baseValue * amountPerLevel;
+        foreach (var pet in PetManager.OwnedPets)
+        {
+            if (!pet.Equipped)
+            {
+                continue;
+            }
+            var defn = pet.GetDefinition();
+            if (defn == null)
+            {
+                continue;
+            }
+            foreach (var modifier in defn.StatModifiers)
+            {
+                if (modifier.Kind == multiplyKind)
+                {
+                    modified *= modifier.MultiplyValue;
+                }
+            }
+        }
+        return modified;
     }
 
     [ClientRpc]

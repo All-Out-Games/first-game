@@ -9,6 +9,10 @@ public class Pet : Component
     [Serialized] public string Name;
     [Serialized] public string PetId;
 
+    public Vector2 Velocity;
+
+    public bool Arrived;
+
     public PetData.PetDefinition Definition => PetData.Pets[DefinitionId];
 
     public override void Start()
@@ -25,31 +29,61 @@ public class Pet : Component
             return;
         }
 
-        var totalAccel = Vector2.Zero;
-
+        float agentRadius = 0.5f;
         var otherOwnerPets = AllPets.Where(p => p.OwnerId == OwnerId && p != this);
-        foreach (var other in otherOwnerPets) {
-            var vectorToPet = other.Entity.Position - Entity.Position;
-            if (other.Entity.Position == Entity.Position) {
-                vectorToPet = new Vector2(1, 0);
-            }
-            var dist = vectorToPet.Length;
-            if (dist <= 1f) {       
-                var modifier = 1 - (dist / 1f) + 1;
-                totalAccel -= vectorToPet.Normalized * modifier;
-            }
-        }
-
         var targetPosition = ownerEntity.Position + new Vector2(-ownerEntity.LocalScale.X, 0.5f);
-        // Move towards
-        var distance = (Entity.Position - targetPosition).Length;
-        if (distance > 0.1f) {
-            var direction = (targetPosition - Entity.Position).Normalized;    
-            totalAccel += direction;
+        var distanceToTarget = (targetPosition - Entity.Position).Length;
+        if (distanceToTarget < 0.5f)
+        {
+            Arrived = true;
+        }
+        else
+        {
+            foreach (var other in otherOwnerPets)
+            {
+                // if we are near another pet that has arrived, then we have arrived too
+                if (other.Arrived && (other.Entity.Position - Entity.Position).Length < (agentRadius + agentRadius + 0.5f))
+                {
+                    Arrived = true;
+                }
+            }
         }
 
-        var speed = 5f;
-        Entity.Position += totalAccel * Time.DeltaTime * speed;
+        Vector2 moveToTargetForce = Vector2.Zero;
+        if (!Arrived)
+        {
+            var dirToTarget = (targetPosition - Entity.Position).Normalized;
+            moveToTargetForce = dirToTarget;
+        }
+
+        Vector2 separationForce = Vector2.Zero;
+        foreach (var other in otherOwnerPets)
+        {
+            float distance = (other.Entity.Position - Entity.Position).Length;
+            float minDistance = (agentRadius + agentRadius);
+            if (distance > minDistance)
+            {
+                continue;
+            }
+            var dirFromOther = (Entity.Position - other.Entity.Position);
+            var divisor = 1.0f - distance / minDistance;
+            if (distance == 0)
+            {
+                dirFromOther = new Vector2(1, 0);
+            }
+            else
+            {
+                dirFromOther /= distance;
+            }
+            separationForce += dirFromOther * divisor;
+        }
+
+        var totalForce = moveToTargetForce * 1.0f;
+        totalForce += separationForce * 0.5f;
+        totalForce *= (float)Math.Max(distanceToTarget, 1.0f);
+        Velocity += totalForce * Time.DeltaTime * 15.0f;
+        Velocity *= 0.85f;
+        Entity.Position += Velocity * Time.DeltaTime;
     }
 
     public override void OnDestroy()

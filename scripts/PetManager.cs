@@ -124,9 +124,14 @@ public static class PetData
 {
     [AOIgnore] public static Dictionary<string, PetDefinition> Pets = new Dictionary<string, PetDefinition>() 
     {
-        { "pet0", new () { Id = "pet0", Name = "Jimbo", Description = "Jimbo is a very cool pet." } },
-        { "pet1", new () { Id = "pet1", Name = "Jimbo 1", Description = "Jimbo 1 is a very cool pet." } },
-        { "pet2", new () { Id = "pet2", Name = "Jimbo 2", Description = "Jimbo 2 is a very cool pet." } },
+        { "pet0", new () { Id = "pet0", Name = "Jimbo",   Description = "Jimbo is a very cool pet.",
+            StatModifiers = new(){new StatModifier(){ Kind = StatModifierKind.ChewSpeedMultiply, MultiplyValue = 1.1f } } } },
+
+        { "pet1", new () { Id = "pet1", Name = "Jimbo 1", Description = "Jimbo 1 is a very cool pet.",
+            StatModifiers = new(){new StatModifier(){ Kind = StatModifierKind.ChewSpeedMultiply, MultiplyValue = 1.2f } } } },
+
+        { "pet2", new () { Id = "pet2", Name = "Jimbo 2", Description = "Jimbo 2 is a very cool pet.",
+            StatModifiers = new(){new StatModifier(){ Kind = StatModifierKind.ChewSpeedMultiply, MultiplyValue = 1.3f } } } },
     };
 
     [AOIgnore] public static Dictionary<string, EggDefinition> Eggs = new Dictionary<string, EggDefinition>() 
@@ -148,10 +153,37 @@ public static class PetData
         public int Weight;
     }
 
+    public enum StatModifierKind
+    {
+        MaxFoodMultiply,
+        MouthSizeMultiply,
+        ChewSpeedMultiply,
+
+        MaxFoodAdd,
+        MouthSizeAdd,
+        ChewSpeedAdd,
+    }
+
+    public class StatModifier
+    {
+        public StatModifierKind Kind;
+        public float            MultiplyValue;
+        public int              AddValue;
+    }
+
     public class PetDefinition
     {
         public string Id;
         public string Name;
         public string Description;
+        public List<StatModifier> StatModifiers;
+
+        public float MaxFoodMultiplier;
+        public float MouthSizeMultiplier;
+        public float ChewSpeedMultiplier;
+
+        public int MaxFoodAdd;
+        public int MouthSizeAdd;
+        public int ChewSpeedAdd;
     }
 }
