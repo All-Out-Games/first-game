@@ -177,13 +177,5 @@ public static class PetData
         public string Name;
         public string Description;
         public List<StatModifier> StatModifiers;
-
-        public float MaxFoodMultiplier;
-        public float MouthSizeMultiplier;
-        public float ChewSpeedMultiplier;
-
-        public int MaxFoodAdd;
-        public int MouthSizeAdd;
-        public int ChewSpeedAdd;
     }
 }
