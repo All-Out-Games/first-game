@@ -52,7 +52,7 @@ public class Shop : System<Shop>
         var shopCategories = ShopData.ShopEntries.Select(s => s.Category).Distinct().ToList();
 
         var topBarRect = windowRect.CutTop(75).Offset(0, 25);
-        foreach(var category in shopCategories) 
+        foreach (var category in shopCategories)
         {
             var categoryButtonRect = topBarRect.CutLeft(150).Inset(0, 5, 0, 5);
             var categoryButtonResult = UI.Button(categoryButtonRect, category, buttonSettings, buttonTextSettings);
@@ -66,7 +66,7 @@ public class Shop : System<Shop>
 
         var shopItems = ShopData.ShopEntries.Where(s => s.Category == SelectedCategory).ToList();
         var grid = UI.GridLayout.Make(windowRect, 3, 2, UI.GridLayout.SizeSource.GRID_SIZE);
-        foreach(var shopEntry in shopItems) 
+        foreach (var shopEntry in shopItems)
         {
             var item = ShopData.Items.First(i => i.Id == shopEntry.ItemId);
 

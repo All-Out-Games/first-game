@@ -35,18 +35,22 @@ public partial class Food : Component
     public void OnInteract(Player p)
     {
         var player = (FatPlayer) p;
-        
-        var stomachRoom = player.ModifiedMaxFood - player.Food;
-        if (stomachRoom < NutritionValue) {
-            if (Network.IsClient) {
-                Notifications.Show("You are too full to eat this food!");
+
+        if (player.MouthSize < Size)
+        {
+            if (Network.IsClient)
+            {
+                Notifications.Show("Your mouth is too small to eat this food!");
             }
             return;
         }
 
-        if (player.MouthSize < Size) {
-            if (Network.IsClient) {
-                Notifications.Show("Your mouth is too small to eat this food!");
+        var stomachRoom = player.ModifiedMaxFood - player.Food;
+        if (stomachRoom <= 0)
+        {
+            if (Network.IsClient)
+            {
+                Notifications.Show("You are too full to eat this food!");
             }
             return;
         }
