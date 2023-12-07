@@ -1,7 +1,38 @@
 using AO;
 
+public class FoodDefinition
+{
+    public Texture Sprite;
+    public String Name;
+    public String Id;
+    public long RequiredMouthSize;
+    public double ConsumptionTime;
+    public long NutritionValue;
+}
+
 public partial class Food : Component
 {
+    public static List<FoodDefinition> FoodDefinitions = new()
+    {
+        // new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/apple.png"), Name = "Apple", Id = "apple", RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5 }
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/Apple 256.png"),            Name = "Apple",                Id = "Apple",                RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/broccoli.png"),             Name = "broccoli",             Id = "broccoli",             RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/HotDog.png"),               Name = "HotDog",               Id = "HotDog",               RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/Underwear.png"),            Name = "Underwear",            Id = "Underwear",            RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/Burger.png"),               Name = "Burger",               Id = "Burger",               RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/Pizza.png"),                Name = "Pizza",                Id = "Pizza",                RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/Popcorn.png"),              Name = "Popcorn",              Id = "Popcorn",              RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/Watermelon.png"),           Name = "Watermelon",           Id = "Watermelon",           RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/fire_hydrant_normal.png"),  Name = "fire_hydrant_normal",  Id = "fire_hydrant_normal",  RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/Potted_Tree.png"),          Name = "Potted_Tree",          Id = "Potted_Tree",          RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/Picnick_Table_Empty.png"),  Name = "Picnick_Table_Empty",  Id = "Picnick_Table_Empty",  RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/Garbage_Bins_Unclean.png"), Name = "Garbage_Bins_Unclean", Id = "Garbage_Bins_Unclean", RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/Car.png"),                  Name = "Car",                  Id = "Car",                  RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/tesla.png"),                Name = "tesla",                Id = "tesla",                RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/monster truck clean.png"),  Name = "monster",              Id = "monster",              RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+        new FoodDefinition(){Sprite = Assets.GetAsset<Texture>("food_items/plane_clean.png"),          Name = "plane_clean",          Id = "plane_clean",          RequiredMouthSize = 0, ConsumptionTime = 1, NutritionValue = 5},
+    };
+
     public const string EatingFreezeReason = "EATING_FOOD";
 
     [Serialized] public int NutritionValue;
