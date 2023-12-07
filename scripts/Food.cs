@@ -11,13 +11,54 @@ public partial class Food : Component
     public FatPlayer CurrentEater;
     public float EatingTime;
 
-    public Interactable Interactable;
     public Action OnEat;
 
     public override void Start()
     {
-        Interactable = Entity.GetComponent<Interactable>();
-        Interactable.OnInteract += OnInteract;
+        var interactable = Entity.GetComponent<Interactable>();
+        interactable.OnInteract = (Player p) =>
+        {
+            var player = (FatPlayer) p;
+            if (player.MouthSize < Size)
+            {
+                if (Network.IsClient)
+                {
+                    Notifications.Show("Your mouth is too small to eat this food!");
+                }
+                return;
+            }
+
+            var stomachRoom = player.ModifiedMaxFood - player.Food;
+            if (stomachRoom <= 0)
+            {
+                if (Network.IsClient)
+                {
+                    Notifications.Show("You are too full to eat this food!");
+                }
+                return;
+            }
+
+            if (Network.IsServer)
+            {
+                CallClient_StartEating(p.Entity.NetworkId);
+            }
+        };
+
+        interactable.CanUseCallback = (Player p) =>
+        {
+            var player = (FatPlayer) p;
+            if (player.FoodBeingEaten != null)
+            {
+                Log.Info("player.FoodBeingEaten");
+                return false;
+            }
+            if (player.CurrentBoss != null)
+            {
+                Log.Info("player.CurrentBoss");
+                return false;
+            }
+            return true;
+        };
     }
 
     public override void Update()
@@ -28,35 +69,6 @@ public partial class Food : Component
         if (Network.IsClient) return;
         if (EatingTime >= ConsumptionTime) {
             CallClient_FinishEating(true);
-        }
-    }
-    
-
-    public void OnInteract(Player p)
-    {
-        var player = (FatPlayer) p;
-
-        if (player.MouthSize < Size)
-        {
-            if (Network.IsClient)
-            {
-                Notifications.Show("Your mouth is too small to eat this food!");
-            }
-            return;
-        }
-
-        var stomachRoom = player.ModifiedMaxFood - player.Food;
-        if (stomachRoom <= 0)
-        {
-            if (Network.IsClient)
-            {
-                Notifications.Show("You are too full to eat this food!");
-            }
-            return;
-        }
-
-        if (Network.IsServer) {
-            CallClient_StartEating(p.Entity.NetworkId);
         }
     }
 

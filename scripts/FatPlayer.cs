@@ -64,9 +64,9 @@ public partial class FatPlayer : Player
 
     public override void Update()
     {
-        Log.Info($"ModifiedChewSpeed: {ModifiedChewSpeed}");
-        Log.Info($"ModifiedMouthSize: {ModifiedMouthSize} {_mouthSize}");
-        Log.Info($"ModifiedMaxFood:   {ModifiedMaxFood}");
+        // Log.Info($"ModifiedChewSpeed: {ModifiedChewSpeed}");
+        // Log.Info($"ModifiedMouthSize: {ModifiedMouthSize} {_mouthSize}");
+        // Log.Info($"ModifiedMaxFood:   {ModifiedMaxFood}");
 
         foreach (var pet in Pet.AllPets)
         {
