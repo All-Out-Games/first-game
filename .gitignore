@@ -5,6 +5,8 @@ Assembly.csproj
 build
 .scene_backups
 .scene_temp
+scene_backups
+scene_temp
 .idea
 .vs
 *.ao

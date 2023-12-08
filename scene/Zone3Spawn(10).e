@@ -5,13 +5,13 @@
   "name": "Zone3Spawn",
   "local_enabled": true,
   "local_position": {
-    "X": -9.2637605667114258,
-    "Y": -7.7316765785217285
+    "X": -0.1433072090148926,
+    "Y": -31.4377651214599609
   },
   "local_rotation": 0,
   "local_scale": {
     "X": 1,
     "Y": 1
   },
-  "sibling_index": 8
+  "sibling_index": 10
 }

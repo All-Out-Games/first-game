@@ -1,6 +1,6 @@
 9
-4294967297
-42347968084698 1701806595502577600
+85899345921
+1260119471532642 1702012638537814900
 {
   "name": "Sell",
   "local_enabled": true,
@@ -14,12 +14,12 @@
     "Y": 1
   },
   "sibling_index": 0,
-  "parent": "42347968170958:1701806595502602200",
+  "parent": "1260119471149374:1702012638537715000",
   "spawn_as_networked_entity": true
 },
 {
   "cid": 1,
-  "aoid": "42347968294914:1701806595502637600",
+  "aoid": "1260119471773980:1702012638537878500",
   "component_type": "Mono_Component",
   "mono_component_type": "SellArea",
   "data": {
@@ -28,7 +28,7 @@
 },
 {
   "cid": 2,
-  "aoid": "42347968763896:1701806595502771600",
+  "aoid": "1260119471834970:1702012638537894500",
   "component_type": "Internal_Component",
   "internal_component_type": "Interactable",
   "data": {
@@ -37,7 +37,7 @@
 },
 {
   "cid": 3,
-  "aoid": "42347969089242:1701806595502864400",
+  "aoid": "1260119471923700:1702012638537917800",
   "component_type": "Internal_Component",
   "internal_component_type": "Sprite_Renderer",
   "data": {

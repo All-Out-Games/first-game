@@ -1,8 +1,8 @@
 9
-12884901889
-42347966503066 1701806595502127600
+51539607554
+1260105678446694 1702012634908053700
 {
-  "name": "Boss1",
+  "name": "Boss2",
   "local_enabled": true,
   "local_position": {
     "X": -7.3103742599487305,
@@ -14,12 +14,12 @@
     "Y": 1
   },
   "sibling_index": 2,
-  "parent": "42347968170958:1701806595502602200",
+  "parent": "1260105678283788:1702012634908012100",
   "spawn_as_networked_entity": true
 },
 {
   "cid": 1,
-  "aoid": "42347971596506:1701806595503580300",
+  "aoid": "1260105679163982:1702012634908242400",
   "component_type": "Mono_Component",
   "mono_component_type": "Boss",
   "data": {
@@ -32,7 +32,7 @@
 },
 {
   "cid": 2,
-  "aoid": "42347972054220:1701806595503710700",
+  "aoid": "1260105679219158:1702012634908257000",
   "component_type": "Internal_Component",
   "internal_component_type": "Interactable",
   "data": {
@@ -41,7 +41,7 @@
 },
 {
   "cid": 3,
-  "aoid": "42347972157684:1701806595503740000",
+  "aoid": "1260105679301618:1702012634908278700",
   "component_type": "Internal_Component",
   "internal_component_type": "Sprite_Renderer",
   "data": {

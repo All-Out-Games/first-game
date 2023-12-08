@@ -13,7 +13,7 @@
     "X": 1,
     "Y": 1
   },
-  "sibling_index": 3,
+  "sibling_index": 5,
   "spawn_as_networked_entity": true
 },
 {
