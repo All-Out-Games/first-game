@@ -5,8 +5,8 @@
   "name": "Boss1",
   "local_enabled": true,
   "local_position": {
-    "X": 3.6258981227874756,
-    "Y": 6.5131897926330566
+    "X": 2.7194244861602783,
+    "Y": 6.2949647903442383
   },
   "local_rotation": 0,
   "local_scale": {
@@ -26,7 +26,8 @@
     "Name": "Big Boss",
     "Increment": 1,
     "Tick": 0.5000000000000000,
-    "Reward": 1
+    "Reward": 25,
+    "AmountToWin": 100
   }
 },
 {

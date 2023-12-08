@@ -8,6 +8,7 @@ public class Boss : Component
     [Serialized] public int Increment;
     [Serialized] public float Tick;
     [Serialized] public int Reward;
+    [Serialized] public int AmountToWin;
 
     public override void Start()
     {

@@ -1,4 +1,5 @@
 using AO;
+using TinyJson;
 
 public partial class FatPlayer : Player 
 {
@@ -28,10 +29,11 @@ public partial class FatPlayer : Player
     }
 
     public Boss CurrentBoss;
-    public float BossTimer;
-    public float BossAccumulator;
     public int BossProgress;
     public int MyProgress;
+    public float BossAccumulator;
+
+    [AOIgnore] public List<string> UnlockedZones = new List<string>();
 
     public override void Start()
     {
@@ -64,10 +66,6 @@ public partial class FatPlayer : Player
 
     public override void Update()
     {
-        // Log.Info($"ModifiedChewSpeed: {ModifiedChewSpeed}");
-        // Log.Info($"ModifiedMouthSize: {ModifiedMouthSize} {_mouthSize}");
-        // Log.Info($"ModifiedMaxFood:   {ModifiedMaxFood}");
-
         foreach (var pet in Pet.AllPets)
         {
             if (pet.OwnerId != Entity.NetworkId)
@@ -81,7 +79,7 @@ public partial class FatPlayer : Player
         {
             if (this.IsMouseUpLeft()) 
             {
-                MyProgress += (int)(((float)MouthSize / 2) * ModifiedChewSpeed);
+                MyProgress += (MouthSize + ChewSpeed) / 2;
             }
 
             BossAccumulator += Time.DeltaTime;
@@ -91,10 +89,12 @@ public partial class FatPlayer : Player
                 BossAccumulator = 0;
             }
 
-            BossTimer -= Time.DeltaTime;
-            if (Network.IsServer && BossTimer <= 0) 
+            if (Network.IsServer)
             {
-                CallClient_BossFightOver(MyProgress > BossProgress);
+                if (MyProgress >= CurrentBoss.AmountToWin || BossProgress >= CurrentBoss.AmountToWin) 
+                {
+                    CallClient_BossFightOver(MyProgress > BossProgress);
+                }
             }
         }
 
@@ -139,6 +139,9 @@ public partial class FatPlayer : Player
             ChewSpeed = Math.Max(1, Save.GetInt(this, "ChewSpeed", 1));
             Rebirth = Save.GetInt(this, "Rebirth", 0);
 
+            var zones = Save.GetString(this, "UnlockedZones", "[]");
+            CallClient_LoadZoneData(zones);
+
             var pets = Save.GetString(this, "AllPets", "[]");
             CallClient_LoadPetData(pets);
         }
@@ -157,7 +160,6 @@ public partial class FatPlayer : Player
         
         MyProgress = 0;
         BossProgress = 0;
-        BossTimer = Boss.BOSS_TIMER;
         BossAccumulator = 0;
     }
 
@@ -309,6 +311,53 @@ public partial class FatPlayer : Player
             }
         }
         return modified;
+    }
+
+    [AOIgnore] public Dictionary<string, int> ZoneCosts = new Dictionary<string, int>() 
+    {
+        { "zone0", 0 },
+        { "zone1", 10 },
+        { "zone2", 20 },
+        { "zone3", 30 },
+        { "zone4", 40 },
+        { "zone5", 50 },
+        { "zone6", 60 },
+        { "zone7", 70 },
+        { "zone8", 80 },
+        { "zone9", 90 },
+    };
+
+    public void PurchaseZone(string id)
+    {
+        if (!Network.IsServer) return;
+
+        if (!ZoneCosts.TryGetValue(id, out var cost)) 
+        {
+            Log.Error($"Could not find cost for zone {id}");
+            return;
+        }
+
+        if (Trophies < cost) 
+        {
+            Log.Error($"Not enough trophies to purchase zone {id}");
+            return;
+        }
+
+        Trophies -= cost;
+        CallClient_NotifyZoneUnlocked(id);
+        Save.SetString(this, "UnlockedZones", JSONWriter.ToJson(UnlockedZones));
+    }
+
+    [ClientRpc]
+    public void LoadZoneData(string data)
+    {
+        UnlockedZones = JSONParser.FromJson<List<string>>(data);
+    }
+
+    [ClientRpc]
+    public void NotifyZoneUnlocked(string id)
+    {
+        UnlockedZones.Add(id);
     }
 
     [ClientRpc]

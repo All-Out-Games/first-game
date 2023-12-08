@@ -95,6 +95,8 @@ public class GameUI : System<GameUI>
             // dropShadow = false,
             // outline= false,
         };
+
+        UI.PushId("SIDEBAR");
     
         var upgradesButtonRect = sideBarRect.CutTop(100).Inset(10, 10, 10, 10);
         var upgradesButtonResult = UI.Button(upgradesButtonRect, "Upgrades", buttonSettings, buttonTextSettings);
@@ -123,6 +125,8 @@ public class GameUI : System<GameUI>
         {
             IsShowingRebirthWindow = !IsShowingRebirthWindow;
         }
+
+        UI.PopId();
 
         if (IsShowingUpgradesWindow) 
         {
@@ -311,9 +315,9 @@ public class GameUI : System<GameUI>
                 var has = localPlayer.Trophies;
                 var needs = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth + 1).TrophiesCost;
 
-                var rebirthProgress = has / needs;
-                var rebirthProgressRect = sliderRect.SubRect(0, 0, rebirthProgress, 1, 0, 0, 0, 0);
-                UI.Image(rebirthProgressRect, References.Instance.BlueFill, Vector4.Black, new UI.NineSlice());
+                var rebirthProgress = Math.Clamp(has / (float) needs, 0, 1);
+                var rebirthProgressRect = sliderRect.Inset(5,5,5,5).SubRect(0, 0, rebirthProgress, 1, 0, 0, 0, 0);
+                UI.Image(rebirthProgressRect, References.Instance.BlueFill, Vector4.White, new UI.NineSlice());
                 UI.Text(sliderRect, $"{Util.FormatDouble(localPlayer.Trophies)} / {Util.FormatDouble(rbd.TrophiesCost)}", upgradeItemTextSettings);
 
                 var confirmRebirthButtonRect = bottomRect.CutLeftUnscaled(bottomRect.Width * 0.6f).Inset(0, 25, 0, 15);
@@ -321,6 +325,8 @@ public class GameUI : System<GameUI>
                 {
                     localPlayer.CallServer_RequestRebirth();
                 }
+
+                Log.Info($"Rebirth progress: {rebirthProgress}");
 
                 buttonSettings.sprite = References.Instance.OrangeButton;
                 var skipRebirthButtonRect = bottomRect;
@@ -334,20 +340,28 @@ public class GameUI : System<GameUI>
         if (localPlayer.CurrentBoss != null)
         {
             var chewRect = UI.GetPlayerRect(localPlayer);
-            chewRect = chewRect.Grow(50, 100, 0, 100).Offset(0, 10);
-            UI.Image(chewRect, null, Vector4.White, new UI.NineSlice());
-            var t = localPlayer.BossTimer/Boss.BOSS_TIMER;
-            var chewProgressRect = chewRect.SubRect(0, 0, t, 1, 0, 0, 0, 0);
-            UI.Image(chewProgressRect, null, Vector4.HSVLerp(Vector4.Red, Vector4.Green, t), new UI.NineSlice());
+            chewRect = chewRect.Grow(100, 50, 0, 50).Offset(0, 10);
 
-            var ts = textSettings;
-            ts.horizontalAlignment = UI.TextSettings.HorizontalAlignment.Right;
-            var bossScoreRect = chewRect.LeftRect().GrowLeft(50);
-            UI.Text(bossScoreRect, $"{localPlayer.BossProgress}", ts);
+            var myRect = chewRect.CutLeftUnscaled(chewRect.Width * 0.5f).Inset(0, 10, 0, 0);
+            var bossRect = chewRect.Inset(0, 0, 0, 10);
 
-            ts.horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left;
-            var myScoreRect = chewRect.RightRect().GrowRight(50);
-            UI.Text(myScoreRect, $"{localPlayer.MyProgress}", ts);
+            var myProgress = localPlayer.MyProgress / (float) localPlayer.CurrentBoss.AmountToWin;
+            var bossProgress = localPlayer.BossProgress / (float) localPlayer.CurrentBoss.AmountToWin;
+
+            var myProgressRect = myRect.Inset(5,5,5,5).SubRect(0, 0, 1, myProgress, 0, 0, 0, 0);
+            var bossProgressRect = bossRect.Inset(5,5,5,5).SubRect(0, 0, 1, bossProgress, 0, 0, 0, 0);
+
+            UI.Image(myRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+            UI.Image(myProgressRect, References.Instance.GreenFill, Vector4.White, new UI.NineSlice());
+
+            UI.Image(bossRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+            UI.Image(bossProgressRect, References.Instance.RedFill, Vector4.White, new UI.NineSlice());
+
+            var myTextRect = myRect.SubRect(0, 0, 1, 0, 0, 0, 0, 0).GrowBottom(50);
+            var bossTextRect = bossRect.SubRect(0, 0, 1, 0, 0, 0, 0, 0).GrowBottom(50);
+
+            UI.Text(myTextRect, $"{localPlayer.MyProgress}", textSettings);
+            UI.Text(bossTextRect, $"{localPlayer.BossProgress}", textSettings);
         }
     }
 
