@@ -141,26 +141,38 @@ public class GameUI : System<GameUI>
             var windowRect = UI.SafeRect.CenterRect();
             windowRect = windowRect.Grow(200, 300, 200, 300);
             UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, new UI.NineSlice(){ slice = new Vector4(20, 20, 50, 50), sliceScale = 1f});
-            
-            var upgradeStomachRect = windowRect.CutTopUnscaled(100).Inset(10, 10, 10, 10);
-            var upgradeStomachResult = UI.Button(upgradeStomachRect, "Stomach", buttonSettings, buttonTextSettings);
-            if (upgradeStomachResult.clicked) 
+
+            if (localPlayer.MaxFoodLevel < FatPlayer.StomachSizeByLevel.Length)
             {
-                localPlayer.CallServer_RequestPurchaseStoachSize();
+                var upgradeStomachRect = windowRect.CutTopUnscaled(100).Inset(10, 10, 10, 10);
+                var nextStomachCost = FatPlayer.StomachSizeByLevel[localPlayer.MaxFoodLevel].Cost;
+                var upgradeStomachResult = UI.Button(upgradeStomachRect, $"Stomach Lv. {localPlayer.MaxFoodLevel+1} - Cost: {nextStomachCost}", buttonSettings, buttonTextSettings);
+                if (upgradeStomachResult.clicked)
+                {
+                    localPlayer.CallServer_RequestPurchaseStomachSize();
+                }
             }
 
-            var upgradeMouthSizeRect = windowRect.CutTopUnscaled(100).Inset(10, 10, 10, 10);
-            var upgradeMouthSizeResult = UI.Button(upgradeMouthSizeRect, "Mouth Size", buttonSettings, buttonTextSettings);
-            if (upgradeMouthSizeResult.clicked) 
+            if (localPlayer.MouthSizeLevel < FatPlayer.MouthSizeByLevel.Length)
             {
-                localPlayer.CallServer_RequestPurchaseMouthSize();
+                var upgradeMouthSizeRect = windowRect.CutTopUnscaled(100).Inset(10, 10, 10, 10);
+                var nextMouthSizeCost = FatPlayer.MouthSizeByLevel[localPlayer.MouthSizeLevel].Cost;
+                var upgradeMouthSizeResult = UI.Button(upgradeMouthSizeRect, $"Mouth Size Lv. {localPlayer.MouthSizeLevel+1} - Cost: {nextMouthSizeCost}", buttonSettings, buttonTextSettings);
+                if (upgradeMouthSizeResult.clicked)
+                {
+                    localPlayer.CallServer_RequestPurchaseMouthSize();
+                }
             }
 
-            var upgradeChewSpeedRect = windowRect.CutTopUnscaled(100).Inset(10, 10, 10, 10);
-            var upgradeChewSpeedResult = UI.Button(upgradeChewSpeedRect, "Chew Speed", buttonSettings, buttonTextSettings);
-            if (upgradeChewSpeedResult.clicked) 
+            if (localPlayer.ChewSpeedLevel < FatPlayer.ChewSpeedByLevel.Length)
             {
-                localPlayer.CallServer_RequestPurchaseChewSpeed();
+                var upgradeChewSpeedRect = windowRect.CutTopUnscaled(100).Inset(10, 10, 10, 10);
+                var nextChewSpeedCost = FatPlayer.ChewSpeedByLevel[localPlayer.ChewSpeedLevel].Cost;
+                var upgradeChewSpeedResult = UI.Button(upgradeChewSpeedRect, $"Chew Speed Lv. {localPlayer.ChewSpeedLevel+1} - Cost: {nextChewSpeedCost}", buttonSettings, buttonTextSettings);
+                if (upgradeChewSpeedResult.clicked)
+                {
+                    localPlayer.CallServer_RequestPurchaseChewSpeed();
+                }
             }
         }
 
@@ -312,11 +324,11 @@ public class GameUI : System<GameUI>
                 var sliderRect = bottomRect.CutLeftUnscaled((bottomRect.Width / 3) * 2);
                 UI.Image(sliderRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
 
-                var has = localPlayer.Trophies;
-                var needs = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth + 1).TrophiesCost;
+                double has   = localPlayer.Trophies;
+                double needs = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth + 1).TrophiesCost;
 
-                var rebirthProgress = Math.Clamp(has / (float) needs, 0, 1);
-                var rebirthProgressRect = sliderRect.Inset(5,5,5,5).SubRect(0, 0, rebirthProgress, 1, 0, 0, 0, 0);
+                var rebirthProgress = Math.Clamp(has / needs, 0, 1);
+                var rebirthProgressRect = sliderRect.Inset(5,5,5,5).SubRect(0, 0, (float)rebirthProgress, 1, 0, 0, 0, 0);
                 UI.Image(rebirthProgressRect, References.Instance.BlueFill, Vector4.White, new UI.NineSlice());
                 UI.Text(sliderRect, $"{Util.FormatDouble(localPlayer.Trophies)} / {Util.FormatDouble(rbd.TrophiesCost)}", upgradeItemTextSettings);
 
@@ -345,11 +357,11 @@ public class GameUI : System<GameUI>
             var myRect = chewRect.CutLeftUnscaled(chewRect.Width * 0.5f).Inset(0, 10, 0, 0);
             var bossRect = chewRect.Inset(0, 0, 0, 10);
 
-            var myProgress = localPlayer.MyProgress / (float) localPlayer.CurrentBoss.AmountToWin;
-            var bossProgress = localPlayer.BossProgress / (float) localPlayer.CurrentBoss.AmountToWin;
+            double myProgress   = Math.Min(1.0, (double)localPlayer.MyProgress   / (double)localPlayer.CurrentBoss.AmountToWin);
+            double bossProgress = Math.Min(1.0, (double)localPlayer.BossProgress / (double)localPlayer.CurrentBoss.AmountToWin);
 
-            var myProgressRect = myRect.Inset(5,5,5,5).SubRect(0, 0, 1, myProgress, 0, 0, 0, 0);
-            var bossProgressRect = bossRect.Inset(5,5,5,5).SubRect(0, 0, 1, bossProgress, 0, 0, 0, 0);
+            var myProgressRect   = myRect.Inset(5,5,5,5).SubRect(0, 0, 1, (float)myProgress, 0, 0, 0, 0);
+            var bossProgressRect = bossRect.Inset(5,5,5,5).SubRect(0, 0, 1, (float)bossProgress, 0, 0, 0, 0);
 
             UI.Image(myRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
             UI.Image(myProgressRect, References.Instance.GreenFill, Vector4.White, new UI.NineSlice());

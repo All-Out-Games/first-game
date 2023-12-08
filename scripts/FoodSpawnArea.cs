@@ -12,26 +12,37 @@ public class FoodSpawnArea : Component
     public static List<FoodAreaDefinition> AreaDefinitions = new()
     {
         new FoodAreaDefinition(){Id = "Zone1", Name = "Zone1", FoodsToSpawn = new string[]{
-            "Apple",
-            "broccoli",
-            "HotDog",
-            "Underwear",
-            "Burger",
+            "Apple1",
+            "broccoli1",
+            "HotDog1",
+            "Underwear1",
+            "Burger1",
+            "Pizza1",
+            "Popcorn1",
+            "Watermelon1",
+            "fire_hydrant_normal1",
         }},
         new FoodAreaDefinition(){Id = "Zone2", Name = "Zone2", FoodsToSpawn = new string[]{
-            "Pizza",
-            "Popcorn",
-            "Watermelon",
-            "fire_hydrant_normal",
-            "Potted_Tree",
+            "Underwear2",
+            "Burger2",
+            "Pizza2",
+            "Popcorn2",
+            "Watermelon2",
+            "fire_hydrant_normal2",
+            "Potted_Tree2",
+            "Picnick_Table_Empty2",
+            "Garbage_Bins_Unclean2",
         }},
         new FoodAreaDefinition(){Id = "Zone3", Name = "Zone3", FoodsToSpawn = new string[]{
-            "Picnick_Table_Empty",
-            "Garbage_Bins_Unclean",
-            "Car",
-            "tesla",
-            "monster",
-            "plane_clean",
+            "Watermelon3",
+            "fire_hydrant_normal3",
+            "Potted_Tree3",
+            "Picnick_Table_Empty3",
+            "Garbage_Bins_Unclean3",
+            "Car3",
+            "tesla3",
+            "monster3",
+            "plane_clean3",
         }},
     };
 
@@ -40,6 +51,8 @@ public class FoodSpawnArea : Component
     [Serialized] public float Density;
 
     public FoodAreaDefinition AreaDefinition;
+
+    public int[] FoodCounts;
 
     public float TotalArea;
     public int CurrentSpawned;
@@ -51,6 +64,8 @@ public class FoodSpawnArea : Component
         {
             Log.Error($"Failed to find area definition for zone ID '{ZoneId}'");
         }
+
+        FoodCounts = new int[AreaDefinition.FoodsToSpawn.Length];
 
         foreach (var child in Entity.Children)
         {
@@ -69,20 +84,32 @@ public class FoodSpawnArea : Component
         var currentDensity = CurrentSpawned / TotalArea;
         if (currentDensity < Density)
         {
+            // spawn the thing with the lowest current count
+            int lowestFoodValue = int.MaxValue;
+            int lowestFoodIndex = -1;
+            for (int i = 0; i < FoodCounts.Length; i++)
+            {
+                if (FoodCounts[i] < lowestFoodValue)
+                {
+                    lowestFoodValue = FoodCounts[i];
+                    lowestFoodIndex = i;
+                }
+            }
+
             var newFoodEntity = Entity.Instantiate(FoodPrefabs);
             var food = newFoodEntity.GetComponent<Food>();
-            var rng = new Random();
-            var foodIndex = rng.Next(AreaDefinition.FoodsToSpawn.Length);
-            food.FoodId = AreaDefinition.FoodsToSpawn[foodIndex];
-            Log.Info($"Zone {ZoneId} spawning {food.FoodId}");
+            food.FoodId = AreaDefinition.FoodsToSpawn[lowestFoodIndex];
+            food.FoodIndexInAreaDefinition = lowestFoodIndex;
             newFoodEntity.Position = Zone.GetRandomPointInZones(Entity.Name);
             Network.Spawn(newFoodEntity);
 
             CurrentSpawned++;
+            FoodCounts[lowestFoodIndex] += 1;
 
-            food.OnEat += () =>
+            food.OnEat += (Food food) =>
             {
                 CurrentSpawned--;
+                FoodCounts[food.FoodIndexInAreaDefinition] -= 1;
             };
         }
     }
