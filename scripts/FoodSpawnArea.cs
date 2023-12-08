@@ -12,10 +12,10 @@ public class FoodSpawnArea : Component
     {
         foreach (var child in Entity.Children)
         {
-            Zone z = child.GetComponent<Zone>();
-            if (z == null) continue;
-            z.ZoneId = Entity.Name;
-            TotalArea += z.Entity.Scale.X * z.Entity.Scale.Y;
+            Zone zone = child.GetComponent<Zone>();
+            if (zone == null) continue;
+            zone.ZoneId = Entity.Name;
+            TotalArea += zone.Entity.Scale.X * zone.Entity.Scale.Y;
         }
     }
 
@@ -26,13 +26,16 @@ public class FoodSpawnArea : Component
         var currentDensity = CurrentSpawned / TotalArea;
         if (currentDensity < Density)
         {
-            var newFood = Entity.Instantiate(FoodPrefabs);
-            newFood.Position = Zone.GetRandomPointInZones(Entity.Name);
-            Network.Spawn(newFood);
+            var newFoodEntity = Entity.Instantiate(FoodPrefabs);
+            var food = newFoodEntity.GetComponent<Food>();
+            var rng = new Random();
+            food.FoodDefinitionIndex = rng.Next(Food.FoodDefinitions.Count);
+            newFoodEntity.Position = Zone.GetRandomPointInZones(Entity.Name);
+            Network.Spawn(newFoodEntity);
 
             CurrentSpawned++;
 
-            newFood.GetComponent<Food>().OnEat += () =>
+            food.OnEat += () =>
             {
                 CurrentSpawned--;
             };

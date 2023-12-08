@@ -1,5 +1,6 @@
-7
+9
 21474836481
+382730589791648 1701991712987563300
 {
   "name": "Thing",
   "local_enabled": true,
@@ -13,10 +14,11 @@
     "Y": 0.3300000131130219
   },
   "sibling_index": 0,
-  "parent": 34359738369
+  "parent": "382730588808080:1701991712987299800"
 },
 {
   "cid": 1,
+  "aoid": "382730590657968:1701991712987797900",
   "component_type": "Internal_Component",
   "internal_component_type": "Sprite_Renderer",
   "data": {
