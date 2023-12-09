@@ -52,13 +52,17 @@ public partial class FatPlayer : Player
         if (won) 
         {
             Trophies += CurrentBoss.Reward;
-            if (Network.IsClient)
+            if (IsLocal)
+            {
                 Notifications.Show("You won the boss fight!");
+            }
         }
         else 
         {
-            if (Network.IsClient)
+            if (IsLocal)
+            {
                 Notifications.Show("You lost the boss fight!");
+            }
         }
 
 
@@ -114,8 +118,14 @@ public partial class FatPlayer : Player
 
         if (this.IsLocal) 
         {
-            if (FoodBeingEaten != null && Input.GetKeyDown(Input.Keycode.KEYCODE_ESCAPE, true)) {
-                FoodBeingEaten.CallClient_FinishEating(false);
+            if (FoodBeingEaten != null && Input.GetKeyDown(Input.Keycode.KEYCODE_ESCAPE, true))
+            {
+                CallServer_GiveUpEating();
+            }
+
+            if (CurrentBoss != null && Input.GetKeyDown(Input.Keycode.KEYCODE_ESCAPE, true))
+            {
+                CallServer_GiveUpBossFight();
             }
         }
     }
@@ -146,6 +156,24 @@ public partial class FatPlayer : Player
 
             var pets = Save.GetString(this, "AllPets", "[]");
             CallClient_LoadPetData(pets);
+        }
+    }
+
+    [ServerRpc]
+    public void GiveUpEating()
+    {
+        if (FoodBeingEaten != null)
+        {
+            FoodBeingEaten.CallClient_FinishEating(false);
+        }
+    }
+
+    [ServerRpc]
+    public void GiveUpBossFight()
+    {
+        if (CurrentBoss != null)
+        {
+            CallClient_BossFightOver(false);
         }
     }
 

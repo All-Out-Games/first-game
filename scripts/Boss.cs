@@ -27,12 +27,10 @@ public class Boss : Component
             var player = (FatPlayer) p;
             if (player.FoodBeingEaten != null)
             {
-                Log.Info("player.FoodBeingEaten");
                 return false;
             }
             if (player.CurrentBoss != null)
             {
-                Log.Info("player.CurrentBoss");
                 return false;
             }
             return true;

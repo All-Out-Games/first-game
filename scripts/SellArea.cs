@@ -17,7 +17,7 @@ public class SellArea : Component
         }
 
         var fatPlayer = (FatPlayer) player;
-        fatPlayer.Coins += fatPlayer.Food;
+        fatPlayer.Coins += fatPlayer.Food * Rebirth.Instance.GetRebirthData(fatPlayer.Rebirth).CashMultiplier;
         fatPlayer.Food = 0;
     }
 }

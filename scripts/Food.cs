@@ -79,7 +79,7 @@ public partial class Food : Component
             var player = (FatPlayer) p;
             if (player.ModifiedMouthSize < Size)
             {
-                if (Network.IsClient)
+                if (player.IsLocal)
                 {
                     Notifications.Show($"Your mouth is too small to eat {Definition.Name}! {player.ModifiedMouthSize}/{Size}");
                 }
@@ -89,9 +89,18 @@ public partial class Food : Component
             var stomachRoom = player.ModifiedMaxFood - player.Food;
             if (stomachRoom <= 0)
             {
-                if (Network.IsClient)
+                if (player.IsLocal)
                 {
                     Notifications.Show("You are too full to eat this food!");
+                }
+                return;
+            }
+
+            if (CurrentEater != null)
+            {
+                if (player.IsLocal)
+                {
+                    Notifications.Show("Somebody else is eating that!");
                 }
                 return;
             }
@@ -107,12 +116,14 @@ public partial class Food : Component
             var player = (FatPlayer) p;
             if (player.FoodBeingEaten != null)
             {
-                Log.Info("player.FoodBeingEaten");
                 return false;
             }
             if (player.CurrentBoss != null)
             {
-                Log.Info("player.CurrentBoss");
+                return false;
+            }
+            if (CurrentEater != null)
+            {
                 return false;
             }
             return true;

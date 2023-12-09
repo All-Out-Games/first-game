@@ -242,10 +242,11 @@ public class GameUI : System<GameUI>
 
             var halfWidth = windowRect.Width / 2;
 
-            // Before
-            {
-                var rbd = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth);
+            var currentRebirthData = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth);
+            var nextRebirthData    = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth);
 
+            // Current
+            {
                 var beforeRect = windowRect.LeftRect().GrowRightUnscaled(halfWidth).Inset(50, 200, 225, 50);
                 UI.Image(beforeRect, References.Instance.FrameDark, Vector4.White, References.Instance.FrameSlice);
                 
@@ -269,19 +270,16 @@ public class GameUI : System<GameUI>
                 var cashMultiplierRect = beforeRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
                 UI.Image(cashMultiplierRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
                 upgradeItemTextSettings.color = References.Instance.BlueText;
-                UI.Text(cashMultiplierRect, $"{rbd.CashMultiplier:0.##}", upgradeItemTextSettings);
+                UI.Text(cashMultiplierRect, $"{currentRebirthData.CashMultiplier:0.##}", upgradeItemTextSettings);
 
                 var rankRect = beforeRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
                 UI.Image(rankRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
                 upgradeItemTextSettings.color = References.Instance.YellowText;
-                UI.Text(rankRect, $"{rbd.RankName}", upgradeItemTextSettings);
+                UI.Text(rankRect, $"{currentRebirthData.RankName}", upgradeItemTextSettings);
             }
             
-
-            // After
+            // Next
             {
-                var rbd = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth + 1);
-
                 var afterRect = windowRect.RightRect().GrowLeftUnscaled(halfWidth).Inset(50, 50, 225, 200);
                 UI.Image(afterRect, References.Instance.FrameWhite, References.Instance.BlueBg, References.Instance.FrameSlice);
 
@@ -295,7 +293,7 @@ public class GameUI : System<GameUI>
                 var trophiesRect = afterRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
                 UI.Image(trophiesRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
                 upgradeItemTextSettings.color = References.Instance.YellowText;
-                UI.Text(trophiesRect, $"{Util.FormatDouble(localPlayer.Trophies - rbd.TrophiesCost)}", upgradeItemTextSettings);
+                UI.Text(trophiesRect, $"{Util.FormatDouble(localPlayer.Trophies - nextRebirthData.TrophiesCost)}", upgradeItemTextSettings);
 
                 var cashRect = afterRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
                 UI.Image(cashRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
@@ -305,17 +303,15 @@ public class GameUI : System<GameUI>
                 var cashMultiplierRect = afterRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
                 UI.Image(cashMultiplierRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
                 upgradeItemTextSettings.color = References.Instance.BlueText;
-                UI.Text(cashMultiplierRect, $"{rbd.CashMultiplier:0.##}", upgradeItemTextSettings);
+                UI.Text(cashMultiplierRect, $"{nextRebirthData.CashMultiplier:0.##}", upgradeItemTextSettings);
 
                 var rankRect = afterRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
                 UI.Image(rankRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
                 upgradeItemTextSettings.color = References.Instance.YellowText;
-                UI.Text(rankRect, $"{rbd.RankName}", upgradeItemTextSettings);
+                UI.Text(rankRect, $"{nextRebirthData.RankName}", upgradeItemTextSettings);
             }
 
             {
-                var rbd = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth + 1);
-
                 var bottomRect = windowRect.BottomRect()
                                            .GrowTopUnscaled(75)
                                            .Offset(0, 50)
@@ -325,12 +321,12 @@ public class GameUI : System<GameUI>
                 UI.Image(sliderRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
 
                 double has   = localPlayer.Trophies;
-                double needs = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth + 1).TrophiesCost;
+                double needs = currentRebirthData.TrophiesCost;
 
                 var rebirthProgress = Math.Clamp(has / needs, 0, 1);
                 var rebirthProgressRect = sliderRect.Inset(5,5,5,5).SubRect(0, 0, (float)rebirthProgress, 1, 0, 0, 0, 0);
                 UI.Image(rebirthProgressRect, References.Instance.BlueFill, Vector4.White, new UI.NineSlice());
-                UI.Text(sliderRect, $"{Util.FormatDouble(localPlayer.Trophies)} / {Util.FormatDouble(rbd.TrophiesCost)}", upgradeItemTextSettings);
+                UI.Text(sliderRect, $"{Util.FormatDouble(localPlayer.Trophies)} / {Util.FormatDouble(nextRebirthData.TrophiesCost)}", upgradeItemTextSettings);
 
                 var confirmRebirthButtonRect = bottomRect.CutLeftUnscaled(bottomRect.Width * 0.6f).Inset(0, 25, 0, 15);
                 if (UI.Button(confirmRebirthButtonRect, "Rebirth", buttonSettings, buttonTextSettings).clicked)

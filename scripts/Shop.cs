@@ -104,7 +104,10 @@ public class Shop : System<Shop>
         {
             if (player.Coins < item.Cost)
             {
-                Notifications.Show("You don't have enough coins!");
+                if (player.IsLocal)
+                {
+                    Notifications.Show("You don't have enough coins!");
+                }
                 return;
             }
         }
@@ -113,12 +116,15 @@ public class Shop : System<Shop>
         {
             if (player.Trophies < item.Cost)
             {
-                Notifications.Show("You don't have enough trophies!");
+                if (player.IsLocal)
+                {
+                    Notifications.Show("You don't have enough trophies!");
+                }
                 return;
             }
         }
 
-        if (item.Currency == ShopData.Currency.Sparks) 
+        if (item.Currency == ShopData.Currency.Sparks)
         {
             Log.Error("Tried to purchase sparks item. This must be done through Purchasing.PromptPurchase");
             return;
