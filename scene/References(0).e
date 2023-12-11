@@ -35,6 +35,18 @@
     "OrangeFill": "ui/UI_Fill_Orange.png",
     "FrameDark": "ui/UI_Frame_Dark_Transparent.png",
     "FrameWhite": "ui/UI_Frame_Dark_White.png",
+    "Backpack": "ui/icons/Backpack Blue Outline 64.png",
+    "X": "ui/icons/X Outline 64.png",
+    "CheckMark": "ui/icons/Check Mark Outline 64.png",
+    "Plus": "ui/icons/Plus Outline 64.png",
+    "Trophy": "ui/icons/Trophy Outline 64.png",
+    "Upgrade": "ui/icons/Upgrade Outline 64.png",
+    "Shop": "ui/icons/Shop Outline 64.png",
+    "Stats": "ui/icons/Stats Outline 64.png",
+    "Rebirth": "ui/icons/Rebirth Outline 64.png",
+    "PetBrown": "ui/icons/Pet Brown Outline 64.png",
+    "Cash": "ui/icons/Cash Outline 64.png",
+    "Burger": "ui/icons/Burger Outline 64.png",
     "PetPrefab": "Pet.prefab"
   }
 }

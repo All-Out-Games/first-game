@@ -18,6 +18,19 @@ public class References : Component
     [Serialized] public Texture FrameDark;
     [Serialized] public Texture FrameWhite;
 
+    [Serialized] public Texture Backpack;
+    [Serialized] public Texture X;
+    [Serialized] public Texture CheckMark;
+    [Serialized] public Texture Plus;
+    [Serialized] public Texture Trophy;
+    [Serialized] public Texture Upgrade;
+    [Serialized] public Texture Shop;
+    [Serialized] public Texture Stats;
+    [Serialized] public Texture Rebirth;
+    [Serialized] public Texture PetBrown;
+    [Serialized] public Texture Cash;
+    [Serialized] public Texture Burger;
+    
     public UI.NineSlice FrameSlice = new UI.NineSlice() { slice = new Vector4(12, 12, 48, 48), sliceScale = 1f };
 
     public Vector4 RedText    = new Vector4(255.0f/255.0f, 109.0f/255.0f, 119.0f/255.0f, 1.0f);

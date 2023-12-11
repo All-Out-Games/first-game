@@ -14,8 +14,10 @@ public class ZoneTeleporter : Component
     public override void Update()
     {
         if (Network.IsServer) return;
+        if (Network.LocalPlayer == null) return;
+        
         var interactable = Entity.GetComponent<Interactable>();
-        if (interactable == null) return;
+        if (interactable == null) { Log.Error($"No Interactable component on {Entity.Name}"); return; } 
 
         var localPlayer = (FatPlayer) Network.LocalPlayer;
         var owned = localPlayer.UnlockedZones.Contains(ZoneName);

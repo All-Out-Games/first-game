@@ -17,6 +17,9 @@ public class GameUI : System<GameUI>
         IsShowingRebirthWindow = false;
     }
 
+    public int SelectedPet = -1;
+    public float SelectedPetDisplayT;
+
     public override void Update()
     {
         if (Network.IsServer) return;
@@ -195,28 +198,117 @@ public class GameUI : System<GameUI>
             }
 
             var windowRect = UI.SafeRect.CenterRect();
-            windowRect = windowRect.Grow(200, 300, 200, 300);
+            windowRect = windowRect.Grow(300, 650, 300, 650);
             UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, new UI.NineSlice(){ slice = new Vector4(20, 20, 50, 50), sliceScale = 1f});
 
-            foreach (var pet in localPlayer.PetManager.OwnedPets) 
+            var iconRect = windowRect.TopLeftRect().Grow(40, 40, 40, 40).Offset(0, -5);
+            UI.Image(iconRect, References.Instance.PetBrown, Vector4.White, new UI.NineSlice());
+            var textRect = iconRect.CenterRect().Grow(25, 0, 25, 0).Offset(25, 0);
+            UI.Text(textRect, "Pets", new UI.TextSettings(){
+                color = References.Instance.BlueText,
+                outline = true,
+                outlineThickenss = 2,
+                horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
+                verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                size = 60,
+            });
+
+            var exitRect = windowRect.TopRightRect().Grow(20, 20, 20, 20).Offset(-35, -35);
+            var exitResult = UI.Button(exitRect, "EXIT_BUTTON", new UI.ButtonSettings(){ sprite = References.Instance.X }, new UI.TextSettings(){size = 0, color = Vector4.Zero});
+            if (exitResult.clicked) 
             {
-                UI.PushId(pet.Id);
+                IsShowingPetsWindow = false;
+            }
+
+            var equippedCapacityRect = windowRect.TopRightRect().Offset(-250, 0).Grow(20, 115, 20, 115);
+            var equippedCapacityRectHeight = equippedCapacityRect.Height;
+            UI.Image(equippedCapacityRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+            var equippedCapacityIconRect = equippedCapacityRect.LeftRect().Grow(0, equippedCapacityRectHeight/2, 0, equippedCapacityRectHeight/2).Grow(10, 10, 10, 10);
+            UI.Image(equippedCapacityIconRect, References.Instance.Backpack, Vector4.White, new UI.NineSlice());
+            var equippedCapacityTextRect = equippedCapacityRect.LeftRect().Offset(85, 0);
+            UI.Text(equippedCapacityTextRect, $"1/3", new UI.TextSettings(){
+                color = References.Instance.YellowText,
+                outline = true,
+                outlineThickenss = 2,
+                horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
+                verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                size = 36,
+            });
+            var increaseEquippedCapacityRect = equippedCapacityRect.RightRect().Grow(0, equippedCapacityRectHeight/2, 0, equippedCapacityRectHeight/2);
+            increaseEquippedCapacityRect = increaseEquippedCapacityRect.Offset(-equippedCapacityRectHeight/2, 0).Inset(5, 10, 5, 0);
+            UI.Button(increaseEquippedCapacityRect, "increase_equipped_capacity", new UI.ButtonSettings(){ sprite = References.Instance.Plus }, new UI.TextSettings(){size = 0, color = Vector4.Zero});
+
+            if (SelectedPet != -1)
+            {
+                var selectedPetRect = windowRect.CutRight(500).Inset(75, 0, 75, 0);
+                var dividerRect = selectedPetRect.LeftRect().GrowRight(2);
+                UI.Image(dividerRect, null, Vector4.Black * 0.25f, new UI.NineSlice());
+
+                var nameRect = selectedPetRect.CutTop(75);
+                UI.Text(nameRect, "Pet Name", new UI.TextSettings(){
+                    color = Vector4.White,
+                    outline = true,
+                    outlineThickenss = 2,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                    size = 48,
+                });
+
+                var infoRect = selectedPetRect.CutTop(250);
+                UI.Image(infoRect, null, Vector4.Black * 0.2f, new UI.NineSlice());
+
+                var equipButtonRect = selectedPetRect.CutTop(100);
+                UI.Image(equipButtonRect, null, Vector4.Green * 0.2f, new UI.NineSlice());
+
+                var deleteButtonRect = selectedPetRect.CutTop(100);
+                UI.Image(deleteButtonRect, null, Vector4.Red * 0.2f, new UI.NineSlice());
+            }
+
+            Rect contentRect = windowRect.Inset(75, 50, 5, 50);
+
+            UI.ScrollView scrollView = UI.PushScrollView("pets_scroll_view", contentRect, UI.ScrollViewFlags.Vertical);
+            using var _3 = AllOut.Defer(() => UI.PopScrollView());
+
+            var petsRect = scrollView.contentRect.TopRect();
+            var grid = UI.GridLayout.Make(petsRect, 165, 165, UI.GridLayout.SizeSource.ELEMENT_SIZE);
+
+            // foreach (var pet in localPlayer.PetManager.OwnedPets) 
+            for (var i = 0; i < 100; i++)
+            {
+                // UI.PushId(pet.Id);
+                UI.PushId($"pet:{i}");
                 using var _2 = AllOut.Defer(UI.PopId);
 
-                var petRect = windowRect.CutTopUnscaled(100).Inset(10, 10, 10, 10);
-                buttonSettings.sprite = pet.Equipped ? References.Instance.GreenButton : References.Instance.RedButton;
-                var petButtonResult = UI.Button(petRect, pet.Name, buttonSettings, buttonTextSettings);
+                var petRect = grid.Next();
+                petRect = petRect.Inset(5,5,5,5);
+                // buttonSettings.sprite = pet.Equipped ? References.Instance.GreenButton : References.Instance.RedButton;
+                buttonSettings.sprite = References.Instance.FrameWhite;
+                
+                var petButtonResult = UI.Button(petRect, "Pet", buttonSettings, buttonTextSettings);
                 if (petButtonResult.clicked) {
-                    if (pet.Equipped)
-                    {
-                        localPlayer.CallServer_RequestUnequipPet(pet.Id);
-                    }
-                    else 
-                    {
-                        localPlayer.CallServer_RequestEquipPet(pet.Id);
-                    }
+                    SelectedPet = SelectedPet == i ? -1 : i;
+                    SelectedPetDisplayT = 0;
+
+                    // if (pet.Equipped)
+                    // {
+                    //     localPlayer.CallServer_RequestUnequipPet(pet.Id);
+                    // }
+                    // else 
+                    // {
+                    //     localPlayer.CallServer_RequestEquipPet(pet.Id);
+                    // }
                 }
+
+                UI.ExpandCurrentScrollView(petRect);
             }
+
+            // Make an extra row for buffer at then end of the grid
+            for (var j = 0; j < 6; j++) 
+            {
+                var petRect = grid.Next();
+                UI.ExpandCurrentScrollView(petRect);
+            }
+
         }
 
         if (IsShowingRebirthWindow)
