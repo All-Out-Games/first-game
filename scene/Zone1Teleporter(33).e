@@ -1,24 +1,24 @@
 9
-21474836481
-459644309135309 1701992864383060900
+141733920769
+2032341919152085 1702332342131825200
 {
   "name": "Zone1Teleporter",
   "local_enabled": true,
   "local_position": {
-    "X": -2.9436545372009277,
-    "Y": 6.5204634666442871
+    "X": 7.2726984024047852,
+    "Y": -12.2574796676635742
   },
   "local_rotation": 0,
   "local_scale": {
     "X": 1,
     "Y": 1
   },
-  "sibling_index": 5,
+  "sibling_index": 11,
   "spawn_as_networked_entity": true
 },
 {
   "cid": 1,
-  "aoid": "459689313128973:1701992877226681300",
+  "aoid": "2032341919326543:1702332342131870200",
   "component_type": "Mono_Component",
   "mono_component_type": "ZoneTeleporter",
   "data": {
@@ -28,7 +28,7 @@
 },
 {
   "cid": 2,
-  "aoid": "459788157200917:1701992905435641500",
+  "aoid": "2032341919454755:1702332342131904000",
   "component_type": "Internal_Component",
   "internal_component_type": "Sprite_Renderer",
   "data": {
@@ -45,7 +45,7 @@
 },
 {
   "cid": 3,
-  "aoid": "459830175523328:1701992917427187400",
+  "aoid": "2032341919557241:1702332342131930900",
   "component_type": "Internal_Component",
   "internal_component_type": "Interactable",
   "data": {

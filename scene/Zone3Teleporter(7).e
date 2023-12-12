@@ -5,8 +5,8 @@
   "name": "Zone3Teleporter",
   "local_enabled": true,
   "local_position": {
-    "X": 7.7663307189941406,
-    "Y": -1.1549065113067627
+    "X": 2.1785151958465576,
+    "Y": 6.4713830947875977
   },
   "local_rotation": 0,
   "local_scale": {

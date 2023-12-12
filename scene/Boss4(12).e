@@ -1,36 +1,36 @@
 9
-12884901889
-42347966503066 1701806595502127600
+51539607554
+2031966393526343 1702332243309463800
 {
-  "name": "Boss1",
+  "name": "Boss4",
   "local_enabled": true,
   "local_position": {
-    "X": -6.9144096374511719,
-    "Y": 4.6976389884948730
+    "X": -7.1081576347351074,
+    "Y": -1.7505245208740234
   },
   "local_rotation": 0,
   "local_scale": {
     "X": 1,
     "Y": 1
   },
-  "sibling_index": 2,
-  "parent": "42347968170958:1701806595502602200",
+  "sibling_index": 5,
+  "parent": "1260105678283788:1702012634908012100",
   "spawn_as_networked_entity": true
 },
 {
   "cid": 1,
-  "aoid": "42347971596506:1701806595503580300",
+  "aoid": "2031966394779773:1702332243309792500",
   "component_type": "Mono_Component",
   "mono_component_type": "Boss",
   "data": {
-    "WorldIndex": 0,
-    "BossIndex": 0,
+    "WorldIndex": 1,
+    "BossIndex": 3,
     "Name": "Big Boss"
   }
 },
 {
   "cid": 2,
-  "aoid": "42347972054220:1701806595503710700",
+  "aoid": "2031966394828983:1702332243309805400",
   "component_type": "Internal_Component",
   "internal_component_type": "Interactable",
   "data": {
@@ -39,7 +39,7 @@
 },
 {
   "cid": 3,
-  "aoid": "42347972157684:1701806595503740000",
+  "aoid": "2031966394905971:1702332243309825700",
   "component_type": "Internal_Component",
   "internal_component_type": "Sprite_Renderer",
   "data": {

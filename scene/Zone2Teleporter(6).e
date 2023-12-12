@@ -5,8 +5,8 @@
   "name": "Zone2Teleporter",
   "local_enabled": true,
   "local_position": {
-    "X": 7.6993799209594727,
-    "Y": 2.1591744422912598
+    "X": -0.1907151937484741,
+    "Y": 6.7397451400756836
   },
   "local_rotation": 0,
   "local_scale": {

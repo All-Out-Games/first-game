@@ -10,10 +10,10 @@ public partial class FatPlayer : Player
     private double _food;
 
     // these are levels, not the modified values, so we just use an int
-    private int    _maxFoodLevel;
-    private int    _mouthSizeLevel;
-    private int    _chewSpeedLevel;
-    private int    _rebirth;
+    public int _maxFoodLevel;
+    public int _mouthSizeLevel;
+    public int _chewSpeedLevel;
+    public int _rebirth;
 
     public Food FoodBeingEaten;
     
@@ -34,6 +34,8 @@ public partial class FatPlayer : Player
     public double BossProgress;
     public double MyProgress;
     public double BossAccumulator;
+
+    public int PlayerLevel => 1 + _maxFoodLevel + _mouthSizeLevel + _chewSpeedLevel;
 
     [AOIgnore] public List<string> UnlockedZones = new List<string>();
 
@@ -89,9 +91,9 @@ public partial class FatPlayer : Player
             }
 
             BossAccumulator += Time.DeltaTime;
-            if (BossAccumulator >= CurrentBoss.Tick) 
+            if (BossAccumulator >= Boss.TICK)
             {
-                BossProgress += CurrentBoss.Increment;
+                BossProgress += CurrentBoss.Definition.Difficulty;
                 BossAccumulator = 0;
             }
 
@@ -143,9 +145,9 @@ public partial class FatPlayer : Player
     {
         if (Network.IsServer)
         {
-            Trophies = Save.GetInt(this, "Trophies", 0);
-            Coins = Save.GetInt(this, "Coins", 0);
-            Food = Save.GetInt(this, "Food", 0);
+            Trophies = Save.GetDouble(this, "Trophies", 0);
+            Coins = Save.GetDouble(this, "Coins", 0);
+            Food = Save.GetDouble(this, "Food", 0);
             MaxFoodLevel = Save.GetInt(this, "MaxFood", 0);
             MouthSizeLevel = Save.GetInt(this, "MouthSize", 0);
             ChewSpeedLevel = Save.GetInt(this, "ChewSpeed", 0);
@@ -289,6 +291,8 @@ public partial class FatPlayer : Player
             }
         }
     }
+
+    public double RebirthCashMultiplier => global::Rebirth.Instance.GetRebirthData(Rebirth).CashMultiplier;
 
     public double ModifiedChewSpeed => CalculateModifiedStat(PetData.StatModifierKind.ChewSpeedMultiply, PetData.StatModifierKind.ChewSpeedAdd, ChewSpeedByLevel  [Math.Clamp(_chewSpeedLevel, 0, ChewSpeedByLevel.Length-1)].Value);
     public double ModifiedMouthSize => CalculateModifiedStat(PetData.StatModifierKind.MouthSizeMultiply, PetData.StatModifierKind.MouthSizeAdd, MouthSizeByLevel  [Math.Clamp(_mouthSizeLevel, 0, MouthSizeByLevel.Length-1)].Value);
@@ -508,166 +512,166 @@ public partial class FatPlayer : Player
 
     public static UpgradeStatAndCost[] MouthSizeByLevel = new UpgradeStatAndCost[]
     {
-        new UpgradeStatAndCost(){ Value = 1,  Cost = 125 },
-        new UpgradeStatAndCost(){ Value = 6,  Cost = 169 },
-        new UpgradeStatAndCost(){ Value = 11, Cost = 228 },
-        new UpgradeStatAndCost(){ Value = 16, Cost = 308 },
-        new UpgradeStatAndCost(){ Value = 21, Cost = 415 },
-        new UpgradeStatAndCost(){ Value = 26, Cost = 561 },
-        new UpgradeStatAndCost(){ Value = 31, Cost = 757 },
-        new UpgradeStatAndCost(){ Value = 36, Cost = 1022 },
-        new UpgradeStatAndCost(){ Value = 41, Cost = 1379 },
-        new UpgradeStatAndCost(){ Value = 46, Cost = 1862 },
-        new UpgradeStatAndCost(){ Value = 51, Cost = 2513 },
-        new UpgradeStatAndCost(){ Value = 56, Cost = 3393 },
-        new UpgradeStatAndCost(){ Value = 61, Cost = 4581 },
-        new UpgradeStatAndCost(){ Value = 66, Cost = 6184 },
-        new UpgradeStatAndCost(){ Value = 71, Cost = 8348 },
-        new UpgradeStatAndCost(){ Value = 76, Cost = 11270 },
-        new UpgradeStatAndCost(){ Value = 81, Cost = 15214 },
-        new UpgradeStatAndCost(){ Value = 86, Cost = 20539 },
-        new UpgradeStatAndCost(){ Value = 91, Cost = 27728 },
-        new UpgradeStatAndCost(){ Value = 96, Cost = 37433 },
+        new UpgradeStatAndCost(){ Value = 1,  Cost = 5 },
+        new UpgradeStatAndCost(){ Value = 6,  Cost = 58 },
+        new UpgradeStatAndCost(){ Value = 11, Cost = 66 },
+        new UpgradeStatAndCost(){ Value = 16, Cost = 76 },
+        new UpgradeStatAndCost(){ Value = 21, Cost = 87 },
+        new UpgradeStatAndCost(){ Value = 26, Cost = 101 },
+        new UpgradeStatAndCost(){ Value = 31, Cost = 116 },
+        new UpgradeStatAndCost(){ Value = 36, Cost = 133 },
+        new UpgradeStatAndCost(){ Value = 41, Cost = 153 },
+        new UpgradeStatAndCost(){ Value = 46, Cost = 176 },
+        new UpgradeStatAndCost(){ Value = 51, Cost = 202 },
+        new UpgradeStatAndCost(){ Value = 56, Cost = 233 },
+        new UpgradeStatAndCost(){ Value = 61, Cost = 268 },
+        new UpgradeStatAndCost(){ Value = 66, Cost = 308 },
+        new UpgradeStatAndCost(){ Value = 71, Cost = 354 },
+        new UpgradeStatAndCost(){ Value = 76, Cost = 407 },
+        new UpgradeStatAndCost(){ Value = 81, Cost = 468 },
+        new UpgradeStatAndCost(){ Value = 86, Cost = 538 },
+        new UpgradeStatAndCost(){ Value = 91, Cost = 619 },
+        new UpgradeStatAndCost(){ Value = 96, Cost = 712 },
 
-        new UpgradeStatAndCost(){ Value = 101, Cost = 50534 },
-        new UpgradeStatAndCost(){ Value = 106, Cost = 68221 },
-        new UpgradeStatAndCost(){ Value = 111, Cost = 92099 },
-        new UpgradeStatAndCost(){ Value = 116, Cost = 124333 },
-        new UpgradeStatAndCost(){ Value = 121, Cost = 167850 },
-        new UpgradeStatAndCost(){ Value = 126, Cost = 226597 },
-        new UpgradeStatAndCost(){ Value = 131, Cost = 305906 },
-        new UpgradeStatAndCost(){ Value = 136, Cost = 412973 },
-        new UpgradeStatAndCost(){ Value = 141, Cost = 557514 },
-        new UpgradeStatAndCost(){ Value = 146, Cost = 752643 },
-        new UpgradeStatAndCost(){ Value = 151, Cost = 1016069 },
-        new UpgradeStatAndCost(){ Value = 156, Cost = 1371693 },
-        new UpgradeStatAndCost(){ Value = 161, Cost = 1851785 },
-        new UpgradeStatAndCost(){ Value = 166, Cost = 2499910 },
-        new UpgradeStatAndCost(){ Value = 171, Cost = 3374878 },
-        new UpgradeStatAndCost(){ Value = 176, Cost = 4556086 },
-        new UpgradeStatAndCost(){ Value = 181, Cost = 6150716 },
-        new UpgradeStatAndCost(){ Value = 186, Cost = 8303467 },
-        new UpgradeStatAndCost(){ Value = 191, Cost = 11209680 },
-        new UpgradeStatAndCost(){ Value = 196, Cost = 15133068 },
-        new UpgradeStatAndCost(){ Value = 201, Cost = 20429642 },
-        new UpgradeStatAndCost(){ Value = 206, Cost = 27580016 },
-        new UpgradeStatAndCost(){ Value = 211, Cost = 37233022 },
-        new UpgradeStatAndCost(){ Value = 216, Cost = 50264580 },
-        new UpgradeStatAndCost(){ Value = 221, Cost = 67857183 },
-        new UpgradeStatAndCost(){ Value = 226, Cost = 91607197 },
-        new UpgradeStatAndCost(){ Value = 231, Cost = 123669716 },
-        new UpgradeStatAndCost(){ Value = 236, Cost = 166954117 },
-        new UpgradeStatAndCost(){ Value = 241, Cost = 225388058 },
-        new UpgradeStatAndCost(){ Value = 246, Cost = 304273878 },
+        new UpgradeStatAndCost(){ Value = 101, Cost = 2300 },
+        new UpgradeStatAndCost(){ Value = 106, Cost = 2760 },
+        new UpgradeStatAndCost(){ Value = 111, Cost = 3312 },
+        new UpgradeStatAndCost(){ Value = 116, Cost = 3975 },
+        new UpgradeStatAndCost(){ Value = 121, Cost = 4770 },
+        new UpgradeStatAndCost(){ Value = 126, Cost = 5724 },
+        new UpgradeStatAndCost(){ Value = 131, Cost = 6869 },
+        new UpgradeStatAndCost(){ Value = 136, Cost = 8242 },
+        new UpgradeStatAndCost(){ Value = 141, Cost = 9891 },
+        new UpgradeStatAndCost(){ Value = 146, Cost = 11869 },
+        new UpgradeStatAndCost(){ Value = 151, Cost = 14243 },
+        new UpgradeStatAndCost(){ Value = 156, Cost = 17091 },
+        new UpgradeStatAndCost(){ Value = 161, Cost = 20509 },
+        new UpgradeStatAndCost(){ Value = 166, Cost = 24611 },
+        new UpgradeStatAndCost(){ Value = 171, Cost = 29533 },
+        new UpgradeStatAndCost(){ Value = 176, Cost = 35440 },
+        new UpgradeStatAndCost(){ Value = 181, Cost = 42528 },
+        new UpgradeStatAndCost(){ Value = 186, Cost = 51034 },
+        new UpgradeStatAndCost(){ Value = 191, Cost = 61240 },
+        new UpgradeStatAndCost(){ Value = 196, Cost = 73489 },
+        new UpgradeStatAndCost(){ Value = 201, Cost = 88186 },
+        new UpgradeStatAndCost(){ Value = 206, Cost = 105824 },
+        new UpgradeStatAndCost(){ Value = 211, Cost = 126988 },
+        new UpgradeStatAndCost(){ Value = 216, Cost = 152386 },
+        new UpgradeStatAndCost(){ Value = 221, Cost = 182863 },
+        new UpgradeStatAndCost(){ Value = 226, Cost = 219436 },
+        new UpgradeStatAndCost(){ Value = 231, Cost = 263323 },
+        new UpgradeStatAndCost(){ Value = 236, Cost = 315987 },
+        new UpgradeStatAndCost(){ Value = 241, Cost = 379185 },
+        new UpgradeStatAndCost(){ Value = 246, Cost = 455022 },
     };
 
     public static UpgradeStatAndCost[] ChewSpeedByLevel = new UpgradeStatAndCost[]
     {
-        new UpgradeStatAndCost(){ Value = 1,    Cost = 100 },
-        new UpgradeStatAndCost(){ Value = 1.05, Cost = 130 },
-        new UpgradeStatAndCost(){ Value = 1.1,  Cost = 169 },
-        new UpgradeStatAndCost(){ Value = 1.15, Cost = 220 },
-        new UpgradeStatAndCost(){ Value = 1.2,  Cost = 286 },
-        new UpgradeStatAndCost(){ Value = 1.25, Cost = 371 },
-        new UpgradeStatAndCost(){ Value = 1.3,  Cost = 483 },
-        new UpgradeStatAndCost(){ Value = 1.35, Cost = 627 },
-        new UpgradeStatAndCost(){ Value = 1.4,  Cost = 816 },
-        new UpgradeStatAndCost(){ Value = 1.45, Cost = 1060 },
-        new UpgradeStatAndCost(){ Value = 1.5,  Cost = 1379 },
-        new UpgradeStatAndCost(){ Value = 1.55, Cost = 1792 },
-        new UpgradeStatAndCost(){ Value = 1.6,  Cost = 2330 },
-        new UpgradeStatAndCost(){ Value = 1.65, Cost = 3029 },
-        new UpgradeStatAndCost(){ Value = 1.7,  Cost = 3937 },
-        new UpgradeStatAndCost(){ Value = 1.75, Cost = 5119 },
-        new UpgradeStatAndCost(){ Value = 1.8,  Cost = 6654 },
-        new UpgradeStatAndCost(){ Value = 1.85, Cost = 8650 },
-        new UpgradeStatAndCost(){ Value = 1.9,  Cost = 11246 },
-        new UpgradeStatAndCost(){ Value = 1.95, Cost = 14619 },
+        new UpgradeStatAndCost(){ Value = 1,    Cost = 5 },
+        new UpgradeStatAndCost(){ Value = 1.05, Cost = 46 },
+        new UpgradeStatAndCost(){ Value = 1.1,  Cost = 53 },
+        new UpgradeStatAndCost(){ Value = 1.15, Cost = 61 },
+        new UpgradeStatAndCost(){ Value = 1.2,  Cost = 70 },
+        new UpgradeStatAndCost(){ Value = 1.25, Cost = 80 },
+        new UpgradeStatAndCost(){ Value = 1.3,  Cost = 93 },
+        new UpgradeStatAndCost(){ Value = 1.35, Cost = 106 },
+        new UpgradeStatAndCost(){ Value = 1.4,  Cost = 122 },
+        new UpgradeStatAndCost(){ Value = 1.45, Cost = 141 },
+        new UpgradeStatAndCost(){ Value = 1.5,  Cost = 162 },
+        new UpgradeStatAndCost(){ Value = 1.55, Cost = 186 },
+        new UpgradeStatAndCost(){ Value = 1.6,  Cost = 214 },
+        new UpgradeStatAndCost(){ Value = 1.65, Cost = 246 },
+        new UpgradeStatAndCost(){ Value = 1.7,  Cost = 283 },
+        new UpgradeStatAndCost(){ Value = 1.75, Cost = 325 },
+        new UpgradeStatAndCost(){ Value = 1.8,  Cost = 374 },
+        new UpgradeStatAndCost(){ Value = 1.85, Cost = 430 },
+        new UpgradeStatAndCost(){ Value = 1.9,  Cost = 495 },
+        new UpgradeStatAndCost(){ Value = 1.95, Cost = 569 },
 
-        new UpgradeStatAndCost(){ Value = 2,    Cost = 19005 },
-        new UpgradeStatAndCost(){ Value = 2.05, Cost = 24706 },
-        new UpgradeStatAndCost(){ Value = 2.1,  Cost = 32118 },
-        new UpgradeStatAndCost(){ Value = 2.15, Cost = 41754 },
-        new UpgradeStatAndCost(){ Value = 2.2,  Cost = 54280 },
-        new UpgradeStatAndCost(){ Value = 2.25, Cost = 70564 },
-        new UpgradeStatAndCost(){ Value = 2.3,  Cost = 91733 },
-        new UpgradeStatAndCost(){ Value = 2.35, Cost = 119253 },
-        new UpgradeStatAndCost(){ Value = 2.4,  Cost = 155029 },
-        new UpgradeStatAndCost(){ Value = 2.45, Cost = 201538 },
-        new UpgradeStatAndCost(){ Value = 2.5,  Cost = 262000 },
-        new UpgradeStatAndCost(){ Value = 2.55, Cost = 340599 },
-        new UpgradeStatAndCost(){ Value = 2.6,  Cost = 442779 },
-        new UpgradeStatAndCost(){ Value = 2.65, Cost = 575613 },
-        new UpgradeStatAndCost(){ Value = 2.7,  Cost = 748297 },
-        new UpgradeStatAndCost(){ Value = 2.75, Cost = 972786 },
-        new UpgradeStatAndCost(){ Value = 2.8,  Cost = 1264622 },
-        new UpgradeStatAndCost(){ Value = 2.85, Cost = 1644008 },
-        new UpgradeStatAndCost(){ Value = 2.9,  Cost = 2137211 },
-        new UpgradeStatAndCost(){ Value = 2.95, Cost = 2778374 },
-        new UpgradeStatAndCost(){ Value = 3,    Cost = 3611886 },
-        new UpgradeStatAndCost(){ Value = 3.05, Cost = 4695452 },
-        new UpgradeStatAndCost(){ Value = 3.1,  Cost = 6104088 },
-        new UpgradeStatAndCost(){ Value = 3.15, Cost = 7935315 },
-        new UpgradeStatAndCost(){ Value = 3.2,  Cost = 10315909 },
-        new UpgradeStatAndCost(){ Value = 3.25, Cost = 13410682 },
-        new UpgradeStatAndCost(){ Value = 3.3,  Cost = 17433886 },
-        new UpgradeStatAndCost(){ Value = 3.35, Cost = 22664052 },
-        new UpgradeStatAndCost(){ Value = 3.4,  Cost = 29463268 },
-        new UpgradeStatAndCost(){ Value = 3.45, Cost = 38302248 },
+        new UpgradeStatAndCost(){ Value = 2,    Cost = 1917 },
+        new UpgradeStatAndCost(){ Value = 2.05, Cost = 2300 },
+        new UpgradeStatAndCost(){ Value = 2.1,  Cost = 2760 },
+        new UpgradeStatAndCost(){ Value = 2.15, Cost = 3312 },
+        new UpgradeStatAndCost(){ Value = 2.2,  Cost = 3975 },
+        new UpgradeStatAndCost(){ Value = 2.25, Cost = 4770 },
+        new UpgradeStatAndCost(){ Value = 2.3,  Cost = 5724 },
+        new UpgradeStatAndCost(){ Value = 2.35, Cost = 6869 },
+        new UpgradeStatAndCost(){ Value = 2.4,  Cost = 8242 },
+        new UpgradeStatAndCost(){ Value = 2.45, Cost = 9891 },
+        new UpgradeStatAndCost(){ Value = 2.5,  Cost = 11869 },
+        new UpgradeStatAndCost(){ Value = 2.55, Cost = 14243 },
+        new UpgradeStatAndCost(){ Value = 2.6,  Cost = 17091 },
+        new UpgradeStatAndCost(){ Value = 2.65, Cost = 20509 },
+        new UpgradeStatAndCost(){ Value = 2.7,  Cost = 24611 },
+        new UpgradeStatAndCost(){ Value = 2.75, Cost = 29533 },
+        new UpgradeStatAndCost(){ Value = 2.8,  Cost = 35440 },
+        new UpgradeStatAndCost(){ Value = 2.85, Cost = 42528 },
+        new UpgradeStatAndCost(){ Value = 2.9,  Cost = 51034 },
+        new UpgradeStatAndCost(){ Value = 2.95, Cost = 61240 },
+        new UpgradeStatAndCost(){ Value = 3,    Cost = 73489 },
+        new UpgradeStatAndCost(){ Value = 3.05, Cost = 88186 },
+        new UpgradeStatAndCost(){ Value = 3.1,  Cost = 105824 },
+        new UpgradeStatAndCost(){ Value = 3.15, Cost = 126988 },
+        new UpgradeStatAndCost(){ Value = 3.2,  Cost = 152386 },
+        new UpgradeStatAndCost(){ Value = 3.25, Cost = 182863 },
+        new UpgradeStatAndCost(){ Value = 3.3,  Cost = 219436 },
+        new UpgradeStatAndCost(){ Value = 3.35, Cost = 263323 },
+        new UpgradeStatAndCost(){ Value = 3.4,  Cost = 315987 },
+        new UpgradeStatAndCost(){ Value = 3.45, Cost = 379185 },
     };
 
     public static UpgradeStatAndCost[] StomachSizeByLevel = new UpgradeStatAndCost[]
     {
-        new UpgradeStatAndCost(){ Value = 10,  Cost = 75 },
-        new UpgradeStatAndCost(){ Value = 15,  Cost = 94 },
-        new UpgradeStatAndCost(){ Value = 20,  Cost = 117 },
-        new UpgradeStatAndCost(){ Value = 25,  Cost = 146 },
-        new UpgradeStatAndCost(){ Value = 30,  Cost = 183 },
-        new UpgradeStatAndCost(){ Value = 35,  Cost = 229 },
-        new UpgradeStatAndCost(){ Value = 40,  Cost = 286 },
-        new UpgradeStatAndCost(){ Value = 45,  Cost = 358 },
-        new UpgradeStatAndCost(){ Value = 50,  Cost = 447 },
-        new UpgradeStatAndCost(){ Value = 55,  Cost = 559 },
-        new UpgradeStatAndCost(){ Value = 60,  Cost = 698 },
-        new UpgradeStatAndCost(){ Value = 65,  Cost = 873 },
-        new UpgradeStatAndCost(){ Value = 70,  Cost = 1091 },
-        new UpgradeStatAndCost(){ Value = 75,  Cost = 1364 },
-        new UpgradeStatAndCost(){ Value = 80,  Cost = 1705 },
-        new UpgradeStatAndCost(){ Value = 85,  Cost = 2132 },
-        new UpgradeStatAndCost(){ Value = 90,  Cost = 2665 },
-        new UpgradeStatAndCost(){ Value = 95,  Cost = 3331 },
-        new UpgradeStatAndCost(){ Value = 100, Cost = 4163 },
-        new UpgradeStatAndCost(){ Value = 105, Cost = 5204 },
+        new UpgradeStatAndCost(){ Value = 10,  Cost = 5 },
+        new UpgradeStatAndCost(){ Value = 15,  Cost = 35 },
+        new UpgradeStatAndCost(){ Value = 20,  Cost = 40 },
+        new UpgradeStatAndCost(){ Value = 25,  Cost = 46 },
+        new UpgradeStatAndCost(){ Value = 30,  Cost = 52 },
+        new UpgradeStatAndCost(){ Value = 35,  Cost = 60 },
+        new UpgradeStatAndCost(){ Value = 40,  Cost = 69 },
+        new UpgradeStatAndCost(){ Value = 45,  Cost = 80 },
+        new UpgradeStatAndCost(){ Value = 50,  Cost = 92 },
+        new UpgradeStatAndCost(){ Value = 55,  Cost = 106 },
+        new UpgradeStatAndCost(){ Value = 60,  Cost = 121 },
+        new UpgradeStatAndCost(){ Value = 65,  Cost = 140 },
+        new UpgradeStatAndCost(){ Value = 70,  Cost = 161 },
+        new UpgradeStatAndCost(){ Value = 75,  Cost = 185 },
+        new UpgradeStatAndCost(){ Value = 80,  Cost = 212 },
+        new UpgradeStatAndCost(){ Value = 85,  Cost = 244 },
+        new UpgradeStatAndCost(){ Value = 90,  Cost = 281 },
+        new UpgradeStatAndCost(){ Value = 95,  Cost = 323 },
+        new UpgradeStatAndCost(){ Value = 100, Cost = 371 },
+        new UpgradeStatAndCost(){ Value = 105, Cost = 427 },
 
-        new UpgradeStatAndCost(){ Value = 110, Cost = 6505 },
-        new UpgradeStatAndCost(){ Value = 115, Cost = 8132 },
-        new UpgradeStatAndCost(){ Value = 120, Cost = 10164 },
-        new UpgradeStatAndCost(){ Value = 125, Cost = 12705 },
-        new UpgradeStatAndCost(){ Value = 130, Cost = 15882 },
-        new UpgradeStatAndCost(){ Value = 135, Cost = 19852 },
-        new UpgradeStatAndCost(){ Value = 140, Cost = 24815 },
-        new UpgradeStatAndCost(){ Value = 145, Cost = 31019 },
-        new UpgradeStatAndCost(){ Value = 150, Cost = 38774 },
-        new UpgradeStatAndCost(){ Value = 155, Cost = 48468 },
-        new UpgradeStatAndCost(){ Value = 160, Cost = 60585 },
-        new UpgradeStatAndCost(){ Value = 165, Cost = 75731 },
-        new UpgradeStatAndCost(){ Value = 170, Cost = 94663 },
-        new UpgradeStatAndCost(){ Value = 175, Cost = 118329 },
-        new UpgradeStatAndCost(){ Value = 180, Cost = 147911 },
-        new UpgradeStatAndCost(){ Value = 185, Cost = 184889 },
-        new UpgradeStatAndCost(){ Value = 190, Cost = 231112 },
-        new UpgradeStatAndCost(){ Value = 195, Cost = 288889 },
-        new UpgradeStatAndCost(){ Value = 200, Cost = 361112 },
-        new UpgradeStatAndCost(){ Value = 205, Cost = 451390 },
-        new UpgradeStatAndCost(){ Value = 210, Cost = 564237 },
-        new UpgradeStatAndCost(){ Value = 215, Cost = 705297 },
-        new UpgradeStatAndCost(){ Value = 220, Cost = 881621 },
-        new UpgradeStatAndCost(){ Value = 225, Cost = 1102026 },
-        new UpgradeStatAndCost(){ Value = 230, Cost = 1377532 },
-        new UpgradeStatAndCost(){ Value = 235, Cost = 1721916 },
-        new UpgradeStatAndCost(){ Value = 240, Cost = 2152394 },
-        new UpgradeStatAndCost(){ Value = 245, Cost = 2690493 },
-        new UpgradeStatAndCost(){ Value = 250, Cost = 3363116 },
-        new UpgradeStatAndCost(){ Value = 255, Cost = 4203895 },
+        new UpgradeStatAndCost(){ Value = 110, Cost = 1534 },
+        new UpgradeStatAndCost(){ Value = 115, Cost = 1840 },
+        new UpgradeStatAndCost(){ Value = 120, Cost = 2208 },
+        new UpgradeStatAndCost(){ Value = 125, Cost = 2650 },
+        new UpgradeStatAndCost(){ Value = 130, Cost = 3180 },
+        new UpgradeStatAndCost(){ Value = 135, Cost = 3816 },
+        new UpgradeStatAndCost(){ Value = 140, Cost = 4579 },
+        new UpgradeStatAndCost(){ Value = 145, Cost = 5495 },
+        new UpgradeStatAndCost(){ Value = 150, Cost = 6594 },
+        new UpgradeStatAndCost(){ Value = 155, Cost = 7913 },
+        new UpgradeStatAndCost(){ Value = 160, Cost = 9495 },
+        new UpgradeStatAndCost(){ Value = 165, Cost = 11394 },
+        new UpgradeStatAndCost(){ Value = 170, Cost = 13673 },
+        new UpgradeStatAndCost(){ Value = 175, Cost = 16407 },
+        new UpgradeStatAndCost(){ Value = 180, Cost = 19689 },
+        new UpgradeStatAndCost(){ Value = 185, Cost = 23627 },
+        new UpgradeStatAndCost(){ Value = 190, Cost = 28352 },
+        new UpgradeStatAndCost(){ Value = 195, Cost = 34022 },
+        new UpgradeStatAndCost(){ Value = 200, Cost = 40827 },
+        new UpgradeStatAndCost(){ Value = 205, Cost = 48992 },
+        new UpgradeStatAndCost(){ Value = 210, Cost = 58791 },
+        new UpgradeStatAndCost(){ Value = 215, Cost = 70549 },
+        new UpgradeStatAndCost(){ Value = 220, Cost = 84659 },
+        new UpgradeStatAndCost(){ Value = 225, Cost = 101591 },
+        new UpgradeStatAndCost(){ Value = 230, Cost = 121909 },
+        new UpgradeStatAndCost(){ Value = 235, Cost = 146290 },
+        new UpgradeStatAndCost(){ Value = 240, Cost = 175549 },
+        new UpgradeStatAndCost(){ Value = 245, Cost = 210658 },
+        new UpgradeStatAndCost(){ Value = 250, Cost = 252790 },
+        new UpgradeStatAndCost(){ Value = 255, Cost = 303348 },
     };
 }
