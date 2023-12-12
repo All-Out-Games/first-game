@@ -191,7 +191,7 @@ public static class ShopData
 
     [AOIgnore] public static List<Item> Items = new List<Item>() 
     {
-        new () { Id = "fun_egg", ProductId = "", Name = "Fun Egg", Description = "A fun egg", Currency = Currency.Coins, Cost = 100, Kind = ItemKind.Egg, ItemIdentifier = "egg0" },
+        new () { Id = "fun_egg", ProductId = "", Name = "Fun Egg", Description = "A fun egg", Currency = Currency.Coins, Cost = 1, Kind = ItemKind.Egg, ItemIdentifier = "egg0" },
     };
 
     public class ShopEntry

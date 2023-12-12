@@ -33,6 +33,8 @@ public class References : Component
     
     public UI.NineSlice FrameSlice = new UI.NineSlice() { slice = new Vector4(12, 12, 48, 48), sliceScale = 1f };
 
+    public UI.TextSettings NoTextSettings = new UI.TextSettings() { size = 0, color = Vector4.Zero };
+
     public Vector4 RedText    = new Vector4(255.0f/255.0f, 109.0f/255.0f, 119.0f/255.0f, 1.0f);
     public Vector4 GreenText  = new Vector4( 80.0f/255.0f, 205.0f/255.0f, 109.0f/255.0f, 1.0f);
     public Vector4 BlueText   = new Vector4( 72.0f/255.0f, 235.0f/255.0f, 251.0f/255.0f, 1.0f);

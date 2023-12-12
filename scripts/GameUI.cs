@@ -17,7 +17,7 @@ public class GameUI : System<GameUI>
         IsShowingRebirthWindow = false;
     }
 
-    public int SelectedPet = -1;
+    public PetManager.OwnedPet SelectedPet = null;
     public float SelectedPetDisplayT;
 
     public override void Update()
@@ -238,14 +238,14 @@ public class GameUI : System<GameUI>
             increaseEquippedCapacityRect = increaseEquippedCapacityRect.Offset(-equippedCapacityRectHeight/2, 0).Inset(5, 10, 5, 0);
             UI.Button(increaseEquippedCapacityRect, "increase_equipped_capacity", new UI.ButtonSettings(){ sprite = References.Instance.Plus }, new UI.TextSettings(){size = 0, color = Vector4.Zero});
 
-            if (SelectedPet != -1)
+            if (SelectedPet != null)
             {
                 var selectedPetRect = windowRect.CutRight(500).Inset(75, 0, 75, 0);
-                var dividerRect = selectedPetRect.LeftRect().GrowRight(2);
+                var dividerRect = selectedPetRect.CutLeft(2);
                 UI.Image(dividerRect, null, Vector4.Black * 0.25f, new UI.NineSlice());
 
-                var nameRect = selectedPetRect.CutTop(75);
-                UI.Text(nameRect, "Pet Name", new UI.TextSettings(){
+                var nameRect = selectedPetRect.CutTop(50);
+                UI.Text(nameRect, SelectedPet.Name, new UI.TextSettings(){
                     color = Vector4.White,
                     outline = true,
                     outlineThickenss = 2,
@@ -254,14 +254,108 @@ public class GameUI : System<GameUI>
                     size = 48,
                 });
 
-                var infoRect = selectedPetRect.CutTop(250);
+                var infoRect = selectedPetRect.CutTop(225);
                 UI.Image(infoRect, null, Vector4.Black * 0.2f, new UI.NineSlice());
+                var petIconRect = infoRect.CutLeft(infoRect.Width*0.33f);
+                petIconRect = petIconRect.CenterRect().Grow(petIconRect.Width/2, petIconRect.Width/2, petIconRect.Width/2, petIconRect.Width/2).Inset(10, 10, 10, 10).Offset(10, 0);
+                UI.Image(petIconRect, References.Instance.PetBrown, Vector4.White, new UI.NineSlice());
 
-                var equipButtonRect = selectedPetRect.CutTop(100);
-                UI.Image(equipButtonRect, null, Vector4.Green * 0.2f, new UI.NineSlice());
+                var rarityRect = infoRect.CutTop(50);
+                UI.Text(rarityRect, "Common", new UI.TextSettings(){
+                    color = References.Instance.BlueText,
+                    outline = true,
+                    outlineThickenss = 2,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                    size = 36,
+                });
+                
+                infoRect.CutTop(5);
+                foreach(var modifier in SelectedPet.GetDefinition().StatModifiers)
+                {
+                    var statModRect = infoRect.CutTop(50);
+                    Vector4 col = Vector4.White;
+                    string text = "";
 
-                var deleteButtonRect = selectedPetRect.CutTop(100);
-                UI.Image(deleteButtonRect, null, Vector4.Red * 0.2f, new UI.NineSlice());
+                    switch(modifier.Kind)
+                    {
+                        case PetData.StatModifierKind.MaxFoodMultiply:
+                        {
+                            col = References.Instance.RedText;
+                            text = $"{modifier.MultiplyValue:0.#}x Stomach Size";
+                            break;
+                        }
+                        case PetData.StatModifierKind.ChewSpeedMultiply:
+                        {
+                            col = References.Instance.GreenText;
+                            text = $"{modifier.MultiplyValue:0.#}x Chew Speed";
+                            break;
+                        }
+                        case PetData.StatModifierKind.MouthSizeMultiply:
+                        {
+                            col = References.Instance.BlueText;
+                            text = $"{modifier.MultiplyValue:0.#}x Mouth Size";
+                            break;
+                        }
+                        case PetData.StatModifierKind.MaxFoodAdd:
+                        {
+                            col = References.Instance.RedText;
+                            text = $"+{modifier.MultiplyValue:0.#} Stomach Size";
+                            break;
+                        }
+                        case PetData.StatModifierKind.ChewSpeedAdd:
+                        {
+                            col = References.Instance.GreenText;
+                            text = $"+{modifier.MultiplyValue:0.#} Chew Speed";
+                            break;
+                        }
+                        case PetData.StatModifierKind.MouthSizeAdd:
+                        {
+                            col = References.Instance.BlueText;
+                            text = $"+{modifier.MultiplyValue:0.#} Mouth Size";
+                            break;
+                        }
+                    }
+                    UI.Text(statModRect, text, new UI.TextSettings() {
+                        color = col,
+                        outline = true,
+                        outlineThickenss = 2,
+                        horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                        verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom,
+                        size = 24
+                    });
+                }
+                var buttonTs = new UI.TextSettings() {
+                    color = Vector4.White,
+                    outline = true,
+                    outlineThickenss = 2,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                    size = 36
+                };
+                var equipButtonRect = selectedPetRect.CutTop(90).Inset(5, 10, 5, 10);
+                if (SelectedPet.Equipped) 
+                {
+                    var unequipButtonResult = UI.Button(equipButtonRect, "Unequip", new UI.ButtonSettings(){ sprite = References.Instance.BlueButton, slice = References.Instance.FrameSlice }, buttonTs);
+                    if (unequipButtonResult.clicked) 
+                    {
+                        localPlayer.CallServer_RequestUnequipPet(SelectedPet.Id);
+                    }
+                }
+                else 
+                {
+                    var equipButtonResult = UI.Button(equipButtonRect, "Equip", new UI.ButtonSettings(){ sprite = References.Instance.GreenButton, slice = References.Instance.FrameSlice }, buttonTs);
+                    if (equipButtonResult.clicked) 
+                    {
+                        localPlayer.CallServer_RequestEquipPet(SelectedPet.Id);
+                    }
+                }
+
+                var deleteButtonRect = selectedPetRect.CutTop(90).Inset(5, 10, 5, 10);
+                var deleteButtonResult = UI.Button(deleteButtonRect, "Delete", new UI.ButtonSettings(){ sprite = References.Instance.RedButton, slice = References.Instance.FrameSlice }, buttonTs);
+                if (deleteButtonResult.clicked) 
+                {
+                }
             }
 
             Rect contentRect = windowRect.Inset(75, 50, 5, 50);
@@ -272,32 +366,23 @@ public class GameUI : System<GameUI>
             var petsRect = scrollView.contentRect.TopRect();
             var grid = UI.GridLayout.Make(petsRect, 165, 165, UI.GridLayout.SizeSource.ELEMENT_SIZE);
 
-            // foreach (var pet in localPlayer.PetManager.OwnedPets) 
-            for (var i = 0; i < 100; i++)
+            foreach (var pet in localPlayer.PetManager.OwnedPets)
             {
-                // UI.PushId(pet.Id);
-                UI.PushId($"pet:{i}");
+                UI.PushId(pet.Id);
                 using var _2 = AllOut.Defer(UI.PopId);
 
                 var petRect = grid.Next();
                 petRect = petRect.Inset(5,5,5,5);
-                // buttonSettings.sprite = pet.Equipped ? References.Instance.GreenButton : References.Instance.RedButton;
                 buttonSettings.sprite = References.Instance.FrameWhite;
                 
-                var petButtonResult = UI.Button(petRect, "Pet", buttonSettings, buttonTextSettings);
+                var petButtonResult = UI.Button(petRect, pet.Name, buttonSettings, References.Instance.NoTextSettings);
                 if (petButtonResult.clicked) {
-                    SelectedPet = SelectedPet == i ? -1 : i;
+                    SelectedPet = SelectedPet == pet ? null : pet;
                     SelectedPetDisplayT = 0;
-
-                    // if (pet.Equipped)
-                    // {
-                    //     localPlayer.CallServer_RequestUnequipPet(pet.Id);
-                    // }
-                    // else 
-                    // {
-                    //     localPlayer.CallServer_RequestEquipPet(pet.Id);
-                    // }
                 }
+
+                var petIconRect = petRect.Inset(5);
+                UI.Image(petIconRect, References.Instance.PetBrown, Vector4.White, new UI.NineSlice());
 
                 UI.ExpandCurrentScrollView(petRect);
             }
@@ -308,7 +393,6 @@ public class GameUI : System<GameUI>
                 var petRect = grid.Next();
                 UI.ExpandCurrentScrollView(petRect);
             }
-
         }
 
         if (IsShowingRebirthWindow)
