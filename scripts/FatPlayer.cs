@@ -288,15 +288,16 @@ public partial class FatPlayer : Player
             if (Network.IsServer)
             {
                 Save.SetInt(this, "Rebirth", value);
+                CallClient_NotifyRebirthUpdate(value);
             }
         }
     }
 
     public double RebirthCashMultiplier => global::Rebirth.Instance.GetRebirthData(Rebirth).CashMultiplier;
 
-    public double ModifiedChewSpeed => CalculateModifiedStat(PetData.StatModifierKind.ChewSpeedMultiply, PetData.StatModifierKind.ChewSpeedAdd, ChewSpeedByLevel  [Math.Clamp(_chewSpeedLevel, 0, ChewSpeedByLevel.Length-1)].Value);
-    public double ModifiedMouthSize => CalculateModifiedStat(PetData.StatModifierKind.MouthSizeMultiply, PetData.StatModifierKind.MouthSizeAdd, MouthSizeByLevel  [Math.Clamp(_mouthSizeLevel, 0, MouthSizeByLevel.Length-1)].Value);
-    public double ModifiedMaxFood   => CalculateModifiedStat(PetData.StatModifierKind.MaxFoodMultiply,   PetData.StatModifierKind.MaxFoodAdd,   StomachSizeByLevel[Math.Clamp(_maxFoodLevel,   0, StomachSizeByLevel.Length-1)].Value);
+    public double ModifiedChewSpeed => CalculateModifiedStat(PetData.StatModifierKind.ChewSpeedMultiply,   PetData.StatModifierKind.ChewSpeedAdd,   ChewSpeedByLevel  [Math.Clamp(_chewSpeedLevel, 0, ChewSpeedByLevel.Length-1)].Value);
+    public double ModifiedMouthSize => CalculateModifiedStat(PetData.StatModifierKind.MouthSizeMultiply,   PetData.StatModifierKind.MouthSizeAdd,   MouthSizeByLevel  [Math.Clamp(_mouthSizeLevel, 0, MouthSizeByLevel.Length-1)].Value);
+    public double ModifiedMaxFood   => CalculateModifiedStat(PetData.StatModifierKind.StomachSizeMultiply, PetData.StatModifierKind.StomachSizeAdd, StomachSizeByLevel[Math.Clamp(_maxFoodLevel,   0, StomachSizeByLevel.Length-1)].Value);
 
     public double CalculateModifiedStat(PetData.StatModifierKind multiplyKind, PetData.StatModifierKind addKind, double baseValue)
     {
@@ -455,12 +456,13 @@ public partial class FatPlayer : Player
         CallClient_DoRebirth(this.Rebirth);
     }
 
-    [ClientRpc] public void NotifyTrophiesUpdate(double val)  { if (Network.IsClient) Trophies = val;  }
-    [ClientRpc] public void NotifyCoinsUpdate(double val)     { if (Network.IsClient) Coins = val;     }
-    [ClientRpc] public void NotifyFoodUpdate(double val)      { if (Network.IsClient) { Food = val; Log.Info("Updating food via RPC"); } }
-    [ClientRpc] public void NotifyMaxFoodUpdate(int val)   { if (Network.IsClient) MaxFoodLevel = val;   }
-    [ClientRpc] public void NotifyMouthSizeUpdate(int val) { if (Network.IsClient) MouthSizeLevel = val; }
-    [ClientRpc] public void NotifyChewSpeedUpdate(int val) { if (Network.IsClient) ChewSpeedLevel = val; }
+    [ClientRpc] public void NotifyTrophiesUpdate(double val)  { if (Network.IsClient) Trophies       = val; }
+    [ClientRpc] public void NotifyCoinsUpdate(double val)     { if (Network.IsClient) Coins          = val; }
+    [ClientRpc] public void NotifyFoodUpdate(double val)      { if (Network.IsClient) Food           = val; }
+    [ClientRpc] public void NotifyMaxFoodUpdate(int val)      { if (Network.IsClient) MaxFoodLevel   = val; }
+    [ClientRpc] public void NotifyMouthSizeUpdate(int val)    { if (Network.IsClient) MouthSizeLevel = val; }
+    [ClientRpc] public void NotifyChewSpeedUpdate(int val)    { if (Network.IsClient) ChewSpeedLevel = val; }
+    [ClientRpc] public void NotifyRebirthUpdate(int val)      { if (Network.IsClient) Rebirth        = val; }
 
     [ServerRpc]
     public void RequestPurchaseStomachSize()

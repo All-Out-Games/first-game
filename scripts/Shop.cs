@@ -47,6 +47,7 @@ public class Shop : System<Shop>
 
         var windowRect = UI.SafeRect.CenterRect();
         windowRect = windowRect.Grow(200, 300, 200, 300);
+        UI.Blocker(windowRect, "shop");
         UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, new UI.NineSlice(){ slice = new Vector4(20, 20, 50, 50), sliceScale = 1f});
 
         var shopCategories = ShopData.ShopEntries.Select(s => s.Category).Distinct().ToList();
@@ -200,7 +201,6 @@ public static class ShopData
         public string Category;
         public string ItemId;
     }
-
 
     public enum ItemKind
     {

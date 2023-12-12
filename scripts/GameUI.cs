@@ -59,7 +59,7 @@ public class GameUI : System<GameUI>
             wordWrap = false,
             wordWrapOffset = 0,
             outline = true,
-            outlineThickenss = 2,
+            outlineThickness = 2,
             // dropShadow = false,
             // outline= false,
         };
@@ -175,6 +175,7 @@ public class GameUI : System<GameUI>
 
             var windowRect = UI.SafeRect.CenterRect();
             windowRect = windowRect.Grow(200, 300, 200, 300);
+            UI.Blocker(windowRect, "upgrades");
             UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, new UI.NineSlice(){ slice = new Vector4(20, 20, 50, 50), sliceScale = 1f});
 
             if (localPlayer.MaxFoodLevel < FatPlayer.StomachSizeByLevel.Length)
@@ -231,6 +232,7 @@ public class GameUI : System<GameUI>
 
             var windowRect = UI.SafeRect.CenterRect();
             windowRect = windowRect.Grow(300, 650, 300, 650);
+            UI.Blocker(windowRect, "pets");
             UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, new UI.NineSlice(){ slice = new Vector4(20, 20, 50, 50), sliceScale = 1f});
 
             var iconRect = windowRect.TopLeftRect().Grow(40, 40, 40, 40).Offset(0, -5);
@@ -239,7 +241,7 @@ public class GameUI : System<GameUI>
             UI.Text(textRect, "Pets", new UI.TextSettings(){
                 color = References.Instance.BlueText,
                 outline = true,
-                outlineThickenss = 2,
+                outlineThickness = 2,
                 horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
                 verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
                 size = 60,
@@ -261,7 +263,7 @@ public class GameUI : System<GameUI>
             UI.Text(equippedCapacityTextRect, $"1/3", new UI.TextSettings(){
                 color = References.Instance.YellowText,
                 outline = true,
-                outlineThickenss = 2,
+                outlineThickness = 2,
                 horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
                 verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
                 size = 36,
@@ -280,7 +282,7 @@ public class GameUI : System<GameUI>
                 UI.Text(nameRect, "Pet Name", new UI.TextSettings(){
                     color = Vector4.White,
                     outline = true,
-                    outlineThickenss = 2,
+                    outlineThickness = 2,
                     horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
                     verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
                     size = 48,
@@ -362,12 +364,13 @@ public class GameUI : System<GameUI>
 
             var windowRect = UI.SafeRect;
             windowRect = windowRect.Inset(200, 350, 200, 350);
+            UI.Blocker(windowRect, "rebirth");
             UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
 
             var halfWidth = windowRect.Width / 2;
 
             var currentRebirthData = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth);
-            var nextRebirthData    = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth);
+            var nextRebirthData    = Rebirth.Instance.GetRebirthData(localPlayer.Rebirth + 1);
 
             // Current
             {
