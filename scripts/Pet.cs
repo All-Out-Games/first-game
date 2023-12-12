@@ -83,6 +83,12 @@ public class Pet : Component
         var totalForce = moveToTargetForce * 1.0f;
         totalForce += separationForce * 0.5f;
         totalForce *= (float)Math.Max(distanceToTarget, 1.0f);
+        if (totalForce.X < -0.001f) {
+            Entity.LocalScaleX = -1;
+        }
+        else if (totalForce.X > 0.001f) {
+            Entity.LocalScaleX = 1;
+        }
         Velocity += totalForce * Time.DeltaTime * 15.0f;
         Velocity *= 0.85f;
         Entity.Position += Velocity * Time.DeltaTime;
