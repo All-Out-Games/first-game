@@ -19,6 +19,8 @@ public class Pet : Component
     {
         // TODO spawn spine stuff, apply skins and what not
         AllPets.Add(this);
+
+        Entity.GetComponent<Sprite_Renderer>().Sprite = Assets.GetAsset<Texture>(Definition.Sprite);
     }
 
     public override void Update()

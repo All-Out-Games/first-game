@@ -68,7 +68,6 @@ public partial class PetManager : Component
         var equipCount = OwnedPets.Count(p => p.Equipped);
         pet.Equipped = true;
 
-
         if (Network.IsServer) {
             SpawnPetsAsNeeded();
             Save.SetString(Player, "AllPets", JSONWriter.ToJson(OwnedPets));
@@ -124,14 +123,37 @@ public static class PetData
 {
     [AOIgnore] public static Dictionary<string, PetDefinition> Pets = new Dictionary<string, PetDefinition>() 
     {
-        { "pet0", new () { Id = "pet0", Name = "Jimbo",   Description = "Jimbo is a very cool pet.",
-            StatModifiers = new(){new StatModifier(){ Kind = StatModifierKind.ChewSpeedMultiply, MultiplyValue = 1.1f } } } },
+        { "pet0", new () { Id = "pet0", Name = "Jimbo",   Description = "A very cool pet.",  Sprite = "pets/cow.png",
+            StatModifiers = new(){
+                new StatModifier(){ Kind = StatModifierKind.ChewSpeedMultiply,   MultiplyValue = 1.2f }
+            } } },
 
-        { "pet1", new () { Id = "pet1", Name = "Jimbo 1", Description = "Jimbo 1 is a very cool pet.",
-            StatModifiers = new(){new StatModifier(){ Kind = StatModifierKind.ChewSpeedMultiply, MultiplyValue = 1.2f } } } },
+        { "pet1", new () { Id = "pet1", Name = "Jimbo +1", Description = "A very cool pet.", Sprite = "pets/dire_wolf.png",
+            StatModifiers = new(){
+                new StatModifier(){ Kind = StatModifierKind.ChewSpeedMultiply,   MultiplyValue = 1.4f },
+                new StatModifier(){ Kind = StatModifierKind.StomachSizeMultiply, MultiplyValue = 1.2f },
+            } } },
 
-        { "pet2", new () { Id = "pet2", Name = "Jimbo 2", Description = "Jimbo 2 is a very cool pet.",
-            StatModifiers = new(){new StatModifier(){ Kind = StatModifierKind.ChewSpeedMultiply, MultiplyValue = 1.3f } } } },
+        { "pet2", new () { Id = "pet2", Name = "Jimbo +2", Description = "A very cool pet.", Sprite = "pets/America_Eagle.png",
+            StatModifiers = new(){
+                new StatModifier(){ Kind = StatModifierKind.ChewSpeedMultiply,   MultiplyValue = 1.6f },
+                new StatModifier(){ Kind = StatModifierKind.StomachSizeMultiply, MultiplyValue = 1.5f },
+                new StatModifier(){ Kind = StatModifierKind.MouthSizeMultiply,   MultiplyValue = 1.2f },
+            } } },
+
+        { "pet3", new () { Id = "pet3", Name = "Jimbo +3", Description = "A very cool pet.", Sprite = "pets/Shady Dragon.png",
+            StatModifiers = new(){
+                new StatModifier(){ Kind = StatModifierKind.ChewSpeedMultiply,   MultiplyValue = 1.8f },
+                new StatModifier(){ Kind = StatModifierKind.StomachSizeMultiply, MultiplyValue = 1.8f },
+                new StatModifier(){ Kind = StatModifierKind.MouthSizeMultiply,   MultiplyValue = 1.6f },
+            } } },
+
+        { "pet4", new () { Id = "pet4", Name = "Jimbo +4", Description = "A very cool pet.", Sprite = "pets/dragon_green.png",
+            StatModifiers = new(){
+                new StatModifier(){ Kind = StatModifierKind.ChewSpeedMultiply,   MultiplyValue = 2.0f },
+                new StatModifier(){ Kind = StatModifierKind.StomachSizeMultiply, MultiplyValue = 2.0f },
+                new StatModifier(){ Kind = StatModifierKind.MouthSizeMultiply,   MultiplyValue = 2.0f },
+            } } },
     };
 
     [AOIgnore] public static Dictionary<string, EggDefinition> Eggs = new Dictionary<string, EggDefinition>() 
@@ -155,11 +177,11 @@ public static class PetData
 
     public enum StatModifierKind
     {
-        MaxFoodMultiply,
+        StomachSizeMultiply,
         MouthSizeMultiply,
         ChewSpeedMultiply,
 
-        MaxFoodAdd,
+        StomachSizeAdd,
         MouthSizeAdd,
         ChewSpeedAdd,
     }
@@ -176,6 +198,7 @@ public static class PetData
         public string Id;
         public string Name;
         public string Description;
+        public string Sprite;
         public List<StatModifier> StatModifiers;
     }
 }

@@ -5,8 +5,8 @@
   "name": "Sell",
   "local_enabled": true,
   "local_position": {
-    "X": -7.5515708923339844,
-    "Y": -0.5935654640197754
+    "X": 6.9815502166748047,
+    "Y": 0.2937712669372559
   },
   "local_rotation": 0,
   "local_scale": {

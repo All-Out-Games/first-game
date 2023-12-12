@@ -39,7 +39,7 @@ public class ZoneTeleporter : Component
                 horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
                 verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
                 outline = true,
-                outlineThickenss = 0.1f,
+                outlineThickness = 0.1f,
             };
 
             if (owned) 
