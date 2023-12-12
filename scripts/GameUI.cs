@@ -298,7 +298,7 @@ public class GameUI : System<GameUI>
                 UI.Text(rarityRect, "Common", new UI.TextSettings(){
                     color = References.Instance.BlueText,
                     outline = true,
-                    outlineThickenss = 2,
+                    outlineThickness = 2,
                     horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
                     verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
                     size = 36,
@@ -313,7 +313,7 @@ public class GameUI : System<GameUI>
 
                     switch(modifier.Kind)
                     {
-                        case PetData.StatModifierKind.MaxFoodMultiply:
+                        case PetData.StatModifierKind.StomachSizeMultiply:
                         {
                             col = References.Instance.RedText;
                             text = $"{modifier.MultiplyValue:0.#}x Stomach Size";
@@ -331,7 +331,7 @@ public class GameUI : System<GameUI>
                             text = $"{modifier.MultiplyValue:0.#}x Mouth Size";
                             break;
                         }
-                        case PetData.StatModifierKind.MaxFoodAdd:
+                        case PetData.StatModifierKind.StomachSizeAdd:
                         {
                             col = References.Instance.RedText;
                             text = $"+{modifier.MultiplyValue:0.#} Stomach Size";
@@ -353,7 +353,7 @@ public class GameUI : System<GameUI>
                     UI.Text(statModRect, text, new UI.TextSettings() {
                         color = col,
                         outline = true,
-                        outlineThickenss = 2,
+                        outlineThickness = 2,
                         horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
                         verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom,
                         size = 24
@@ -362,7 +362,7 @@ public class GameUI : System<GameUI>
                 var buttonTs = new UI.TextSettings() {
                     color = Vector4.White,
                     outline = true,
-                    outlineThickenss = 2,
+                    outlineThickness = 2,
                     horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
                     verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
                     size = 36
