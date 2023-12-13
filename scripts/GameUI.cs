@@ -19,6 +19,14 @@ public class GameUI : System<GameUI>
 
     public PetManager.OwnedPet SelectedPet = null;
     public float SelectedPetDisplayT;
+    public PetManager.OwnedPet PetToDelete = null;
+    public PetManager.OwnedPet HoveredPet = null;
+
+    public Vector4 RarityColorCommon    = new Vector4(0.8f, 0.8f, 0.8f, 1.0f);
+    public Vector4 RarityColorUncommon  = new Vector4(0.5f, 0.8f, 0.5f, 1.0f);
+    public Vector4 RarityColorRare      = new Vector4(0.5f, 0.5f, 0.8f, 1.0f);
+    public Vector4 RarityColorEpic      = new Vector4(0.8f, 0.5f, 0.8f, 1.0f);
+    public Vector4 RarityColorLegendary = new Vector4(0.8f, 0.8f, 0.5f, 1.0f);
 
     public void DoSingleStatUI(ref Rect rect, string id, UI.TextSettings textSettings, string str, string tooltipText) {
         var rowRect = rect.CutTop(30);
@@ -168,7 +176,7 @@ public class GameUI : System<GameUI>
             UI.PushId("UPGRADES_WINDOW");
             using var _1 = AllOut.Defer(UI.PopId);
 
-            if (UI.Button(UI.ScreenRect, "", new UI.ButtonSettings(), new UI.TextSettings()).clicked) 
+            if (UI.Button(UI.ScreenRect, "CLOSE_UPGRADES_WINDOW", new UI.ButtonSettings(), new UI.TextSettings()).clicked) 
             {
                 IsShowingUpgradesWindow = false;
             }
@@ -220,6 +228,7 @@ public class GameUI : System<GameUI>
             IsShowingShopWindow = Shop.Instance.DrawShop();
         }
 
+        HoveredPet = null;
         if (IsShowingPetsWindow) 
         {
             UI.PushId("PETS_WINDOW");
@@ -233,7 +242,7 @@ public class GameUI : System<GameUI>
             var windowRect = UI.SafeRect.CenterRect();
             windowRect = windowRect.Grow(300, 650, 300, 650);
             UI.Blocker(windowRect, "pets");
-            UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, new UI.NineSlice(){ slice = new Vector4(20, 20, 50, 50), sliceScale = 1f});
+            UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
 
             var iconRect = windowRect.TopLeftRect().Grow(40, 40, 40, 40).Offset(0, -5);
             UI.Image(iconRect, References.Instance.PetBrown, Vector4.White, new UI.NineSlice());
@@ -254,13 +263,15 @@ public class GameUI : System<GameUI>
                 IsShowingPetsWindow = false;
             }
 
+            var equippedPetsCount = localPlayer.PetManager.OwnedPets.Count(p => p.Equipped);
+
             var equippedCapacityRect = windowRect.TopRightRect().Offset(-250, 0).Grow(20, 115, 20, 115);
             var equippedCapacityRectHeight = equippedCapacityRect.Height;
             UI.Image(equippedCapacityRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
             var equippedCapacityIconRect = equippedCapacityRect.LeftRect().Grow(0, equippedCapacityRectHeight/2, 0, equippedCapacityRectHeight/2).Grow(10, 10, 10, 10);
             UI.Image(equippedCapacityIconRect, References.Instance.Backpack, Vector4.White, new UI.NineSlice());
             var equippedCapacityTextRect = equippedCapacityRect.LeftRect().Offset(85, 0);
-            UI.Text(equippedCapacityTextRect, $"1/3", new UI.TextSettings(){
+            UI.Text(equippedCapacityTextRect, $"{equippedPetsCount}/{localPlayer.MaxEquippedPets}", new UI.TextSettings(){
                 color = References.Instance.YellowText,
                 outline = true,
                 outlineThickness = 2,
@@ -277,7 +288,7 @@ public class GameUI : System<GameUI>
                 var selectedPetRect = windowRect.CutRight(500).Inset(75, 0, 75, 0);
                 var dividerRect = selectedPetRect.CutLeft(2);
                 UI.Image(dividerRect, null, Vector4.Black * 0.25f, new UI.NineSlice());
-
+                
                 var nameRect = selectedPetRect.CutTop(50);
                 UI.Text(nameRect, SelectedPet.Name, new UI.TextSettings(){
                     color = Vector4.White,
@@ -289,14 +300,21 @@ public class GameUI : System<GameUI>
                 });
 
                 var infoRect = selectedPetRect.CutTop(225);
-                UI.Image(infoRect, null, Vector4.Black * 0.2f, new UI.NineSlice());
                 var petIconRect = infoRect.CutLeft(infoRect.Width*0.33f);
                 petIconRect = petIconRect.CenterRect().Grow(petIconRect.Width/2, petIconRect.Width/2, petIconRect.Width/2, petIconRect.Width/2).Inset(10, 10, 10, 10).Offset(10, 0);
                 UI.Image(petIconRect, References.Instance.PetBrown, Vector4.White, new UI.NineSlice());
 
+                var rarityColor = SelectedPet.GetDefinition().Rarity switch
+                {
+                    PetData.Rarity.Uncommon => RarityColorUncommon,
+                    PetData.Rarity.Rare => RarityColorRare,
+                    PetData.Rarity.Epic => RarityColorEpic,
+                    PetData.Rarity.Legendary => RarityColorLegendary,
+                    _ => RarityColorCommon,
+                };
                 var rarityRect = infoRect.CutTop(50);
-                UI.Text(rarityRect, "Common", new UI.TextSettings(){
-                    color = References.Instance.BlueText,
+                UI.Text(rarityRect, SelectedPet.GetDefinition().Rarity.ToString(), new UI.TextSettings(){
+                    color = rarityColor,
                     outline = true,
                     outlineThickness = 2,
                     horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
@@ -378,10 +396,16 @@ public class GameUI : System<GameUI>
                 }
                 else 
                 {
+                    if (equippedPetsCount >= localPlayer.MaxEquippedPets) {
+                        UI.PushDisabled();
+                    }
                     var equipButtonResult = UI.Button(equipButtonRect, "Equip", new UI.ButtonSettings(){ sprite = References.Instance.GreenButton, slice = References.Instance.FrameSlice }, buttonTs);
                     if (equipButtonResult.clicked) 
                     {
                         localPlayer.CallServer_RequestEquipPet(SelectedPet.Id);
+                    }
+                    if (equippedPetsCount >= localPlayer.MaxEquippedPets) {
+                        UI.PopDisabled();
                     }
                 }
 
@@ -389,43 +413,220 @@ public class GameUI : System<GameUI>
                 var deleteButtonResult = UI.Button(deleteButtonRect, "Delete", new UI.ButtonSettings(){ sprite = References.Instance.RedButton, slice = References.Instance.FrameSlice }, buttonTs);
                 if (deleteButtonResult.clicked) 
                 {
+                    PetToDelete = SelectedPet;
+                    // localPlayer.CallServer_RequestDeletePet(SelectedPet.Id);
                 }
             }
 
-            Rect contentRect = windowRect.Inset(75, 50, 5, 50);
-
-            UI.ScrollView scrollView = UI.PushScrollView("pets_scroll_view", contentRect, UI.ScrollViewFlags.Vertical);
-            using var _3 = AllOut.Defer(() => UI.PopScrollView());
-
-            var petsRect = scrollView.contentRect.TopRect();
-            var grid = UI.GridLayout.Make(petsRect, 165, 165, UI.GridLayout.SizeSource.ELEMENT_SIZE);
-
-            foreach (var pet in localPlayer.PetManager.OwnedPets)
             {
-                UI.PushId(pet.Id);
-                using var _2 = AllOut.Defer(UI.PopId);
+                Rect contentRect = windowRect.Inset(75, 50, 5, 50);
+                UI.ScrollView scrollView = UI.PushScrollView("pets_scroll_view", contentRect, UI.ScrollViewFlags.Vertical);
+                using var _3 = AllOut.Defer(() => UI.PopScrollView());
 
-                var petRect = grid.Next();
-                petRect = petRect.Inset(5,5,5,5);
-                buttonSettings.sprite = References.Instance.FrameWhite;
+                var petsRect = scrollView.contentRect.TopRect();
+                var grid = UI.GridLayout.Make(petsRect, 165, 165, UI.GridLayout.SizeSource.ELEMENT_SIZE);
+
+                foreach (var pet in localPlayer.PetManager.OwnedPets)
+                {
+                    bool isSelected = SelectedPet == pet;
+                    UI.PushId(pet.Id);
+                    using var _2 = AllOut.Defer(UI.PopId);
+
+                    var petRect = grid.Next();
+                    petRect = petRect.Inset(5,5,5,5);
+                    buttonSettings.sprite = References.Instance.FrameWhite;
+
+                    if (isSelected) {
+                        UI.Image(petRect.Grow(2), References.Instance.PanelContent, Vector4.Green, References.Instance.FrameSlice);
+                    }
+
+                    buttonSettings.colorMultiplier = pet.GetDefinition().Rarity switch
+                    {
+                        PetData.Rarity.Uncommon => RarityColorUncommon,
+                        PetData.Rarity.Rare => RarityColorRare,
+                        PetData.Rarity.Epic => RarityColorEpic,
+                        PetData.Rarity.Legendary => RarityColorLegendary,
+                        _ => RarityColorCommon,
+                    };
+                    
+                    var petButtonResult = UI.Button(petRect, pet.Name, buttonSettings, References.Instance.NoTextSettings);
+                    if (petButtonResult.clicked) {
+                        SelectedPet = isSelected ? null : pet;
+                        SelectedPetDisplayT = 0;
+                    }
+
+                    if (petButtonResult.hovering) {
+                        HoveredPet = pet;
+                    }
+
+                    var petIconRect = petRect.Inset(5);
+                    UI.Image(petIconRect, References.Instance.PetBrown, Vector4.White, new UI.NineSlice());
+
+                    if (pet.Equipped)
+                    {
+                        var checkmarkRect = petRect.BottomLeftRect().Grow(15).Offset(25, 25);
+                        UI.Image(checkmarkRect, References.Instance.CheckMark, Vector4.White, new UI.NineSlice());
+                    }
+
+                    UI.ExpandCurrentScrollView(petRect);
+                }
+
+                // Make an extra row for buffer at then end of the grid
+                for (var j = 0; j < 6; j++) 
+                {
+                    var petRect = grid.Next();
+                    UI.ExpandCurrentScrollView(petRect);
+                }
+            }
+
+            if (PetToDelete != null)
+            {
+                UI.PushId("DELETE_PET_WINDOW");
+                using var _4 = AllOut.Defer(UI.PopId);
+
+                UI.Image(UI.ScreenRect, null, Vector4.Black * 0.5f, new UI.NineSlice());
+                if (UI.Button(UI.ScreenRect, "CLOSE_DELETE_PET_WINDOW", new UI.ButtonSettings(), new UI.TextSettings()).clicked) 
+                {
+                    PetToDelete = null;
+                }
+
+                var deleteRect = UI.SafeRect.CenterRect().Grow(150, 200, 150, 200);
+                UI.Image(deleteRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                var deleteTextRect = deleteRect.CutTop(150);
+                UI.Text(deleteTextRect, $"Are you sure you want to delete {PetToDelete.Name}?", new UI.TextSettings(){
+                    color = Vector4.White,
+                    outline = true,
+                    outlineThickness = 2,
+                    wordWrap = true,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                    size = 32,
+                });
+
+                var deleteButtonRect = deleteRect.CutTop(75).Inset(0, 10, 10, 10);
+                var deleteButtonResult = UI.Button(deleteButtonRect, "Delete", new UI.ButtonSettings(){ sprite = References.Instance.RedButton, slice = References.Instance.FrameSlice }, new UI.TextSettings(){
+                    color = Vector4.White,
+                    outline = true,
+                    outlineThickness = 2,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                    size = 36,
+                });
+                if (deleteButtonResult.clicked) 
+                {
+                    localPlayer.CallServer_RequestDeletePet(PetToDelete.Id);
+                    PetToDelete = null;
+                    SelectedPet = null;
+                }
+
+                var cancelButtonRect = deleteRect.CutTop(75).Inset(0, 10, 10, 10);
+                var cancelButtonResult = UI.Button(cancelButtonRect, "Cancel", new UI.ButtonSettings(){ sprite = References.Instance.GreenButton, slice = References.Instance.FrameSlice }, new UI.TextSettings(){
+                    color = Vector4.White,
+                    outline = true,
+                    outlineThickness = 2,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                    size = 36,
+                });
+                if (cancelButtonResult.clicked) 
+                {
+                    PetToDelete = null;
+                }
+            }
+            else if (HoveredPet != null)
+            {
+                var rectSize = HoveredPet.GetDefinition().StatModifiers.Count * 40 + (50 * 2) + 10;
+
+                var pos = Input.GetMouseScreenPosition();
+                Rect tooltipRect = new Rect().Grow(0, 200, rectSize, 0).Offset(pos.X, pos.Y).Offset(20, -20);
+                UI.Image(tooltipRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+
+                var nameRect = tooltipRect.CutTop(50);
+                UI.Text(nameRect, HoveredPet.Name, new UI.TextSettings(){
+                    color = Vector4.White,
+                    outline = true,
+                    outlineThickness = 2,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                    size = 36,
+                });
+
+                var rarityRect = tooltipRect.CutTop(40);
+                var rarityColor = HoveredPet.GetDefinition().Rarity switch
+                {
+                    PetData.Rarity.Uncommon => RarityColorUncommon,
+                    PetData.Rarity.Rare => RarityColorRare,
+                    PetData.Rarity.Epic => RarityColorEpic,
+                    PetData.Rarity.Legendary => RarityColorLegendary,
+                    _ => RarityColorCommon,
+                };
+                UI.Text(rarityRect, HoveredPet.GetDefinition().Rarity.ToString(), new UI.TextSettings(){
+                    color = rarityColor,
+                    outline = true,
+                    outlineThickness = 2,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                    size = 32,
+                });
                 
-                var petButtonResult = UI.Button(petRect, pet.Name, buttonSettings, References.Instance.NoTextSettings);
-                if (petButtonResult.clicked) {
-                    SelectedPet = SelectedPet == pet ? null : pet;
-                    SelectedPetDisplayT = 0;
+                tooltipRect.CutTop(3);
+                var dividerRect = tooltipRect.CutTop(2).Inset(0, 10, 0, 10);
+                UI.Image(dividerRect, null, Vector4.Black * 0.25f, new UI.NineSlice());
+
+                foreach(var modifier in HoveredPet.GetDefinition().StatModifiers)
+                {
+                    var statModRect = tooltipRect.CutTop(35);
+                    Vector4 col = Vector4.White;
+                    string text = "";
+
+                    switch(modifier.Kind)
+                    {
+                        case PetData.StatModifierKind.StomachSizeMultiply:
+                        {
+                            col = References.Instance.RedText;
+                            text = $"{modifier.MultiplyValue:0.#}x Stomach Size";
+                            break;
+                        }
+                        case PetData.StatModifierKind.ChewSpeedMultiply:
+                        {
+                            col = References.Instance.GreenText;
+                            text = $"{modifier.MultiplyValue:0.#}x Chew Speed";
+                            break;
+                        }
+                        case PetData.StatModifierKind.MouthSizeMultiply:
+                        {
+                            col = References.Instance.BlueText;
+                            text = $"{modifier.MultiplyValue:0.#}x Mouth Size";
+                            break;
+                        }
+                        case PetData.StatModifierKind.StomachSizeAdd:
+                        {
+                            col = References.Instance.RedText;
+                            text = $"+{modifier.MultiplyValue:0.#} Stomach Size";
+                            break;
+                        }
+                        case PetData.StatModifierKind.ChewSpeedAdd:
+                        {
+                            col = References.Instance.GreenText;
+                            text = $"+{modifier.MultiplyValue:0.#} Chew Speed";
+                            break;
+                        }
+                        case PetData.StatModifierKind.MouthSizeAdd:
+                        {
+                            col = References.Instance.BlueText;
+                            text = $"+{modifier.MultiplyValue:0.#} Mouth Size";
+                            break;
+                        }
+                    }
+                    UI.Text(statModRect, text, new UI.TextSettings() {
+                        color = col,
+                        outline = true,
+                        outlineThickness = 2,
+                        horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                        verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom,
+                        size = 24
+                    });
                 }
-
-                var petIconRect = petRect.Inset(5);
-                UI.Image(petIconRect, References.Instance.PetBrown, Vector4.White, new UI.NineSlice());
-
-                UI.ExpandCurrentScrollView(petRect);
-            }
-
-            // Make an extra row for buffer at then end of the grid
-            for (var j = 0; j < 6; j++) 
-            {
-                var petRect = grid.Next();
-                UI.ExpandCurrentScrollView(petRect);
             }
         }
 

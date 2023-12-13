@@ -15,6 +15,20 @@ public partial class FatPlayer : Player
     public int _chewSpeedLevel;
     public int _rebirth;
 
+    public int _maxEquippedPets = 3;
+    public int MaxEquippedPets
+    {
+        get => _maxEquippedPets;
+        set
+        {
+            _maxEquippedPets = value;
+            if (Network.IsServer) {
+                Save.SetInt(this, "MaxEquippedPets", value);
+                CallClient_NotifyMaxEquippedPetsUpdate(value);
+            }
+        }
+    }
+
     public Food FoodBeingEaten;
     
     private PetManager _petManager;
@@ -158,6 +172,8 @@ public partial class FatPlayer : Player
 
             var pets = Save.GetString(this, "AllPets", "[]");
             CallClient_LoadPetData(pets);
+
+            MaxEquippedPets = Save.GetInt(this, "MaxEquippedPets", 3);
         }
     }
 
@@ -415,9 +431,20 @@ public partial class FatPlayer : Player
         PetManager.UnequipPet(id);
     }
 
+    [ClientRpc]
+    public void DeletePet(string id)
+    {
+        PetManager.DeletePet(id);
+    }
+
     [ServerRpc]
     public void RequestEquipPet(string id)
     {
+        var equippedPetsCount = PetManager.OwnedPets.Count(p => p.Equipped);
+        if (equippedPetsCount >= MaxEquippedPets) {
+            return;
+        }
+
         CallClient_EquipPet(id);
     }
 
@@ -425,6 +452,12 @@ public partial class FatPlayer : Player
     public void RequestUnequipPet(string id)
     {
         CallClient_UnequipPet(id);
+    }
+
+    [ServerRpc]
+    public void RequestDeletePet(string id)
+    {
+        CallClient_DeletePet(id);
     }
 
     [ClientRpc]
@@ -463,6 +496,7 @@ public partial class FatPlayer : Player
     [ClientRpc] public void NotifyMouthSizeUpdate(int val)    { if (Network.IsClient) MouthSizeLevel = val; }
     [ClientRpc] public void NotifyChewSpeedUpdate(int val)    { if (Network.IsClient) ChewSpeedLevel = val; }
     [ClientRpc] public void NotifyRebirthUpdate(int val)      { if (Network.IsClient) Rebirth        = val; }
+    [ClientRpc] public void NotifyMaxEquippedPetsUpdate(int val) { if (Network.IsClient) _maxEquippedPets = val; }
 
     [ServerRpc]
     public void RequestPurchaseStomachSize()
