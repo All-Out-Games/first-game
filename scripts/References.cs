@@ -17,6 +17,8 @@ public class References : Component
     [Serialized] public Texture OrangeFill;
     [Serialized] public Texture FrameDark;
     [Serialized] public Texture FrameWhite;
+    [Serialized] public Texture PanelContent;
+    [Serialized] public Texture PanelBackground;
 
     [Serialized] public Texture Backpack;
     [Serialized] public Texture X;
