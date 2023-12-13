@@ -46,6 +46,54 @@ public class GameUI : System<GameUI>
         }
     }
 
+    public (string, Vector4) BuildStatModifierText(PetData.StatModifier modifier) 
+    {
+        Vector4 col = Vector4.White;
+        string text = "";
+
+        switch(modifier.Kind)
+        {
+            case PetData.StatModifierKind.StomachSizeMultiply:
+            {
+                col = References.Instance.RedText;
+                text = $"{modifier.MultiplyValue:0.#}x Stomach Size";
+                break;
+            }
+            case PetData.StatModifierKind.ChewSpeedMultiply:
+            {
+                col = References.Instance.GreenText;
+                text = $"{modifier.MultiplyValue:0.#}x Chew Speed";
+                break;
+            }
+            case PetData.StatModifierKind.MouthSizeMultiply:
+            {
+                col = References.Instance.BlueText;
+                text = $"{modifier.MultiplyValue:0.#}x Mouth Size";
+                break;
+            }
+            case PetData.StatModifierKind.StomachSizeAdd:
+            {
+                col = References.Instance.RedText;
+                text = $"+{modifier.MultiplyValue:0.#} Stomach Size";
+                break;
+            }
+            case PetData.StatModifierKind.ChewSpeedAdd:
+            {
+                col = References.Instance.GreenText;
+                text = $"+{modifier.MultiplyValue:0.#} Chew Speed";
+                break;
+            }
+            case PetData.StatModifierKind.MouthSizeAdd:
+            {
+                col = References.Instance.BlueText;
+                text = $"+{modifier.MultiplyValue:0.#} Mouth Size";
+                break;
+            }
+        }
+
+        return (text, col);
+    }
+
     public override void Update()
     {
         if (Network.IsServer) return;
@@ -326,48 +374,8 @@ public class GameUI : System<GameUI>
                 foreach(var modifier in SelectedPet.GetDefinition().StatModifiers)
                 {
                     var statModRect = infoRect.CutTop(50);
-                    Vector4 col = Vector4.White;
-                    string text = "";
-
-                    switch(modifier.Kind)
-                    {
-                        case PetData.StatModifierKind.StomachSizeMultiply:
-                        {
-                            col = References.Instance.RedText;
-                            text = $"{modifier.MultiplyValue:0.#}x Stomach Size";
-                            break;
-                        }
-                        case PetData.StatModifierKind.ChewSpeedMultiply:
-                        {
-                            col = References.Instance.GreenText;
-                            text = $"{modifier.MultiplyValue:0.#}x Chew Speed";
-                            break;
-                        }
-                        case PetData.StatModifierKind.MouthSizeMultiply:
-                        {
-                            col = References.Instance.BlueText;
-                            text = $"{modifier.MultiplyValue:0.#}x Mouth Size";
-                            break;
-                        }
-                        case PetData.StatModifierKind.StomachSizeAdd:
-                        {
-                            col = References.Instance.RedText;
-                            text = $"+{modifier.MultiplyValue:0.#} Stomach Size";
-                            break;
-                        }
-                        case PetData.StatModifierKind.ChewSpeedAdd:
-                        {
-                            col = References.Instance.GreenText;
-                            text = $"+{modifier.MultiplyValue:0.#} Chew Speed";
-                            break;
-                        }
-                        case PetData.StatModifierKind.MouthSizeAdd:
-                        {
-                            col = References.Instance.BlueText;
-                            text = $"+{modifier.MultiplyValue:0.#} Mouth Size";
-                            break;
-                        }
-                    }
+                    var (text, col) = BuildStatModifierText(modifier);
+                    
                     UI.Text(statModRect, text, new UI.TextSettings() {
                         color = col,
                         outline = true,
@@ -576,48 +584,7 @@ public class GameUI : System<GameUI>
                 foreach(var modifier in HoveredPet.GetDefinition().StatModifiers)
                 {
                     var statModRect = tooltipRect.CutTop(35);
-                    Vector4 col = Vector4.White;
-                    string text = "";
-
-                    switch(modifier.Kind)
-                    {
-                        case PetData.StatModifierKind.StomachSizeMultiply:
-                        {
-                            col = References.Instance.RedText;
-                            text = $"{modifier.MultiplyValue:0.#}x Stomach Size";
-                            break;
-                        }
-                        case PetData.StatModifierKind.ChewSpeedMultiply:
-                        {
-                            col = References.Instance.GreenText;
-                            text = $"{modifier.MultiplyValue:0.#}x Chew Speed";
-                            break;
-                        }
-                        case PetData.StatModifierKind.MouthSizeMultiply:
-                        {
-                            col = References.Instance.BlueText;
-                            text = $"{modifier.MultiplyValue:0.#}x Mouth Size";
-                            break;
-                        }
-                        case PetData.StatModifierKind.StomachSizeAdd:
-                        {
-                            col = References.Instance.RedText;
-                            text = $"+{modifier.MultiplyValue:0.#} Stomach Size";
-                            break;
-                        }
-                        case PetData.StatModifierKind.ChewSpeedAdd:
-                        {
-                            col = References.Instance.GreenText;
-                            text = $"+{modifier.MultiplyValue:0.#} Chew Speed";
-                            break;
-                        }
-                        case PetData.StatModifierKind.MouthSizeAdd:
-                        {
-                            col = References.Instance.BlueText;
-                            text = $"+{modifier.MultiplyValue:0.#} Mouth Size";
-                            break;
-                        }
-                    }
+                    var (text, col) = BuildStatModifierText(modifier);
                     UI.Text(statModRect, text, new UI.TextSettings() {
                         color = col,
                         outline = true,
