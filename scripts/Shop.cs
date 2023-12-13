@@ -36,13 +36,22 @@ public class Shop : System<Shop>
             font = UI.TextSettings.Font.AlphaKind,
             size = 48,
             color = Vector4.Black,
-            horizontalAlignment = UI.TextSettings.HorizontalAlignment.Right,
+            horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
             verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
             wordWrap = false,
             wordWrapOffset = 0,
             offset = new Vector2(0, 10),
             // dropShadow = false,
             // outline= false,
+        };
+
+        var itemNameTextSettings = new UI.TextSettings()
+        {
+            font = UI.TextSettings.Font.AlphaKind,
+            size = 48,
+            color = Vector4.Black,
+            horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
+            verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
         };
 
         var windowRect = UI.SafeRect.CenterRect();
@@ -66,24 +75,31 @@ public class Shop : System<Shop>
         FatPlayer localPlayer = (FatPlayer) Network.LocalPlayer;
 
         var shopItems = ShopData.ShopEntries.Where(s => s.Category == SelectedCategory).ToList();
-        var grid = UI.GridLayout.Make(windowRect, 3, 2, UI.GridLayout.SizeSource.GRID_SIZE);
-        foreach (var shopEntry in shopItems)
-        {
-            var item = ShopData.Items.First(i => i.Id == shopEntry.ItemId);
 
-            var itemButtonRect = grid.Next().Inset(5, 5, 5, 5);
-            var itemButtonResult = UI.Button(itemButtonRect, shopEntry.ItemId, buttonSettings, buttonTextSettings);
-            if (itemButtonResult.clicked) 
+        Rect contentRect = windowRect;
+
+        UI.ScrollView scrollView = UI.PushScrollView(SelectedCategory, contentRect, UI.ScrollViewFlags.Vertical); {
+            using var _ = AllOut.Defer(() => UI.PopScrollView());
+            var itemsRect = scrollView.contentRect.TopRect().Inset(0, 5, 0, 5);
+            foreach (var shopEntry in shopItems)
             {
-                if (item.Currency == ShopData.Currency.Coins || 
-                    item.Currency == ShopData.Currency.Trophies) 
-                {
-                    localPlayer.CallServer_RequestPurchaseItem(item.Id);
-                }
+                var itemRect = itemsRect.CutTop(75);
+                var item = ShopData.Items.First(i => i.Id == shopEntry.ItemId);
+                var itemButtonRect = itemRect.CutRight(200).Inset(5);
+                var itemNameRect = itemRect;
 
-                if (item.Currency == ShopData.Currency.Sparks) 
+                UI.Text(itemNameRect, shopEntry.ItemId, itemNameTextSettings);
+                if (UI.Button(itemButtonRect, $"Buy: ${item.Cost}", buttonSettings, buttonTextSettings).clicked)
                 {
-                    Purchasing.PromptPurchase(item.ProductId);
+                    if (item.Currency == ShopData.Currency.Coins || item.Currency == ShopData.Currency.Trophies)
+                    {
+                        localPlayer.CallServer_RequestPurchaseItem(item.Id);
+                    }
+
+                    if (item.Currency == ShopData.Currency.Sparks)
+                    {
+                        Purchasing.PromptPurchase(item.ProductId);
+                    }
                 }
             }
         }
@@ -185,14 +201,40 @@ public class Shop : System<Shop>
 
 public static class ShopData
 {
-    [AOIgnore] public static List<ShopEntry> ShopEntries = new List<ShopEntry>() 
+    public static List<ShopEntry> ShopEntries = new List<ShopEntry>()
     {
-        new () { Id = "fun_egg_item", Category = "Eggs", ItemId = "fun_egg" },
+        new () { Id = "egg_1a_item", Category = "Eggs", ItemId = "egg_1a" },
+        new () { Id = "egg_1b_item", Category = "Eggs", ItemId = "egg_1b" },
+        new () { Id = "egg_1c_item", Category = "Eggs", ItemId = "egg_1c" },
+        new () { Id = "egg_1b_item", Category = "Eggs", ItemId = "egg_1b" },
+
+        new () { Id = "egg_2a_item", Category = "Eggs", ItemId = "egg_2a" },
+        new () { Id = "egg_2b_item", Category = "Eggs", ItemId = "egg_2b" },
+        new () { Id = "egg_2c_item", Category = "Eggs", ItemId = "egg_2c" },
+        new () { Id = "egg_2b_item", Category = "Eggs", ItemId = "egg_2b" },
+
+        new () { Id = "egg_3a_item", Category = "Eggs", ItemId = "egg_3a" },
+        new () { Id = "egg_3b_item", Category = "Eggs", ItemId = "egg_3b" },
+        new () { Id = "egg_3c_item", Category = "Eggs", ItemId = "egg_3c" },
+        new () { Id = "egg_3b_item", Category = "Eggs", ItemId = "egg_3b" },
     };
 
-    [AOIgnore] public static List<Item> Items = new List<Item>() 
+    public static List<Item> Items = new List<Item>()
     {
-        new () { Id = "fun_egg", ProductId = "", Name = "Fun Egg", Description = "A fun egg", Currency = Currency.Coins, Cost = 1, Kind = ItemKind.Egg, ItemIdentifier = "egg0" },
+        new () { Id = "egg_1a", ProductId = "", Name = "Egg 1A", Description = "A fun egg", Currency = Currency.Coins, Cost = 5,   Kind = ItemKind.Egg, ItemIdentifier = "egg1a" },
+        new () { Id = "egg_1b", ProductId = "", Name = "Egg 1B", Description = "A fun egg", Currency = Currency.Coins, Cost = 25,  Kind = ItemKind.Egg, ItemIdentifier = "egg1b" },
+        new () { Id = "egg_1c", ProductId = "", Name = "Egg 1C", Description = "A fun egg", Currency = Currency.Coins, Cost = 150, Kind = ItemKind.Egg, ItemIdentifier = "egg1c" },
+        new () { Id = "egg_1b", ProductId = "", Name = "Egg 1D", Description = "A fun egg", Currency = Currency.Coins, Cost = 800, Kind = ItemKind.Egg, ItemIdentifier = "egg1d" },
+
+        new () { Id = "egg_2a", ProductId = "", Name = "Egg 2A", Description = "A fun egg", Currency = Currency.Coins, Cost = 4500,    Kind = ItemKind.Egg, ItemIdentifier = "egg2a" },
+        new () { Id = "egg_2b", ProductId = "", Name = "Egg 2B", Description = "A fun egg", Currency = Currency.Coins, Cost = 45000,   Kind = ItemKind.Egg, ItemIdentifier = "egg2b" },
+        new () { Id = "egg_2c", ProductId = "", Name = "Egg 2C", Description = "A fun egg", Currency = Currency.Coins, Cost = 275000,  Kind = ItemKind.Egg, ItemIdentifier = "egg2c" },
+        new () { Id = "egg_2b", ProductId = "", Name = "Egg 2D", Description = "A fun egg", Currency = Currency.Coins, Cost = 2800000, Kind = ItemKind.Egg, ItemIdentifier = "egg2d" },
+
+        new () { Id = "egg_3a", ProductId = "", Name = "Egg 3A", Description = "A fun egg", Currency = Currency.Coins, Cost = 5000000,     Kind = ItemKind.Egg, ItemIdentifier = "egg3a" },
+        new () { Id = "egg_3b", ProductId = "", Name = "Egg 3B", Description = "A fun egg", Currency = Currency.Coins, Cost = 42000000,    Kind = ItemKind.Egg, ItemIdentifier = "egg3b" },
+        new () { Id = "egg_3c", ProductId = "", Name = "Egg 3C", Description = "A fun egg", Currency = Currency.Coins, Cost = 680000000,   Kind = ItemKind.Egg, ItemIdentifier = "egg3c" },
+        new () { Id = "egg_3b", ProductId = "", Name = "Egg 3D", Description = "A fun egg", Currency = Currency.Coins, Cost = 15000000000, Kind = ItemKind.Egg, ItemIdentifier = "egg3d" },
     };
 
     public class ShopEntry
@@ -226,7 +268,7 @@ public static class ShopData
         public string Category;
         public ItemKind Kind;
         public Currency Currency;
-        public int Cost;
+        public long Cost;
 
         public string ItemIdentifier;
     }

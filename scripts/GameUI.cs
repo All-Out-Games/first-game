@@ -72,21 +72,21 @@ public class GameUI : System<GameUI>
             var trophiesIconRect = trophiesRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(6, 0);
             UI.Image(trophiesIconRect, References.Instance.CoinIcon, Vector4.White, new UI.NineSlice());
             textSettings.color = References.Instance.YellowText;
-            UI.Text(trophiesRect, $"{localPlayer.Trophies}", textSettings);
+            UI.Text(trophiesRect, $"{Util.FormatDouble(localPlayer.Trophies)}", textSettings);
             
             var cashRect = topBarGrid.Next().Inset(0, 10, 0, 10);
             UI.Image(cashRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
             var cashIconRect = cashRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(6, 0);
             UI.Image(cashIconRect, References.Instance.CoinIcon, Vector4.White, new UI.NineSlice());
             textSettings.color = References.Instance.GreenText;
-            UI.Text(cashRect, $"{localPlayer.Coins}", textSettings);
+            UI.Text(cashRect, $"{Util.FormatDouble(localPlayer.Coins)}", textSettings);
 
             var foodRect = topBarGrid.Next().Inset(0, 10, 0, 10);
             UI.Image(foodRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
             var foodIconRect = foodRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(6, 0);
             UI.Image(foodIconRect, References.Instance.FoodIcon, Vector4.White, new UI.NineSlice());
             textSettings.color = References.Instance.RedText;
-            UI.Text(foodRect, $"{localPlayer.Food}/{localPlayer.ModifiedMaxFood}", textSettings);
+            UI.Text(foodRect, $"{Util.FormatDouble(localPlayer.Food)}/{Util.FormatDouble(localPlayer.ModifiedMaxFood)}", textSettings);
         }
 
         // top-left stats

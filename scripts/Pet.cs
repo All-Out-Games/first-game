@@ -44,7 +44,7 @@ public class Pet : Component
             foreach (var other in otherOwnerPets)
             {
                 // if we are near another pet that has arrived, then we have arrived too
-                if (other.Arrived && (other.Entity.Position - Entity.Position).Length < (agentRadius + agentRadius + 0.5f))
+                if (other.Arrived && (other.Entity.Position - Entity.Position).Length < (agentRadius + agentRadius + 1.0f))
                 {
                     Arrived = true;
                 }
@@ -83,10 +83,10 @@ public class Pet : Component
         var totalForce = moveToTargetForce * 1.0f;
         totalForce += separationForce * 0.5f;
         totalForce *= (float)Math.Max(distanceToTarget, 1.0f);
-        if (totalForce.X < -0.001f) {
+        if (totalForce.X < -0.25f) {
             Entity.LocalScaleX = -1;
         }
-        else if (totalForce.X > 0.001f) {
+        else if (totalForce.X > 0.25f) {
             Entity.LocalScaleX = 1;
         }
         Velocity += totalForce * Time.DeltaTime * 15.0f;
