@@ -81,8 +81,13 @@ public class Shop : System<Shop>
         UI.ScrollView scrollView = UI.PushScrollView(SelectedCategory, contentRect, UI.ScrollViewFlags.Vertical); {
             using var _ = AllOut.Defer(() => UI.PopScrollView());
             var itemsRect = scrollView.contentRect.TopRect().Inset(0, 5, 0, 5);
+            int itemNumber = 0;
             foreach (var shopEntry in shopItems)
             {
+                itemNumber += 1;
+                UI.PushId(itemNumber.ToString());
+                using var _1 = AllOut.Defer(UI.PopId);
+
                 var itemRect = itemsRect.CutTop(75);
                 var item = ShopData.Items.First(i => i.Id == shopEntry.ItemId);
                 var itemButtonRect = itemRect.CutRight(200).Inset(5);

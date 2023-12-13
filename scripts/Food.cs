@@ -81,7 +81,7 @@ public partial class Food : Component
             {
                 if (player.IsLocal)
                 {
-                    Notifications.Show($"Your mouth is too small to eat {Definition.Name}! {player.ModifiedMouthSize}/{Size}");
+                    Notifications.Show($"Your mouth is too small to eat {Definition.Name}! {Util.FormatDouble(player.ModifiedMouthSize)}/{Util.FormatDouble(Size)}");
                 }
                 return;
             }

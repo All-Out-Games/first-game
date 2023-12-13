@@ -121,7 +121,7 @@ public partial class PetManager : Component
 
 public static class PetData
 {
-    [AOIgnore] public static Dictionary<string, PetDefinition> Pets = new Dictionary<string, PetDefinition>() 
+    public static Dictionary<string, PetDefinition> Pets = new Dictionary<string, PetDefinition>()
     {
         { "pet0",  new () { Id = "pet0",  Name = "Jimbo",     Description = "A very cool pet.", Sprite = "pets/cow.png",           StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.ChewSpeedMultiply,   MultiplyValue =  1.03f } } } },
         { "pet1",  new () { Id = "pet1",  Name = "Jimbo +1",  Description = "A very cool pet.", Sprite = "pets/dire_wolf.png",     StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.StomachSizeMultiply, MultiplyValue =  1.08f } } } },
@@ -135,8 +135,8 @@ public static class PetData
 
         { "pet8",  new () { Id = "pet8",  Name = "Jimbo +8",  Description = "A very cool pet.", Sprite = "pets/cow.png",           StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.MouthSizeMultiply,   MultiplyValue =  1.18f } } } },
         { "pet9",  new () { Id = "pet9",  Name = "Jimbo +9",  Description = "A very cool pet.", Sprite = "pets/dire_wolf.png",     StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.ChewSpeedMultiply,   MultiplyValue =  1.24f } } } },
-        { "pet10", new () { Id = "pet10", Name = "Jimbo +12", Description = "A very cool pet.", Sprite = "pets/America_Eagle.png", StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.StomachSizeMultiply, MultiplyValue =  1.44f } } } },
-        { "pet11", new () { Id = "pet11", Name = "Jimbo +13", Description = "A very cool pet.", Sprite = "pets/Shady Dragon.png",  StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.MouthSizeMultiply,   MultiplyValue =  1.89f } } } },
+        { "pet10", new () { Id = "pet10", Name = "Jimbo +10", Description = "A very cool pet.", Sprite = "pets/America_Eagle.png", StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.StomachSizeMultiply, MultiplyValue =  1.44f } } } },
+        { "pet11", new () { Id = "pet11", Name = "Jimbo +11", Description = "A very cool pet.", Sprite = "pets/Shady Dragon.png",  StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.MouthSizeMultiply,   MultiplyValue =  1.89f } } } },
 
         { "pet12", new () { Id = "pet12", Name = "Jimbo +12", Description = "A very cool pet.", Sprite = "pets/cow.png",           StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.ChewSpeedMultiply,   MultiplyValue =  1.26f } } } },
         { "pet13", new () { Id = "pet13", Name = "Jimbo +13", Description = "A very cool pet.", Sprite = "pets/dire_wolf.png",     StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.StomachSizeMultiply, MultiplyValue =  1.60f } } } },
