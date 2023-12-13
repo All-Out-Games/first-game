@@ -78,7 +78,7 @@ public class Shop : System<Shop>
 
         Rect contentRect = windowRect;
 
-        UI.ScrollView scrollView = UI.PushScrollView(SelectedCategory, contentRect, UI.ScrollViewFlags.Vertical); {
+        UI.ScrollView scrollView = UI.PushScrollView(SelectedCategory, contentRect, new UI.ScrollViewSettings() { Vertical = true, }); {
             using var _ = AllOut.Defer(() => UI.PopScrollView());
             var itemsRect = scrollView.contentRect.TopRect().Inset(0, 5, 0, 5);
             int itemNumber = 0;

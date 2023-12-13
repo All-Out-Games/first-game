@@ -156,10 +156,10 @@ public class GameUI : System<GameUI>
             StringBuilder sb = new StringBuilder();
 
             DoSingleStatUI(ref statsRect, "player",  statsTextSettings, $"Player Level: {localPlayer.PlayerLevel}",    $"");
-            DoSingleStatUI(ref statsRect, "stomach", statsTextSettings, $"Stomach Level: {localPlayer._maxFoodLevel}", $"Stomach Size: {localPlayer.ModifiedMaxFood}");
-            DoSingleStatUI(ref statsRect, "mouth",   statsTextSettings, $"Mouth Level: {localPlayer._mouthSizeLevel}", $"Mouth Size: {localPlayer.ModifiedMouthSize}");
-            DoSingleStatUI(ref statsRect, "chew",    statsTextSettings, $"Chew Level: {localPlayer._chewSpeedLevel}",  $"Chew Speed: {localPlayer.ModifiedChewSpeed}x");
-            DoSingleStatUI(ref statsRect, "rebirth", statsTextSettings, $"Rebirth Level: {localPlayer._rebirth}",      $"Cash Multiplier: {localPlayer.RebirthCashMultiplier}x");
+            DoSingleStatUI(ref statsRect, "stomach", statsTextSettings, $"Stomach Level: {localPlayer._maxFoodLevel}", $"Stomach Size: {Util.FormatDouble(localPlayer.ModifiedMaxFood)}");
+            DoSingleStatUI(ref statsRect, "mouth",   statsTextSettings, $"Mouth Level: {localPlayer._mouthSizeLevel}", $"Mouth Size: {Util.FormatDouble(localPlayer.ModifiedMouthSize)}");
+            DoSingleStatUI(ref statsRect, "chew",    statsTextSettings, $"Chew Level: {localPlayer._chewSpeedLevel}",  $"Chew Speed: {Util.FormatDouble(localPlayer.ModifiedChewSpeed)}x");
+            DoSingleStatUI(ref statsRect, "rebirth", statsTextSettings, $"Rebirth Level: {localPlayer._rebirth}",      $"Cash Multiplier: {Util.FormatDouble(localPlayer.RebirthCashMultiplier)}x");
         }
 
         var sideBarRect = UI.SafeRect.LeftRect();
@@ -428,7 +428,7 @@ public class GameUI : System<GameUI>
 
             {
                 Rect contentRect = windowRect.Inset(75, 50, 5, 50);
-                UI.ScrollView scrollView = UI.PushScrollView("pets_scroll_view", contentRect, UI.ScrollViewFlags.Vertical);
+                var scrollView = UI.PushScrollView("pets_scroll_view", contentRect, new UI.ScrollViewSettings() { Vertical = true, });
                 using var _3 = AllOut.Defer(() => UI.PopScrollView());
 
                 var petsRect = scrollView.contentRect.TopRect();
