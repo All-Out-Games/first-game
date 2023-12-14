@@ -63,7 +63,7 @@ public class Shop : System<Shop>
 
         {
             var scrollRect = windowRect.Inset(5, 20, 5, 20);
-            var scrollView = UI.PushScrollView("pets_scroll_view", scrollRect, new UI.ScrollViewSettings() { Vertical = true, ClipPadding = new Vector4(5,5,5,5) });
+            var scrollView = UI.PushScrollView("pets_scroll_view", scrollRect, new UI.ScrollViewSettings() { Vertical = true, ClipPadding = new Vector4(0,5,0,5) });
             using var _ = AllOut.Defer(UI.PopScrollView);
 
             var idx = 0;
@@ -159,9 +159,9 @@ public class Shop : System<Shop>
                         {
                             Purchasing.PromptPurchase(item.ProductId);
                         }
-                        
-                             if (buyResult.pressed)  entryRect = entryRect.Inset(5);
-                        else if (buyResult.hovering) entryRect = entryRect.Grow(8);
+
+                             if (buyResult.pressed)  entryRect = entryRect.Inset(3);
+                        else if (buyResult.hovering) entryRect = entryRect.Grow(3);
                         
                         UI.Image(entryRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
 
