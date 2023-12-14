@@ -226,20 +226,20 @@ public static class ShopData
 
     public static List<Item> Items = new List<Item>()
     {
-        new () { Id = "egg_1a", ProductId = "", Name = "Egg 1A", Description = "A fun egg", Currency = Currency.Coins, Cost = 5,   Kind = ItemKind.Egg, ItemIdentifier = "egg1a" },
-        new () { Id = "egg_1b", ProductId = "", Name = "Egg 1B", Description = "A fun egg", Currency = Currency.Coins, Cost = 25,  Kind = ItemKind.Egg, ItemIdentifier = "egg1b" },
-        new () { Id = "egg_1c", ProductId = "", Name = "Egg 1C", Description = "A fun egg", Currency = Currency.Coins, Cost = 150, Kind = ItemKind.Egg, ItemIdentifier = "egg1c" },
-        new () { Id = "egg_1b", ProductId = "", Name = "Egg 1D", Description = "A fun egg", Currency = Currency.Coins, Cost = 800, Kind = ItemKind.Egg, ItemIdentifier = "egg1d" },
+        new () { Id = "egg_1a", ProductId = "", Name = "Egg 1A", Description = "A fun egg", Currency = Currency.Trophies, Cost = 5,   Kind = ItemKind.Egg, ItemIdentifier = "egg1a" },
+        new () { Id = "egg_1b", ProductId = "", Name = "Egg 1B", Description = "A fun egg", Currency = Currency.Trophies, Cost = 25,  Kind = ItemKind.Egg, ItemIdentifier = "egg1b" },
+        new () { Id = "egg_1c", ProductId = "", Name = "Egg 1C", Description = "A fun egg", Currency = Currency.Trophies, Cost = 150, Kind = ItemKind.Egg, ItemIdentifier = "egg1c" },
+        new () { Id = "egg_1b", ProductId = "", Name = "Egg 1D", Description = "A fun egg", Currency = Currency.Trophies, Cost = 800, Kind = ItemKind.Egg, ItemIdentifier = "egg1d" },
 
-        new () { Id = "egg_2a", ProductId = "", Name = "Egg 2A", Description = "A fun egg", Currency = Currency.Coins, Cost = 4500,    Kind = ItemKind.Egg, ItemIdentifier = "egg2a" },
-        new () { Id = "egg_2b", ProductId = "", Name = "Egg 2B", Description = "A fun egg", Currency = Currency.Coins, Cost = 45000,   Kind = ItemKind.Egg, ItemIdentifier = "egg2b" },
-        new () { Id = "egg_2c", ProductId = "", Name = "Egg 2C", Description = "A fun egg", Currency = Currency.Coins, Cost = 275000,  Kind = ItemKind.Egg, ItemIdentifier = "egg2c" },
-        new () { Id = "egg_2b", ProductId = "", Name = "Egg 2D", Description = "A fun egg", Currency = Currency.Coins, Cost = 2800000, Kind = ItemKind.Egg, ItemIdentifier = "egg2d" },
+        new () { Id = "egg_2a", ProductId = "", Name = "Egg 2A", Description = "A fun egg", Currency = Currency.Trophies, Cost = 4500,    Kind = ItemKind.Egg, ItemIdentifier = "egg2a" },
+        new () { Id = "egg_2b", ProductId = "", Name = "Egg 2B", Description = "A fun egg", Currency = Currency.Trophies, Cost = 45000,   Kind = ItemKind.Egg, ItemIdentifier = "egg2b" },
+        new () { Id = "egg_2c", ProductId = "", Name = "Egg 2C", Description = "A fun egg", Currency = Currency.Trophies, Cost = 275000,  Kind = ItemKind.Egg, ItemIdentifier = "egg2c" },
+        new () { Id = "egg_2b", ProductId = "", Name = "Egg 2D", Description = "A fun egg", Currency = Currency.Trophies, Cost = 2800000, Kind = ItemKind.Egg, ItemIdentifier = "egg2d" },
 
-        new () { Id = "egg_3a", ProductId = "", Name = "Egg 3A", Description = "A fun egg", Currency = Currency.Coins, Cost = 5000000,     Kind = ItemKind.Egg, ItemIdentifier = "egg3a" },
-        new () { Id = "egg_3b", ProductId = "", Name = "Egg 3B", Description = "A fun egg", Currency = Currency.Coins, Cost = 42000000,    Kind = ItemKind.Egg, ItemIdentifier = "egg3b" },
-        new () { Id = "egg_3c", ProductId = "", Name = "Egg 3C", Description = "A fun egg", Currency = Currency.Coins, Cost = 680000000,   Kind = ItemKind.Egg, ItemIdentifier = "egg3c" },
-        new () { Id = "egg_3b", ProductId = "", Name = "Egg 3D", Description = "A fun egg", Currency = Currency.Coins, Cost = 15000000000, Kind = ItemKind.Egg, ItemIdentifier = "egg3d" },
+        new () { Id = "egg_3a", ProductId = "", Name = "Egg 3A", Description = "A fun egg", Currency = Currency.Trophies, Cost = 5000000,     Kind = ItemKind.Egg, ItemIdentifier = "egg3a" },
+        new () { Id = "egg_3b", ProductId = "", Name = "Egg 3B", Description = "A fun egg", Currency = Currency.Trophies, Cost = 42000000,    Kind = ItemKind.Egg, ItemIdentifier = "egg3b" },
+        new () { Id = "egg_3c", ProductId = "", Name = "Egg 3C", Description = "A fun egg", Currency = Currency.Trophies, Cost = 680000000,   Kind = ItemKind.Egg, ItemIdentifier = "egg3c" },
+        new () { Id = "egg_3b", ProductId = "", Name = "Egg 3D", Description = "A fun egg", Currency = Currency.Trophies, Cost = 15000000000, Kind = ItemKind.Egg, ItemIdentifier = "egg3d" },
     };
 
     public class ShopEntry

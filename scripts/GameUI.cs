@@ -53,40 +53,22 @@ public class GameUI : System<GameUI>
 
         switch(modifier.Kind)
         {
-            case PetData.StatModifierKind.StomachSizeMultiply:
+            case PetData.StatModifierKind.StomachSize:
             {
                 col = References.Instance.RedText;
                 text = $"{modifier.MultiplyValue:0.#}x Stomach Size";
                 break;
             }
-            case PetData.StatModifierKind.ChewSpeedMultiply:
+            case PetData.StatModifierKind.ChewSpeed:
             {
                 col = References.Instance.GreenText;
                 text = $"{modifier.MultiplyValue:0.#}x Chew Speed";
                 break;
             }
-            case PetData.StatModifierKind.MouthSizeMultiply:
+            case PetData.StatModifierKind.MouthSize:
             {
                 col = References.Instance.BlueText;
                 text = $"{modifier.MultiplyValue:0.#}x Mouth Size";
-                break;
-            }
-            case PetData.StatModifierKind.StomachSizeAdd:
-            {
-                col = References.Instance.RedText;
-                text = $"+{modifier.MultiplyValue:0.#} Stomach Size";
-                break;
-            }
-            case PetData.StatModifierKind.ChewSpeedAdd:
-            {
-                col = References.Instance.GreenText;
-                text = $"+{modifier.MultiplyValue:0.#} Chew Speed";
-                break;
-            }
-            case PetData.StatModifierKind.MouthSizeAdd:
-            {
-                col = References.Instance.BlueText;
-                text = $"+{modifier.MultiplyValue:0.#} Mouth Size";
                 break;
             }
         }
@@ -142,7 +124,7 @@ public class GameUI : System<GameUI>
             var foodIconRect = foodRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(6, 0);
             UI.Image(foodIconRect, References.Instance.FoodIcon, Vector4.White, new UI.NineSlice());
             textSettings.color = References.Instance.RedText;
-            UI.Text(foodRect, $"{Util.FormatDouble(localPlayer.Food)}/{Util.FormatDouble(localPlayer.ModifiedMaxFood)}", textSettings);
+            UI.Text(foodRect, $"{Util.FormatDouble(localPlayer.Food)}/{Util.FormatDouble(localPlayer.ModifiedStomachSize)}", textSettings);
         }
 
         // top-left stats
@@ -156,7 +138,7 @@ public class GameUI : System<GameUI>
             StringBuilder sb = new StringBuilder();
 
             DoSingleStatUI(ref statsRect, "player",  statsTextSettings, $"Player Level: {localPlayer.PlayerLevel}",    $"");
-            DoSingleStatUI(ref statsRect, "stomach", statsTextSettings, $"Stomach Level: {localPlayer._maxFoodLevel}", $"Stomach Size: {Util.FormatDouble(localPlayer.ModifiedMaxFood)}");
+            DoSingleStatUI(ref statsRect, "stomach", statsTextSettings, $"Stomach Level: {localPlayer._maxFoodLevel}", $"Stomach Size: {Util.FormatDouble(localPlayer.ModifiedStomachSize)}");
             DoSingleStatUI(ref statsRect, "mouth",   statsTextSettings, $"Mouth Level: {localPlayer._mouthSizeLevel}", $"Mouth Size: {Util.FormatDouble(localPlayer.ModifiedMouthSize)}");
             DoSingleStatUI(ref statsRect, "chew",    statsTextSettings, $"Chew Level: {localPlayer._chewSpeedLevel}",  $"Chew Speed: {Util.FormatDouble(localPlayer.ModifiedChewSpeed)}x");
             DoSingleStatUI(ref statsRect, "rebirth", statsTextSettings, $"Rebirth Level: {localPlayer._rebirth}",      $"Cash Multiplier: {Util.FormatDouble(localPlayer.RebirthCashMultiplier)}x");

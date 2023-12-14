@@ -311,12 +311,13 @@ public partial class FatPlayer : Player
 
     public double RebirthCashMultiplier => global::Rebirth.Instance.GetRebirthData(Rebirth).CashMultiplier;
 
-    public double ModifiedChewSpeed => CalculateModifiedStat(PetData.StatModifierKind.ChewSpeedMultiply,   PetData.StatModifierKind.ChewSpeedAdd,   ChewSpeedByLevel  [Math.Clamp(_chewSpeedLevel, 0, ChewSpeedByLevel.Length-1)].Value);
-    public double ModifiedMouthSize => CalculateModifiedStat(PetData.StatModifierKind.MouthSizeMultiply,   PetData.StatModifierKind.MouthSizeAdd,   MouthSizeByLevel  [Math.Clamp(_mouthSizeLevel, 0, MouthSizeByLevel.Length-1)].Value);
-    public double ModifiedMaxFood   => CalculateModifiedStat(PetData.StatModifierKind.StomachSizeMultiply, PetData.StatModifierKind.StomachSizeAdd, StomachSizeByLevel[Math.Clamp(_maxFoodLevel,   0, StomachSizeByLevel.Length-1)].Value);
+    public double ModifiedChewSpeed   => CalculateModifiedStat(PetData.StatModifierKind.ChewSpeed,   ChewSpeedByLevel  [Math.Clamp(_chewSpeedLevel, 0, ChewSpeedByLevel.Length-1)].Value);
+    public double ModifiedMouthSize   => CalculateModifiedStat(PetData.StatModifierKind.MouthSize,   MouthSizeByLevel  [Math.Clamp(_mouthSizeLevel, 0, MouthSizeByLevel.Length-1)].Value);
+    public double ModifiedStomachSize => CalculateModifiedStat(PetData.StatModifierKind.StomachSize, StomachSizeByLevel[Math.Clamp(_maxFoodLevel,   0, StomachSizeByLevel.Length-1)].Value);
 
-    public double CalculateModifiedStat(PetData.StatModifierKind multiplyKind, PetData.StatModifierKind addKind, double baseValue)
+    public double CalculateModifiedStat(PetData.StatModifierKind kind, double baseValue)
     {
+        double summedMultipliers = 0.0;
         foreach (var pet in PetManager.OwnedPets)
         {
             if (!pet.Equipped)
@@ -330,34 +331,13 @@ public partial class FatPlayer : Player
             }
             foreach (var modifier in defn.StatModifiers)
             {
-                if (modifier.Kind == addKind)
+                if (modifier.Kind == kind)
                 {
-                    baseValue += modifier.AddValue;
+                    summedMultipliers += modifier.MultiplyValue - 1.0;
                 }
             }
         }
-
-        double modified = baseValue;
-        foreach (var pet in PetManager.OwnedPets)
-        {
-            if (!pet.Equipped)
-            {
-                continue;
-            }
-            var defn = pet.GetDefinition();
-            if (defn == null)
-            {
-                continue;
-            }
-            foreach (var modifier in defn.StatModifiers)
-            {
-                if (modifier.Kind == multiplyKind)
-                {
-                    modified *= modifier.MultiplyValue;
-                }
-            }
-        }
-        return modified;
+        return baseValue + baseValue * summedMultipliers;
     }
 
     [AOIgnore] public Dictionary<string, int> ZoneCosts = new Dictionary<string, int>() 

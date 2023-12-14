@@ -86,7 +86,7 @@ public partial class Food : Component
                 return;
             }
 
-            var stomachRoom = player.ModifiedMaxFood - player.Food;
+            var stomachRoom = player.ModifiedStomachSize - player.Food;
             if (stomachRoom <= 0)
             {
                 if (player.IsLocal)
