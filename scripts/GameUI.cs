@@ -28,21 +28,48 @@ public class GameUI : System<GameUI>
     public Vector4 RarityColorEpic      = new Vector4(0.8f, 0.5f, 0.8f, 1.0f);
     public Vector4 RarityColorLegendary = new Vector4(0.8f, 0.8f, 0.5f, 1.0f);
 
-    public void DoSingleStatUI(ref Rect rect, string id, UI.TextSettings textSettings, string str, string tooltipText) {
+    public void DoSingleStatUI(ref Rect rect, string id, UI.TextSettings textSettings, string str, string tooltipText = null, string text2 = null, string text3 = null)
+    {
         var rowRect = rect.CutTop(30);
         rowRect = UI.Text(rowRect, str, textSettings);
-        UI.TooltipResult tooltip = UI.Tooltip(rowRect, id, out Rect mouseRect, new UI.TooltipSettings());
-        if (tooltip.Hovering) {
-            UI.PushLayerRelative(1);
-            using var _1 = AllOut.Defer(UI.PopLayer);
+        if (!string.IsNullOrEmpty(tooltipText))
+        {
+            UI.TooltipResult tooltip = UI.Tooltip(rowRect, id, out Rect mouseRect, new UI.TooltipSettings());
+            if (tooltip.Hovering) {
+                UI.PushColorMultiplier(new Vector4(tooltip.Hover01, tooltip.Hover01, tooltip.Hover01, tooltip.Hover01));
+                using var _2 = AllOut.Defer(UI.PopColorMultiplier);
 
-            var hoverTextSettings = textSettings;
-            hoverTextSettings.horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left;
-            hoverTextSettings.verticalAlignment = UI.TextSettings.VerticalAlignment.Top;
-            hoverTextSettings.wordWrap = false;
-            UI.PushColorMultiplier(new Vector4(tooltip.Hover01, tooltip.Hover01, tooltip.Hover01, tooltip.Hover01));
-            using var _2 = AllOut.Defer(UI.PopColorMultiplier);
-            UI.Text(mouseRect, tooltipText, hoverTextSettings);
+                mouseRect = mouseRect.Offset(30, 0);
+                var bgRect = mouseRect;
+                {
+                    UI.PushLayerRelative(2);
+                    using var _1 = AllOut.Defer(UI.PopLayer);
+
+                    var hoverTextSettings = textSettings;
+                    hoverTextSettings.horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left;
+                    hoverTextSettings.verticalAlignment = UI.TextSettings.VerticalAlignment.Top;
+                    hoverTextSettings.wordWrap = false;
+                    var textRect = UI.Text(mouseRect, tooltipText, hoverTextSettings);
+                    bgRect = bgRect.Encapsulate(textRect);
+                    if (!string.IsNullOrEmpty(text2))
+                    {
+                        mouseRect.CutTop(30);
+                        textRect = UI.Text(mouseRect, text2, hoverTextSettings);
+                        bgRect = bgRect.Encapsulate(textRect);
+                    }
+                    if (!string.IsNullOrEmpty(text3))
+                    {
+                        mouseRect.CutTop(30);
+                        textRect = UI.Text(mouseRect, text3, hoverTextSettings);
+                        bgRect = bgRect.Encapsulate(textRect);
+                    }
+                }
+                {
+                    UI.PushLayerRelative(1);
+                    using var _1 = AllOut.Defer(UI.PopLayer);
+                    UI.Image(bgRect.Grow(5, 5, 5, 5), null, new Vector4(0, 0, 0, 0.8f));
+                }
+            }
         }
     }
 
@@ -137,11 +164,11 @@ public class GameUI : System<GameUI>
             var statsRect = UI.SafeRect.TopLeftRect().GrowRight(200);
             StringBuilder sb = new StringBuilder();
 
-            DoSingleStatUI(ref statsRect, "player",  statsTextSettings, $"Player Level: {localPlayer.PlayerLevel}",    $"");
-            DoSingleStatUI(ref statsRect, "stomach", statsTextSettings, $"Stomach Level: {localPlayer._maxFoodLevel}", $"Stomach Size: {Util.FormatDouble(localPlayer.ModifiedStomachSize)}");
-            DoSingleStatUI(ref statsRect, "mouth",   statsTextSettings, $"Mouth Level: {localPlayer._mouthSizeLevel}", $"Mouth Size: {Util.FormatDouble(localPlayer.ModifiedMouthSize)}");
-            DoSingleStatUI(ref statsRect, "chew",    statsTextSettings, $"Chew Level: {localPlayer._chewSpeedLevel}",  $"Chew Speed: {Util.FormatDouble(localPlayer.ModifiedChewSpeed)}x");
-            DoSingleStatUI(ref statsRect, "rebirth", statsTextSettings, $"Rebirth Level: {localPlayer._rebirth}",      $"Cash Multiplier: {Util.FormatDouble(localPlayer.RebirthCashMultiplier)}x");
+            DoSingleStatUI(ref statsRect, "player",  statsTextSettings, $"Player Level: {localPlayer.PlayerLevel}");
+            DoSingleStatUI(ref statsRect, "stomach", statsTextSettings, $"Stomach Level: {localPlayer._maxFoodLevel}", $"Stomach Size: {localPlayer.ModifiedStomachSize.ToString("F2")}",        $"Base: {localPlayer.BaseStomachSizeValue.ToString("F2")}",    $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(PetData.StatModifierKind.StomachSize).ToString("F2")}");
+            DoSingleStatUI(ref statsRect, "mouth",   statsTextSettings, $"Mouth Level: {localPlayer._mouthSizeLevel}", $"Mouth Size: {localPlayer.ModifiedMouthSize.ToString("F2")}",            $"Base: {localPlayer.BaseMouthSizeValue.ToString("F2")}",      $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(PetData.StatModifierKind.MouthSize).ToString("F2")}");
+            DoSingleStatUI(ref statsRect, "chew",    statsTextSettings, $"Chew Level: {localPlayer._chewSpeedLevel}",  $"Chew Speed: {localPlayer.ModifiedChewSpeed.ToString("F2")}x",           $"Base: {localPlayer.BaseChewSpeedValue.ToString("F2")}",      $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(PetData.StatModifierKind.ChewSpeed).ToString("F2")}");
+            DoSingleStatUI(ref statsRect, "rebirth", statsTextSettings, $"Rebirth Level: {localPlayer._rebirth}",      $"Cash Multiplier: {localPlayer.ModifiedCashMultiplier.ToString("F2")}x", $"Base: {localPlayer.BaseCashMultiplierValue.ToString("F2")}", $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(PetData.StatModifierKind.CashMultiplier).ToString("F2")}");
         }
 
         var sideBarRect = UI.SafeRect.LeftRect();

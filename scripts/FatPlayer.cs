@@ -309,13 +309,17 @@ public partial class FatPlayer : Player
         }
     }
 
-    public double RebirthCashMultiplier => global::Rebirth.Instance.GetRebirthData(Rebirth).CashMultiplier;
+    public double BaseChewSpeedValue      => ChewSpeedByLevel  [Math.Clamp(_chewSpeedLevel, 0, ChewSpeedByLevel.Length-1)].Value;
+    public double BaseMouthSizeValue      => MouthSizeByLevel  [Math.Clamp(_mouthSizeLevel, 0, MouthSizeByLevel.Length-1)].Value;
+    public double BaseStomachSizeValue    => StomachSizeByLevel[Math.Clamp(_maxFoodLevel,   0, StomachSizeByLevel.Length-1)].Value;
+    public double BaseCashMultiplierValue => global::Rebirth.Instance.GetRebirthData(Rebirth).CashMultiplier;
 
-    public double ModifiedChewSpeed   => CalculateModifiedStat(PetData.StatModifierKind.ChewSpeed,   ChewSpeedByLevel  [Math.Clamp(_chewSpeedLevel, 0, ChewSpeedByLevel.Length-1)].Value);
-    public double ModifiedMouthSize   => CalculateModifiedStat(PetData.StatModifierKind.MouthSize,   MouthSizeByLevel  [Math.Clamp(_mouthSizeLevel, 0, MouthSizeByLevel.Length-1)].Value);
-    public double ModifiedStomachSize => CalculateModifiedStat(PetData.StatModifierKind.StomachSize, StomachSizeByLevel[Math.Clamp(_maxFoodLevel,   0, StomachSizeByLevel.Length-1)].Value);
+    public double ModifiedChewSpeed      => BaseChewSpeedValue      * CalculateTotalMultiplierFromPets(PetData.StatModifierKind.ChewSpeed);
+    public double ModifiedMouthSize      => BaseMouthSizeValue      * CalculateTotalMultiplierFromPets(PetData.StatModifierKind.MouthSize);
+    public double ModifiedStomachSize    => BaseStomachSizeValue    * CalculateTotalMultiplierFromPets(PetData.StatModifierKind.StomachSize);
+    public double ModifiedCashMultiplier => BaseCashMultiplierValue * CalculateTotalMultiplierFromPets(PetData.StatModifierKind.CashMultiplier);
 
-    public double CalculateModifiedStat(PetData.StatModifierKind kind, double baseValue)
+    public double CalculateTotalMultiplierFromPets(PetData.StatModifierKind kind)
     {
         double summedMultipliers = 0.0;
         foreach (var pet in PetManager.OwnedPets)
@@ -337,7 +341,7 @@ public partial class FatPlayer : Player
                 }
             }
         }
-        return baseValue + baseValue * summedMultipliers;
+        return 1 + summedMultipliers;
     }
 
     [AOIgnore] public Dictionary<string, int> ZoneCosts = new Dictionary<string, int>() 
