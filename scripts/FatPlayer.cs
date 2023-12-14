@@ -86,8 +86,51 @@ public partial class FatPlayer : Player
         this.RemoveFreezeReason("BossFight");
     }
 
+    [ServerRpc]
+    public void IncreaseMoneyCheat()
+    {
+        Coins = (Coins + 5) * 2;
+    }
+
+    [ServerRpc]
+    public void DecreaseMoneyCheat()
+    {
+        Coins /= 2;
+    }
+
+    [ServerRpc]
+    public void IncreaseTrophiesCheat()
+    {
+        Trophies = (Trophies + 5) * 2;
+    }
+
+    [ServerRpc]
+    public void DecreaseTrophiesCheat()
+    {
+        Trophies /= 2;
+    }
+
     public override void Update()
     {
+        if (Input.GetKeyHeld(Input.Keycode.KEYCODE_LEFT_CONTROL)) {
+            if (Input.GetKeyHeld(Input.Keycode.KEYCODE_LEFT_SHIFT)) {
+                if (Input.GetKeyDown(Input.Keycode.KEYCODE_EQUAL)) {
+                    CallServer_IncreaseTrophiesCheat();
+                }
+                if (Input.GetKeyDown(Input.Keycode.KEYCODE_MINUS)) {
+                    CallServer_DecreaseTrophiesCheat();
+                }
+            }
+            else {
+                if (Input.GetKeyDown(Input.Keycode.KEYCODE_EQUAL)) {
+                    CallServer_IncreaseMoneyCheat();
+                }
+                if (Input.GetKeyDown(Input.Keycode.KEYCODE_MINUS)) {
+                    CallServer_DecreaseMoneyCheat();
+                }
+            }
+        }
+
         foreach (var pet in Pet.AllPets)
         {
             if (pet.OwnerId != Entity.NetworkId)
