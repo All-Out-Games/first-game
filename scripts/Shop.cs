@@ -215,52 +215,6 @@ public class Shop : System<Shop>
         {
             return false;
         }
-
-        // var shopCategories = ShopData.ShopEntries.Select(s => s.Category).Distinct().ToList();
-
-        // var topBarRect = windowRect.CutTop(75).Offset(0, 25);
-        // foreach (var category in shopCategories)
-        // {
-        //     var categoryButtonRect = topBarRect.CutLeft(150).Inset(0, 5, 0, 5);
-        //     var categoryButtonResult = UI.Button(categoryButtonRect, category, buttonSettings, buttonTextSettings);
-        //     if (categoryButtonResult.clicked) 
-        //     {
-        //         SelectedCategory = category;
-        //     }
-        // }
-
-        // FatPlayer localPlayer = (FatPlayer) Network.LocalPlayer;
-
-        // var shopItems = ShopData.ShopEntries.Where(s => s.Category == SelectedCategory).ToList();
-
-        // Rect contentRect = windowRect;
-
-        // UI.ScrollView scrollView = UI.PushScrollView(SelectedCategory, contentRect, UI.ScrollViewFlags.Vertical); {
-        //     using var _ = AllOut.Defer(() => UI.PopScrollView());
-        //     var itemsRect = scrollView.contentRect.TopRect().Inset(0, 5, 0, 5);
-        //     foreach (var shopEntry in shopItems)
-        //     {
-        //         var itemRect = itemsRect.CutTop(75);
-        //         var item = ShopData.Items.First(i => i.Id == shopEntry.ItemId);
-        //         var itemButtonRect = itemRect.CutRight(200).Inset(5);
-        //         var itemNameRect = itemRect;
-
-        //         UI.Text(itemNameRect, shopEntry.ItemId, itemNameTextSettings);
-        //         if (UI.Button(itemButtonRect, $"Buy: ${item.Cost}", buttonSettings, buttonTextSettings).clicked)
-        //         {
-        //             if (item.Currency == ShopData.Currency.Coins || item.Currency == ShopData.Currency.Trophies)
-        //             {
-        //                 localPlayer.CallServer_RequestPurchaseItem(item.Id);
-        //             }
-
-        //             if (item.Currency == ShopData.Currency.Sparks)
-        //             {
-        //                 Purchasing.PromptPurchase(item.ProductId);
-        //             }
-        //         }
-        //     }
-        // }
-        
         return true;
     }
 
@@ -306,37 +260,10 @@ public class Shop : System<Shop>
 
         // We get here if the item was purchased with coins or trophies and they could afford it
 
-        if (item.Kind == ShopData.ItemKind.Egg) 
+        if (!GrantItem(player, item))
         {
-            if (!PetData.Eggs.TryGetValue(item.Id, out var eggDefinition))
-            {
-                Log.Error($"Could not find egg definition for {item.Id}");
-                return;
-            }
-
-            var totalWeight = eggDefinition.PossiblePets.Sum(p => p.Weight);
-            var rnd = Random.Next(0, totalWeight);
-
-            PetData.WeightedPet selectedPet = null;
-            foreach(var pet in eggDefinition.PossiblePets) 
-            {
-                if (rnd < pet.Weight) 
-                {
-                    selectedPet = pet;
-                    break;
-                }
-
-                rnd -= pet.Weight;
-            }
-
-            if (selectedPet == null) 
-            {
-                Log.Error($"Could not select pet from egg {item.Id}");
-                return;
-            }
-
-            Guid guid = Guid.NewGuid();
-            player.CallClient_AddPet(guid.ToString(), selectedPet.Id);
+            Log.Error($"Failed to grant item: {item.Id}. Cannot complete purhcase!");
+            return;
         }
 
         if (item.Currency == ShopData.Currency.Coins) 
@@ -352,6 +279,109 @@ public class Shop : System<Shop>
 
     public bool OnPurchase(Player purchaser, string productId)
     {
+        var item = ShopData.Items.FirstOrDefault(i => i.ProductId == productId);
+        if (item == null) 
+        {
+            Log.Error($"Failed to find item: {productId}. Cannot complete purhcase!");
+            return false;
+        }
+
+        return GrantItem(purchaser, item);
+    }
+
+    public bool GrantItem(Player p, ShopData.Item item, bool allowOpeningEggs = true)
+    {
+        FatPlayer player = (FatPlayer)p;
+        
+        if (item.Kind == ShopData.ItemKind.Pass)
+        {
+            switch(item.Id)
+            {
+                case "vip":
+                {
+                    return true;
+                }
+                case "2x_trophies":
+                {
+                    return true;
+                }
+                case "2x_food":
+                {
+                    return true;
+                }
+                default:
+                    Log.Error($"Unknown pass: {item.Id}");
+                    return false;
+            }
+        }
+
+        if (item.Kind == ShopData.ItemKind.Pack)
+        {
+            var pack = ShopData.Packs.FirstOrDefault(p => p.Id == item.Id);
+            if (pack == null)
+            {
+                Log.Error($"Could not find pack definition for {item.Id}");
+                return false;
+            }
+
+            foreach(var itemId in pack.Items)
+            {
+                var packItem = ShopData.Items.FirstOrDefault(i => i.Id == itemId);
+                if (packItem == null)
+                {
+                    Log.Error($"Could not find pack item definition for {itemId}");
+                    continue;
+                }
+
+                if (!GrantItem(player, packItem))
+                {
+                    Log.Error($"Failed to grant pack item: {packItem.Id}");
+                    continue;
+                }
+            }
+        }
+
+        if (item.Kind == ShopData.ItemKind.Trophies)
+        {
+            player.Trophies += item.IntData;
+            return true;
+        }
+
+        if (item.Kind == ShopData.ItemKind.Egg) 
+        {
+            if (!PetData.Eggs.TryGetValue(item.Id, out var eggDefinition))
+            {
+                Log.Error($"Could not find egg definition for {item.Id}");
+                return false;
+            }
+
+            var totalWeight = eggDefinition.PossiblePets.Sum(p => p.Weight);
+            var rnd = Random.Next(0, totalWeight);
+
+            PetData.WeightedPet selectedPet = null;
+            foreach(var pet in eggDefinition.PossiblePets) 
+            {
+                if (rnd < pet.Weight) 
+                {
+                    selectedPet = pet;
+                    break;
+                }
+                rnd -= pet.Weight;
+            }
+
+            if (selectedPet == null) 
+            {
+                Log.Error($"Could not select pet from egg {item.Id}");
+                return false;
+            }
+
+            Guid guid = Guid.NewGuid();
+            player.CallClient_AddPet(guid.ToString(), selectedPet.Id, eggDefinition.Id);
+            player.CallClient_OpenEgg(eggDefinition.Id, selectedPet.Id);
+            return true;
+        }
+
+        Log.Error($"Unhandled item kind: {item.Kind}");
         return false;
     }
 }
@@ -400,6 +430,13 @@ public static class ShopData
         }
     };
 
+    public static List<Pack> Packs = new List<Pack>()
+    {
+        new () { Id = "starter_pack1", Items = new List<string>() { "egg1a" } },
+        new () { Id = "starter_pack2", Items = new List<string>() { "egg1b" } },
+        new () { Id = "starter_pack3", Items = new List<string>() { "egg1c" } },
+    };
+
     public static List<Item> Items = new List<Item>()
     {
         new () { Id = "egg1a", ProductId = "1234", Name = "Egg 1A", Description = "A fun egg", Currency = Currency.Trophies, Cost = 5,   Kind = ItemKind.Egg },
@@ -418,20 +455,26 @@ public static class ShopData
         new () { Id = "egg3b", ProductId = "1234", Name = "Egg 3D", Description = "A fun egg", Currency = Currency.Trophies, Cost = 15000000000, Kind = ItemKind.Egg },
         new () { Id = "egg4a", ProductId = "1234", Name = "Egg 4A", Description = "A fun egg", Currency = Currency.Trophies, Cost = 50000000000,     Kind = ItemKind.Egg },
 
-        new () { Id = "starter_pack1", ProductId = "657a687d43a4e98882a2ee91", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
-        new () { Id = "starter_pack2", ProductId = "657a688643a4e98882a2ee92", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
-        new () { Id = "starter_pack3", ProductId = "657a688e43a4e98882a2ee93", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
+        new () { Id = "starter_pack1", ProductId = "657a687d43a4e98882a2ee91", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pack, },
+        new () { Id = "starter_pack2", ProductId = "657a688643a4e98882a2ee92", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pack, },
+        new () { Id = "starter_pack3", ProductId = "657a688e43a4e98882a2ee93", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pack, },
 
         new () { Id = "vip", ProductId = "657a67e843a4e98882a2ee8e", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
         new () { Id = "2x_trophies", ProductId = "657a67ff43a4e98882a2ee90", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
         new () { Id = "2x_food", ProductId = "657a67f443a4e98882a2ee8f", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
 
-        new () { Id = "small_trophy",      ProductId = "657a679c43a4e98882a2ee88", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Egg, },
-        new () { Id = "medium_trophy",     ProductId = "657a67ae43a4e98882a2ee89", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Egg, },
-        new () { Id = "large_trophy",      ProductId = "657a67b843a4e98882a2ee8a", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Egg, },
-        new () { Id = "giant_trophy_pack", ProductId = "657a67c743a4e98882a2ee8b", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Egg, },
+        new () { Id = "small_trophy",      ProductId = "657a679c43a4e98882a2ee88", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Trophies, IntData = 1000, },
+        new () { Id = "medium_trophy",     ProductId = "657a67ae43a4e98882a2ee89", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Trophies, IntData = 10000, },
+        new () { Id = "large_trophy",      ProductId = "657a67b843a4e98882a2ee8a", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Trophies, IntData = 100000, },
+        new () { Id = "giant_trophy_pack", ProductId = "657a67c743a4e98882a2ee8b", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Trophies, IntData = 1000000, },
 
     };
+
+    public class Pack
+    {
+        public string Id;
+        public List<string> Items;
+    }
 
     public class ShopCategory
     {
@@ -462,6 +505,8 @@ public static class ShopData
         Pet,
         Boost,
         Pass,
+        Trophies,
+        Pack
     }
 
     public enum Currency
@@ -481,5 +526,8 @@ public static class ShopData
         public ItemKind Kind;
         public Currency Currency;
         public long Cost;
+
+        public int IntData;
+        public string StringData;
     }
 }
