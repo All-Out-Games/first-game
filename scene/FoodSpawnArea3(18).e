@@ -5,8 +5,8 @@
   "name": "FoodSpawnArea3",
   "local_enabled": true,
   "local_position": {
-    "X": -0.0706126093864441,
-    "Y": 0.1428837776184082
+    "X": 0,
+    "Y": 0
   },
   "local_rotation": 0,
   "local_scale": {

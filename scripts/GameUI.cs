@@ -151,7 +151,7 @@ public class GameUI : System<GameUI>
             var foodIconRect = foodRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(6, 0);
             UI.Image(foodIconRect, References.Instance.FoodIcon, Vector4.White, new UI.NineSlice());
             textSettings.color = References.Instance.RedText;
-            UI.Text(foodRect, $"{Util.FormatDouble(localPlayer.Food)}/{Util.FormatDouble(localPlayer.ModifiedStomachSize)}", textSettings);
+            UI.Text(foodRect, $"{Util.FormatDouble(localPlayer.AmountOfFoodInStomach)}/{Util.FormatDouble(localPlayer.ModifiedStomachSize)}", textSettings);
         }
 
         // top-left stats
@@ -177,9 +177,9 @@ public class GameUI : System<GameUI>
 
         var buttonSettings = new UI.ButtonSettings();
         buttonSettings.color = Vector4.White;
-        buttonSettings.clickedColor = Vector4.White * 0.7f;
-        buttonSettings.hoverColor = Vector4.White * 0.9f;
-        buttonSettings.pressedColor = Vector4.White * 0.5f;
+        buttonSettings.clickedColor = new Vector4(0.7f, 0.7f, 0.7f, 1.0f);
+        buttonSettings.hoverColor   = new Vector4(0.9f, 0.9f, 0.9f, 1.0f);
+        buttonSettings.pressedColor = new Vector4(0.5f, 0.5f, 0.5f, 1.0f);
         buttonSettings.sprite = References.Instance.GreenButton;
         buttonSettings.slice = new UI.NineSlice() { slice = new Vector4(12, 15, 48, 48), sliceScale = 1f };
 
@@ -245,7 +245,7 @@ public class GameUI : System<GameUI>
 
             if (localPlayer.MaxFoodLevel < FatPlayer.StomachSizeByLevel.Length)
             {
-                var upgradeStomachRect = windowRect.CutTopUnscaled(100).Inset(10, 10, 10, 10);
+                var upgradeStomachRect = windowRect.CutTop(100).Inset(10, 10, 10, 10);
                 var nextStomachCost = FatPlayer.StomachSizeByLevel[localPlayer.MaxFoodLevel].Cost;
                 var upgradeStomachResult = UI.Button(upgradeStomachRect, $"Stomach Lv. {localPlayer.MaxFoodLevel+1} - Cost: {nextStomachCost}", buttonSettings, buttonTextSettings);
                 if (upgradeStomachResult.clicked)
@@ -256,7 +256,7 @@ public class GameUI : System<GameUI>
 
             if (localPlayer.MouthSizeLevel < FatPlayer.MouthSizeByLevel.Length)
             {
-                var upgradeMouthSizeRect = windowRect.CutTopUnscaled(100).Inset(10, 10, 10, 10);
+                var upgradeMouthSizeRect = windowRect.CutTop(100).Inset(10, 10, 10, 10);
                 var nextMouthSizeCost = FatPlayer.MouthSizeByLevel[localPlayer.MouthSizeLevel].Cost;
                 var upgradeMouthSizeResult = UI.Button(upgradeMouthSizeRect, $"Mouth Size Lv. {localPlayer.MouthSizeLevel+1} - Cost: {nextMouthSizeCost}", buttonSettings, buttonTextSettings);
                 if (upgradeMouthSizeResult.clicked)
@@ -267,7 +267,7 @@ public class GameUI : System<GameUI>
 
             if (localPlayer.ChewSpeedLevel < FatPlayer.ChewSpeedByLevel.Length)
             {
-                var upgradeChewSpeedRect = windowRect.CutTopUnscaled(100).Inset(10, 10, 10, 10);
+                var upgradeChewSpeedRect = windowRect.CutTop(100).Inset(10, 10, 10, 10);
                 var nextChewSpeedCost = FatPlayer.ChewSpeedByLevel[localPlayer.ChewSpeedLevel].Cost;
                 var upgradeChewSpeedResult = UI.Button(upgradeChewSpeedRect, $"Chew Speed Lv. {localPlayer.ChewSpeedLevel+1} - Cost: {nextChewSpeedCost}", buttonSettings, buttonTextSettings);
                 if (upgradeChewSpeedResult.clicked)

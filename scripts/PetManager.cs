@@ -101,6 +101,32 @@ public partial class PetManager : Component
         }
     }
 
+    public void DeleteAllPets()
+    {
+        foreach (var pet in OwnedPets)
+        {
+            pet.Equipped = false;
+            if (Network.IsServer)
+            {
+                foreach (var p in Pet.AllPets.ToList())
+                {
+                    if (p.PetId == pet.Id)
+                    {
+                        Network.Despawn(p.Entity);
+                        Pet.AllPets.Remove(p);
+                        p.Entity.Destroy();
+                        break;
+                    }
+                }
+            }
+        }
+        OwnedPets.Clear();
+        if (Network.IsServer)
+        {
+            Save.SetString(Player, "AllPets", JSONWriter.ToJson(OwnedPets));
+        }
+    }
+
     public void DeletePet(string id)
     {
         var pet = OwnedPets.Find(p => p.Id == id);
