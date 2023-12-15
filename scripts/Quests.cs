@@ -134,6 +134,7 @@ public class Quest
 
     public virtual string QuestName => "An Quest";
     public virtual string Objective => "Do the thing.";
+    public virtual string RewardDescription => "A boatload of money!";
     public virtual float QuestTime => 30;
     public virtual int ProgressRequired => 5;
     public virtual void OnFoodEatenServer(Food food) { }
@@ -177,6 +178,7 @@ public class SpeedEaterQuest : Quest
 {
     public override string QuestName => "Speed Eater";
     public override string Objective => "Quick! Eat 30 things in under 2 minutes.";
+    public override string RewardDescription => "150 Coins.";
     public override float QuestTime => 2 * 60;
     public override int ProgressRequired => 30;
 
@@ -198,6 +200,7 @@ public class UniqueFoodsQuest : Quest
 {
     public override string QuestName => "Unique Foods";
     public override string Objective => "Eat 7 unique things in under 1 minute!";
+    public override string RewardDescription => "2x Cash Multiplier for 60 seconds.";
     public override float QuestTime => 1 * 60;
     public override int ProgressRequired => 7;
 
@@ -219,6 +222,7 @@ public class SequencedEaterQuest : Quest
 {
     public override string QuestName => "Sequenced Eater";
     public override string Objective => "Don't eat the same food in a row for 30 seconds! (minimum 5 foods eaten)";
+    public override string RewardDescription => "2x Chew Speed for 60 seconds.";
     public override float QuestTime => 30;
     public override int ProgressRequired => 5;
 
@@ -245,6 +249,7 @@ public class BigBoiDietQuest : Quest
 {
     public override string QuestName => "Big Boi Diet";
     public override string Objective => "Eat only foods size 10 or higher for 30 seconds! (minimum 5 foods eaten)";
+    public override string RewardDescription => "2x Stomach Size for 5 minutes.";
     public override float QuestTime => 30;
     public override int ProgressRequired => 5;
 
@@ -271,6 +276,7 @@ public class MarathonEaterQuest : Quest
 {
     public override string QuestName => "Marathon Eater";
     public override string Objective => "Eat 100 things in under 7 minutes!";
+    public override string RewardDescription => "300 Coins.";
     public override float QuestTime => 7 * 60;
     public override int ProgressRequired => 100;
 
@@ -292,6 +298,7 @@ public class BossBrawlQuest : Quest
 {
     public override string QuestName => "Boss Brawl";
     public override string Objective => "Defeat each boss in the world once in under 1 minute!";
+    public override string RewardDescription => "2000 Trophies.";
     public override float QuestTime => 1 * 60;
     public override int ProgressRequired => 5;
 
@@ -317,6 +324,7 @@ public class TheGoldenAppleQuest : Quest
 {
     public override string QuestName => "The Golden Apple";
     public override string Objective => "Find the golden apple and sell it in less than 30 seconds!";
+    public override string RewardDescription => "1000 Coins.";
     public override float QuestTime => 30;
     public override int ProgressRequired => 2;
 

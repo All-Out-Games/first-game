@@ -121,7 +121,7 @@ public class GameUI : System<GameUI>
         {
             var rect = UI.SafeRect.BottomCenterRect().Grow(0, 200, 0, 200);
             int timeLeft = (int)Math.Ceiling(localPlayer.CurrentQuest.TimeLeft);
-            string questText = $"Active Quest: {localPlayer.CurrentQuest.QuestName}. {timeLeft} seconds left!\n{localPlayer.CurrentQuest.Objective} ({localPlayer.CurrentQuest.Progress}/{localPlayer.CurrentQuest.ProgressRequired})";
+            string questText = $"Active Quest: {localPlayer.CurrentQuest.QuestName}. {timeLeft} seconds left!\n{localPlayer.CurrentQuest.Objective} ({localPlayer.CurrentQuest.Progress}/{localPlayer.CurrentQuest.ProgressRequired})\nReward: {localPlayer.CurrentQuest.RewardDescription}";
             UI.Text(rect, questText, UI.TextSettings.Default);
         }
 
