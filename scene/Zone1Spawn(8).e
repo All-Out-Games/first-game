@@ -5,8 +5,8 @@
   "name": "Zone1Spawn",
   "local_enabled": true,
   "local_position": {
-    "X": -0.0629758834838867,
-    "Y": 0.0334377288818359
+    "X": 0,
+    "Y": 0
   },
   "local_rotation": 0,
   "local_scale": {

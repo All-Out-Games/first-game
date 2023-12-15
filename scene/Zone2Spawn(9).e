@@ -5,8 +5,8 @@
   "name": "Zone2Spawn",
   "local_enabled": true,
   "local_position": {
-    "X": 0.0034666061401367,
-    "Y": -16.2170963287353516
+    "X": 0,
+    "Y": -16
   },
   "local_rotation": 0,
   "local_scale": {

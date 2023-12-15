@@ -45,6 +45,8 @@ public partial class FatPlayer : Player
         }
     }
 
+    public Quest CurrentQuest;
+
     public Boss CurrentBoss;
     public double BossProgress;
     public double MyProgress;
@@ -52,7 +54,9 @@ public partial class FatPlayer : Player
 
     public int PlayerLevel => 1 + _maxFoodLevel + _mouthSizeLevel + _chewSpeedLevel;
 
-    [AOIgnore] public List<string> UnlockedZones = new List<string>();
+    public List<string> UnlockedZones = new List<string>();
+
+    public List<StatModifier> TemporaryBuffs = new();
 
     public override void Start()
     {
@@ -61,7 +65,8 @@ public partial class FatPlayer : Player
     [ClientRpc]
     public void BossFightOver(bool won)
     {
-        if (CurrentBoss == null) {
+        if (CurrentBoss == null)
+        {
             Log.Info("Boss fight over but no boss?");
             return;
         }
@@ -72,6 +77,13 @@ public partial class FatPlayer : Player
             if (IsLocal)
             {
                 Notifications.Show("You won the boss fight!");
+            }
+            if (Network.IsServer)
+            {
+                if (CurrentQuest != null)
+                {
+                    CurrentQuest.OnBossBeatenServer(CurrentBoss);
+                }
             }
         }
         else 
@@ -125,6 +137,16 @@ public partial class FatPlayer : Player
         Trophies /= 2;
     }
 
+    [ServerRpc]
+    public void ForceCompleteQuestCheat()
+    {
+        if (CurrentQuest == null)
+        {
+            return;
+        }
+        CurrentQuest.ReportProgress(CurrentQuest.ProgressRequired);
+    }
+
     public override void Update()
     {
         if (Input.GetKeyHeld(Input.Keycode.KEYCODE_LEFT_CONTROL)) {
@@ -147,6 +169,27 @@ public partial class FatPlayer : Player
                     CallServer_DecreaseMoneyCheat();
                 }
             }
+
+            if (Input.GetKeyDown(Input.Keycode.KEYCODE_Q)) {
+                CallServer_ForceCompleteQuestCheat();
+            }
+        }
+
+        if (Network.IsServer)
+        {
+            if (CurrentQuest != null)
+            {
+                CurrentQuest.UpdateServer();
+            }
+
+            foreach (var buff in TemporaryBuffs)
+            {
+                buff.TimeLeft -= Time.DeltaTime;
+                if (buff.TimeLeft <= 0)
+                {
+                    CallClient_RemoveTemporaryBuff(buff.Id);
+                }
+            }
         }
 
         foreach (var pet in Pet.AllPets)
@@ -166,10 +209,9 @@ public partial class FatPlayer : Player
             }
 
             BossAccumulator += Time.DeltaTime;
-            if (BossAccumulator >= Boss.TICK)
+            while (Util.Timer(ref BossAccumulator, CurrentBoss.Definition.TimeBetweenClicks))
             {
-                BossProgress += CurrentBoss.Definition.Difficulty;
-                BossAccumulator = 0;
+                BossProgress += CurrentBoss.Definition.AmountPerClick;
             }
 
             if (Network.IsServer)
@@ -207,6 +249,40 @@ public partial class FatPlayer : Player
         }
     }
 
+    public static int LastBuffId;
+    public void ServerGiveTemporaryBuff(StatModifierKind kind, float multiplyValue, float duration)
+    {
+        Util.Assert(Network.IsServer);
+        LastBuffId += 1;
+        CallClient_GiveTemporaryBuff(LastBuffId, (int)kind, multiplyValue, duration);
+    }
+
+    [ClientRpc]
+    public void GiveTemporaryBuff(int id, int _kind, float multiplyValue, float duration)
+    {
+        var kind = (StatModifierKind)_kind;
+        var mod = new StatModifier();
+        mod.Kind          = kind;
+        mod.MultiplyValue = multiplyValue;
+        mod.Id            = id;
+        mod.TimeLeft      = duration;
+        TemporaryBuffs.Add(mod);
+    }
+
+    [ClientRpc]
+    public void RemoveTemporaryBuff(int id)
+    {
+        for (int i = 0; i < TemporaryBuffs.Count; i++)
+        {
+            if (TemporaryBuffs[i].Id == id)
+            {
+                TemporaryBuffs.RemoveAt(i);
+                return;
+            }
+        }
+        Log.Error($"Failed to find buff with id: {id}");
+    }
+
     public override void OnDestroy()
     {
         if (FoodBeingEaten != null && Network.IsServer) {
@@ -237,6 +313,54 @@ public partial class FatPlayer : Player
 
             MaxEquippedPets = Save.GetInt(this, "MaxEquippedPets", 3);
         }
+    }
+
+    [ClientRpc]
+    public void SyncQuestTimeLeft(float timeLeft)
+    {
+        if (CurrentQuest == null)
+        {
+            Log.Error("We didn't have a quest??");
+            return;
+        }
+
+        CurrentQuest.TimeLeft = timeLeft;
+    }
+
+    [ClientRpc]
+    public void OnQuestProgressUpdated(int progress)
+    {
+        if (CurrentQuest == null)
+        {
+            Log.Error("We didn't have a quest??");
+            return;
+        }
+
+        CurrentQuest.Progress = progress;
+    }
+
+    [ClientRpc]
+    public void OnQuestFinished(bool success, string reasonIfFailed)
+    {
+        if (CurrentQuest == null)
+        {
+            Log.Error("We didn't have a quest??");
+            return;
+        }
+
+        if (IsLocal)
+        {
+            if (success)
+            {
+                Notifications.Show("Quest completed! :)");
+            }
+            else
+            {
+                Notifications.Show($"Quest failed: {reasonIfFailed}");
+            }
+        }
+
+        CurrentQuest = null;
     }
 
     [ServerRpc]
@@ -390,12 +514,12 @@ public partial class FatPlayer : Player
     public double BaseStomachSizeValue    => StomachSizeByLevel[Math.Clamp(_maxFoodLevel,   0, StomachSizeByLevel.Length-1)].Value;
     public double BaseCashMultiplierValue => global::Rebirth.Instance.GetRebirthData(Rebirth).CashMultiplier;
 
-    public double ModifiedChewSpeed      => BaseChewSpeedValue      * CalculateTotalMultiplierFromPets(PetData.StatModifierKind.ChewSpeed);
-    public double ModifiedMouthSize      => BaseMouthSizeValue      * CalculateTotalMultiplierFromPets(PetData.StatModifierKind.MouthSize);
-    public double ModifiedStomachSize    => BaseStomachSizeValue    * CalculateTotalMultiplierFromPets(PetData.StatModifierKind.StomachSize);
-    public double ModifiedCashMultiplier => BaseCashMultiplierValue * CalculateTotalMultiplierFromPets(PetData.StatModifierKind.CashMultiplier);
+    public double ModifiedChewSpeed      => BaseChewSpeedValue      * CalculateTotalMultiplierFromPets(StatModifierKind.ChewSpeed)      * CalculateTotalMultiplierFromBuffs(StatModifierKind.ChewSpeed);
+    public double ModifiedMouthSize      => BaseMouthSizeValue      * CalculateTotalMultiplierFromPets(StatModifierKind.MouthSize)      * CalculateTotalMultiplierFromBuffs(StatModifierKind.MouthSize);
+    public double ModifiedStomachSize    => BaseStomachSizeValue    * CalculateTotalMultiplierFromPets(StatModifierKind.StomachSize)    * CalculateTotalMultiplierFromBuffs(StatModifierKind.StomachSize);
+    public double ModifiedCashMultiplier => BaseCashMultiplierValue * CalculateTotalMultiplierFromPets(StatModifierKind.CashMultiplier) * CalculateTotalMultiplierFromBuffs(StatModifierKind.CashMultiplier);
 
-    public double CalculateTotalMultiplierFromPets(PetData.StatModifierKind kind)
+    public double CalculateTotalMultiplierFromPets(StatModifierKind kind)
     {
         double summedMultipliers = 0.0;
         foreach (var pet in PetManager.OwnedPets)
@@ -417,6 +541,35 @@ public partial class FatPlayer : Player
                 }
             }
         }
+        return 1 + summedMultipliers;
+    }
+
+    public double CalculateTotalMultiplierFromBuffs(StatModifierKind kind)
+    {
+        double summedMultipliers = 0.0;
+        foreach (var buff in TemporaryBuffs)
+        {
+            if (buff.Kind == kind)
+            {
+                summedMultipliers += buff.MultiplyValue - 1.0;
+            }
+        }
+
+        /*
+        todo(josh): we could add game passes here like
+        foreach (var pass in GamePasses)
+        {
+            if (pass.Id == "super_chew")
+            {
+                if (kind == StatModifierKind.ChewSpeed)
+                {
+                    // 5x chew speed multiplier
+                    summedMultipliers += 5.0f - 1.0;
+                }
+            }
+        }
+        */
+
         return 1 + summedMultipliers;
     }
 

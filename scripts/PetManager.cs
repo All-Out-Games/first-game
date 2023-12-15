@@ -346,21 +346,6 @@ public static class PetData
         public int Weight;
     }
 
-    public enum StatModifierKind
-    {
-        StomachSize,
-        MouthSize,
-        ChewSpeed,
-        CashMultiplier,
-    }
-
-    public class StatModifier
-    {
-        public StatModifierKind Kind;
-        public float            MultiplyValue;
-        public int              AddValue;
-    }
-
     public enum Rarity
     {
         Common,

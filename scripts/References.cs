@@ -32,7 +32,10 @@ public class References : Component
     [Serialized] public Texture PetBrown;
     [Serialized] public Texture Cash;
     [Serialized] public Texture Burger;
-    
+
+    [Serialized] public Prefab CarePackagePrefab;
+    [Serialized] public Prefab PetPrefab;
+
     public UI.NineSlice FrameSlice = new UI.NineSlice() { slice = new Vector4(12, 12, 48, 48), sliceScale = 1f };
 
     public UI.TextSettings NoTextSettings = new UI.TextSettings() { size = 0, color = Vector4.Zero };
@@ -43,9 +46,6 @@ public class References : Component
     public Vector4 YellowText = new Vector4(255.0f/255.0f, 230.0f/255.0f, 100.0f/255.0f, 1.0f);
 
     public Vector4 BlueBg = new Vector4(101.0f/255.0f, 241.0f/255.0f, 250.0f/255.0f, 1.0f);
-    
-
-    [Serialized] public Prefab PetPrefab;
 
     public static References Instance;
 

@@ -1,6 +1,6 @@
 using AO;
 
-public class Util 
+public static class Util
 {
     private static readonly string[] graduations = {"Unused", "K", "M", "B", "T"};
     public static string FormatDouble(double value, int roundAtDigits = 4, int roundToDigits = 2, string separator = "", bool forceSign = false)
@@ -48,5 +48,79 @@ public class Util
         string sign = forceSign && Math.Sign(value) == 1 ? "+" : "";
 
         return sign + beforeDecimal + afterDecimal + separator + graduation;
+    }
+
+    public static bool Has(this string str)
+    {
+        return !string.IsNullOrEmpty(str);
+    }
+
+    public static void Assert(bool condition, string message = default)
+    {
+        if (condition)
+        {
+            return;
+        }
+
+        if (message.Has())
+        {
+            throw new Exception($"ASSERTION FAILED: {message}");
+        }
+        else
+        {
+            throw new Exception("ASSERTION FAILED");
+        }
+    }
+
+    public static T GetRandom<T>(this List<T> list)
+    {
+        Assert(list != null);
+        Assert(list.Count != 0);
+        var rng = new Random();
+        return list[rng.Next(list.Count)];
+    }
+
+    public static T GetRandom<T>(this T[] array)
+    {
+        Assert(array != null);
+        Assert(array.Length != 0);
+        var rng = new Random();
+        return array[rng.Next(array.Length)];
+    }
+
+    public static int GetRandomIndex<T>(this List<T> list)
+    {
+        Assert(list != null);
+        Assert(list.Count != 0);
+        var rng = new Random();
+        return rng.Next(list.Count);
+    }
+
+    public static int GetRandomIndex<T>(this T[] array)
+    {
+        Assert(array != null);
+        Assert(array.Length != 0);
+        var rng = new Random();
+        return rng.Next(array.Length);
+    }
+
+    public static bool Timer(ref float acc, float time)
+    {
+        if (acc >= time)
+        {
+            acc -= time;
+            return true;
+        }
+        return false;
+    }
+
+    public static bool Timer(ref double acc, double time)
+    {
+        if (acc >= time)
+        {
+            acc -= time;
+            return true;
+        }
+        return false;
     }
 }

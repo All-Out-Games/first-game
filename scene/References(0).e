@@ -49,6 +49,7 @@
     "PetBrown": "ui/icons/Pet Brown Outline 64.png",
     "Cash": "ui/icons/Cash Outline 64.png",
     "Burger": "ui/icons/Burger Outline 64.png",
+    "CarePackagePrefab": "CarePackage.prefab",
     "PetPrefab": "Pet.prefab"
   }
 }

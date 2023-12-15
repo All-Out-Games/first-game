@@ -28,7 +28,7 @@ public class GameUI : System<GameUI>
     public Vector4 RarityColorEpic      = new Vector4(0.8f, 0.5f, 0.8f, 1.0f);
     public Vector4 RarityColorLegendary = new Vector4(0.8f, 0.8f, 0.5f, 1.0f);
 
-    public void DoSingleStatUI(ref Rect rect, string id, UI.TextSettings textSettings, string str, string tooltipText = null, string text2 = null, string text3 = null)
+    public void DoSingleStatUI(ref Rect rect, string id, UI.TextSettings textSettings, string str, string tooltipText = null, string text2 = null, string text3 = null, string text4 = null)
     {
         var rowRect = rect.CutTop(30);
         rowRect = UI.Text(rowRect, str, textSettings);
@@ -63,6 +63,12 @@ public class GameUI : System<GameUI>
                         textRect = UI.Text(mouseRect, text3, hoverTextSettings);
                         bgRect = bgRect.Encapsulate(textRect);
                     }
+                    if (!string.IsNullOrEmpty(text4))
+                    {
+                        mouseRect.CutTop(30);
+                        textRect = UI.Text(mouseRect, text4, hoverTextSettings);
+                        bgRect = bgRect.Encapsulate(textRect);
+                    }
                 }
                 {
                     UI.PushLayerRelative(1);
@@ -73,26 +79,26 @@ public class GameUI : System<GameUI>
         }
     }
 
-    public (string, Vector4) BuildStatModifierText(PetData.StatModifier modifier) 
+    public (string, Vector4) BuildStatModifierText(StatModifier modifier)
     {
         Vector4 col = Vector4.White;
         string text = "";
 
         switch(modifier.Kind)
         {
-            case PetData.StatModifierKind.StomachSize:
+            case StatModifierKind.StomachSize:
             {
                 col = References.Instance.RedText;
                 text = $"{modifier.MultiplyValue:0.#}x Stomach Size";
                 break;
             }
-            case PetData.StatModifierKind.ChewSpeed:
+            case StatModifierKind.ChewSpeed:
             {
                 col = References.Instance.GreenText;
                 text = $"{modifier.MultiplyValue:0.#}x Chew Speed";
                 break;
             }
-            case PetData.StatModifierKind.MouthSize:
+            case StatModifierKind.MouthSize:
             {
                 col = References.Instance.BlueText;
                 text = $"{modifier.MultiplyValue:0.#}x Mouth Size";
@@ -109,6 +115,15 @@ public class GameUI : System<GameUI>
 
         var localPlayer = (FatPlayer) Network.LocalPlayer;
         if (localPlayer == null) return;
+
+        // bottom quest UI
+        if (localPlayer.CurrentQuest != null)
+        {
+            var rect = UI.SafeRect.BottomCenterRect().Grow(0, 200, 0, 200);
+            int timeLeft = (int)Math.Ceiling(localPlayer.CurrentQuest.TimeLeft);
+            string questText = $"Active Quest: {localPlayer.CurrentQuest.QuestName}. {timeLeft} seconds left!\n{localPlayer.CurrentQuest.Objective} ({localPlayer.CurrentQuest.Progress}/{localPlayer.CurrentQuest.ProgressRequired})";
+            UI.Text(rect, questText, UI.TextSettings.Default);
+        }
 
         Rect topBarRect = UI.SafeRect.TopCenterRect();
         topBarRect = topBarRect.Grow(0, 500, 65, 500)
@@ -165,10 +180,10 @@ public class GameUI : System<GameUI>
             StringBuilder sb = new StringBuilder();
 
             DoSingleStatUI(ref statsRect, "player",  statsTextSettings, $"Player Level: {localPlayer.PlayerLevel}");
-            DoSingleStatUI(ref statsRect, "stomach", statsTextSettings, $"Stomach Level: {localPlayer._maxFoodLevel}", $"Stomach Size: {localPlayer.ModifiedStomachSize.ToString("F2")}",        $"Base: {localPlayer.BaseStomachSizeValue.ToString("F2")}",    $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(PetData.StatModifierKind.StomachSize).ToString("F2")}");
-            DoSingleStatUI(ref statsRect, "mouth",   statsTextSettings, $"Mouth Level: {localPlayer._mouthSizeLevel}", $"Mouth Size: {localPlayer.ModifiedMouthSize.ToString("F2")}",            $"Base: {localPlayer.BaseMouthSizeValue.ToString("F2")}",      $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(PetData.StatModifierKind.MouthSize).ToString("F2")}");
-            DoSingleStatUI(ref statsRect, "chew",    statsTextSettings, $"Chew Level: {localPlayer._chewSpeedLevel}",  $"Chew Speed: {localPlayer.ModifiedChewSpeed.ToString("F2")}x",           $"Base: {localPlayer.BaseChewSpeedValue.ToString("F2")}",      $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(PetData.StatModifierKind.ChewSpeed).ToString("F2")}");
-            DoSingleStatUI(ref statsRect, "rebirth", statsTextSettings, $"Rebirth Level: {localPlayer._rebirth}",      $"Cash Multiplier: {localPlayer.ModifiedCashMultiplier.ToString("F2")}x", $"Base: {localPlayer.BaseCashMultiplierValue.ToString("F2")}", $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(PetData.StatModifierKind.CashMultiplier).ToString("F2")}");
+            DoSingleStatUI(ref statsRect, "stomach", statsTextSettings, $"Stomach Level: {localPlayer._maxFoodLevel}", $"Stomach Size: {localPlayer.ModifiedStomachSize.ToString("F2")}",        $"Base: {localPlayer.BaseStomachSizeValue.ToString("F2")}",    $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.StomachSize).ToString("F2")}x",    $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.StomachSize).ToString("F2")}x");
+            DoSingleStatUI(ref statsRect, "mouth",   statsTextSettings, $"Mouth Level: {localPlayer._mouthSizeLevel}", $"Mouth Size: {localPlayer.ModifiedMouthSize.ToString("F2")}",            $"Base: {localPlayer.BaseMouthSizeValue.ToString("F2")}",      $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.MouthSize).ToString("F2")}x",      $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.MouthSize).ToString("F2")}x");
+            DoSingleStatUI(ref statsRect, "chew",    statsTextSettings, $"Chew Level: {localPlayer._chewSpeedLevel}",  $"Chew Speed: {localPlayer.ModifiedChewSpeed.ToString("F2")}x",           $"Base: {localPlayer.BaseChewSpeedValue.ToString("F2")}",      $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.ChewSpeed).ToString("F2")}x",      $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.ChewSpeed).ToString("F2")}x");
+            DoSingleStatUI(ref statsRect, "rebirth", statsTextSettings, $"Rebirth Level: {localPlayer._rebirth}",      $"Cash Multiplier: {localPlayer.ModifiedCashMultiplier.ToString("F2")}x", $"Base: {localPlayer.BaseCashMultiplierValue.ToString("F2")}", $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.CashMultiplier).ToString("F2")}x", $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.CashMultiplier).ToString("F2")}x");
         }
 
         var sideBarRect = UI.SafeRect.LeftRect();

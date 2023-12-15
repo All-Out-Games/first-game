@@ -20,5 +20,9 @@ public class SellArea : Component
         fatPlayer.Coins += fatPlayer.ValueOfFoodInStomach * Rebirth.Instance.GetRebirthData(fatPlayer.Rebirth).CashMultiplier;
         fatPlayer.ValueOfFoodInStomach = 0;
         fatPlayer.AmountOfFoodInStomach = 0;
+        if (fatPlayer.CurrentQuest != null)
+        {
+            fatPlayer.CurrentQuest.OnSoldItemsServer();
+        }
     }
 }
