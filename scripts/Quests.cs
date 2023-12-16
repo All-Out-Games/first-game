@@ -367,7 +367,7 @@ public class TrackstarQuest : Quest
 {
     public override string QuestName => "Trackstar";
     public override string Objective => "Run 1000 feet in under 5 minutes!";
-    public override string RewardDescription => "Legendary Quest Pet.";
+    public override string RewardDescription => "2x Move Speed for 10 minutes.";
     public override float QuestTime => 5 * 60;
     public override int ProgressRequired => 1000;
 
@@ -376,7 +376,7 @@ public class TrackstarQuest : Quest
 
     public override void GiveRewards()
     {
-        // todo(josh)
+        Player.ServerGiveTemporaryBuff(StatModifierKind.MoveSpeed, 2.0f, 10 * 60);
     }
 
     public override void InitServer()

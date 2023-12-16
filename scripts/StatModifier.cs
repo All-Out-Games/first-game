@@ -6,6 +6,7 @@ public enum StatModifierKind
     MouthSize,
     ChewSpeed,
     CashMultiplier,
+    MoveSpeed,
 }
 
 public class StatModifier

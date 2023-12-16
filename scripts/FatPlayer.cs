@@ -148,6 +148,11 @@ public partial class FatPlayer : Player
         CurrentQuest.ReportProgress(CurrentQuest.ProgressRequired);
     }
 
+    public override Vector2 CalculatePlayerVelocity(Vector2 currentVelocity, Vector2 input, float deltaTime)
+    {
+        return DefaultPlayerVelocityCalculation(currentVelocity, input, deltaTime, (float)ModifiedMoveSpeed);
+    }
+
     public override void Update()
     {
         if (Input.GetKeyHeld(Input.Keycode.KEYCODE_LEFT_CONTROL)) {
@@ -519,6 +524,7 @@ public partial class FatPlayer : Player
     public double ModifiedMouthSize      => BaseMouthSizeValue      * CalculateTotalMultiplierFromPets(StatModifierKind.MouthSize)      * CalculateTotalMultiplierFromBuffs(StatModifierKind.MouthSize);
     public double ModifiedStomachSize    => BaseStomachSizeValue    * CalculateTotalMultiplierFromPets(StatModifierKind.StomachSize)    * CalculateTotalMultiplierFromBuffs(StatModifierKind.StomachSize);
     public double ModifiedCashMultiplier => BaseCashMultiplierValue * CalculateTotalMultiplierFromPets(StatModifierKind.CashMultiplier) * CalculateTotalMultiplierFromBuffs(StatModifierKind.CashMultiplier);
+    public double ModifiedMoveSpeed      =>                           CalculateTotalMultiplierFromPets(StatModifierKind.MoveSpeed)      * CalculateTotalMultiplierFromBuffs(StatModifierKind.MoveSpeed);
 
     public double CalculateTotalMultiplierFromPets(StatModifierKind kind)
     {
