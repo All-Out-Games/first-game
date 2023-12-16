@@ -51,6 +51,7 @@ public partial class FatPlayer : Player
     public double BossProgress;
     public double MyProgress;
     public double BossAccumulator;
+    public double TimeLastTeleported;
 
     public int PlayerLevel => 1 + _maxFoodLevel + _mouthSizeLevel + _chewSpeedLevel;
 

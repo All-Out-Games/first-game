@@ -66,6 +66,7 @@ public class ZoneTeleporter : Component
             }
             else 
             {
+                player.TimeLastTeleported = Time.TimeSinceStartup;
                 player.Teleport(SpawnPoint.Position);
             }
         }

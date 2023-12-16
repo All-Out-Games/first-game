@@ -94,6 +94,7 @@ public partial class CarePackage : Component
             case QuestType.MarathonEater:  { player.CurrentQuest = new MarathonEaterQuest();  break; }
             case QuestType.BossBrawl:      { player.CurrentQuest = new BossBrawlQuest();      break; }
             case QuestType.TheGoldenApple: { player.CurrentQuest = new TheGoldenAppleQuest(); break; }
+            case QuestType.Trackstar:      { player.CurrentQuest = new TrackstarQuest();      break; }
             default: {
                 Log.Error("Unknown quest type: " + questType);
                 return;
@@ -103,6 +104,10 @@ public partial class CarePackage : Component
         player.CurrentQuest.TimeLeft = player.CurrentQuest.QuestTime;
         player.CurrentQuest.Progress = 0;
         player.CurrentQuest.Player = player;
+        if (Network.IsServer)
+        {
+            player.CurrentQuest.InitServer();
+        }
         Claimed = true;
     }
 }
@@ -116,6 +121,7 @@ public enum QuestType
     MarathonEater,
     BossBrawl,
     TheGoldenApple,
+    Trackstar,
 
     COUNT,
 }
@@ -145,7 +151,8 @@ public class Quest
     public float TimeLeft;
     public int Progress;
 
-    public void UpdateServer()
+    public virtual void InitServer() { }
+    public virtual bool UpdateServer()
     {
         Util.Assert(Network.IsServer);
         TimeLeft -= Time.DeltaTime;
@@ -153,7 +160,9 @@ public class Quest
         if (TimeLeft <= 0)
         {
             QuestFailed("Ran out of time.");
+            return false;
         }
+        return true;
     }
 
     public void ReportProgress(int progress)
@@ -326,7 +335,7 @@ public class TheGoldenAppleQuest : Quest
     public override string Objective => "Find the golden apple and sell it in less than 30 seconds!";
     public override string RewardDescription => "1000 Coins.";
     public override float QuestTime => 30;
-    public override int ProgressRequired => 2;
+    public override int ProgressRequired => 1;
 
     public override void GiveRewards()
     {
@@ -341,7 +350,6 @@ public class TheGoldenAppleQuest : Quest
         if (food.Definition.Id == "golden_apple")
         {
             Found = true;
-            ReportProgress(1);
         }
     }
 
@@ -350,7 +358,46 @@ public class TheGoldenAppleQuest : Quest
         Util.Assert(Network.IsServer);
         if (Found)
         {
-            ReportProgress(2);
+            ReportProgress(1);
         }
+    }
+}
+
+public class TrackstarQuest : Quest
+{
+    public override string QuestName => "Trackstar";
+    public override string Objective => "Run 1000 feet in under 5 minutes!";
+    public override string RewardDescription => "Legendary Quest Pet.";
+    public override float QuestTime => 5 * 60;
+    public override int ProgressRequired => 1000;
+
+    public Vector2 PositionLastFrame;
+    public float TotalDistanceTraveledMeters;
+
+    public override void GiveRewards()
+    {
+        // todo(josh)
+    }
+
+    public override void InitServer()
+    {
+        PositionLastFrame = Player.Entity.Position;
+    }
+
+    public override bool UpdateServer()
+    {
+        if (!base.UpdateServer())
+        {
+            return false;
+        }
+        if ((Time.TimeSinceStartup - Player.TimeLastTeleported) >= 0.5) // huge hack but good enough for now
+        {
+            float traveled = (PositionLastFrame - Player.Entity.Position).Length;
+            TotalDistanceTraveledMeters += traveled;
+            float totalFeetTraveled = TotalDistanceTraveledMeters * 3.28084f;
+            ReportProgress((int)totalFeetTraveled);
+        }
+        PositionLastFrame = Player.Entity.Position;
+        return true;
     }
 }
