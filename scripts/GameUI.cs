@@ -22,6 +22,17 @@ public class GameUI : System<GameUI>
     public PetManager.OwnedPet PetToDelete = null;
     public PetManager.OwnedPet HoveredPet = null;
 
+    public class EggOpeningAnimation
+    {
+        public string EggId;
+        public string ResultPetId;
+
+        public float Timer;
+        public Rect MyRect;
+        public bool IsNew;
+    }
+    [AOIgnore] public List<EggOpeningAnimation> EggOpeningAnimations = new List<EggOpeningAnimation>();
+
     public Vector4 RarityColorCommon    = new Vector4(0.8f, 0.8f, 0.8f, 1.0f);
     public Vector4 RarityColorUncommon  = new Vector4(0.5f, 0.8f, 0.5f, 1.0f);
     public Vector4 RarityColorRare      = new Vector4(0.5f, 0.5f, 0.8f, 1.0f);
@@ -107,6 +118,11 @@ public class GameUI : System<GameUI>
         }
 
         return (text, col);
+    }
+
+    public void AddEggToOpen(string eggId, string resultPetId)
+    {
+        EggOpeningAnimations.Add(new EggOpeningAnimation() { EggId = eggId, ResultPetId = resultPetId });
     }
 
     public override void Update()
