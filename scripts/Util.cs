@@ -50,6 +50,19 @@ public static class Util
         return sign + beforeDecimal + afterDecimal + separator + graduation;
     }
 
+    public static float Lerp(float a, float b, float t)
+    {
+        return a + (b - a) * t;
+    }
+
+    public static Vector2 RandomPositionInBox(Vector2 min, Vector2 max, Random rng)
+    {
+        Vector2 pos;
+        pos.X = Lerp(min.X, max.X, (float)rng.NextDouble());
+        pos.Y = Lerp(min.Y, max.Y, (float)rng.NextDouble());
+        return pos;
+    }
+
     public static bool Has(this string str)
     {
         return !string.IsNullOrEmpty(str);

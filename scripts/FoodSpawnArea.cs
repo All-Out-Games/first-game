@@ -66,6 +66,13 @@ public class FoodSpawnArea : Component
 
     public Vector2 HalfCellSize;
 
+    public const double TimeBetweenCarePackages = 30; // todo(josh): @Incomplete: figure out what we want for this
+    public double CarePackageSpawnTimeAcc;
+    public Interactable SpawnedCarePackage;
+
+    public List<Zone> ChildZones = new();
+    public List<float> ChildZoneWeights = new();
+
     public override void Start()
     {
         AreaDefinition = AreaDefinitions.FirstOrDefault(a => a.Id == ZoneId);
@@ -83,11 +90,16 @@ public class FoodSpawnArea : Component
         }
         var step = new Vector2(1.0f, 1.0f);
         HalfCellSize = step * 0.5f;
+        float totalWeight = 0;
         foreach (var child in Entity.Children)
         {
             Zone zone = child.GetComponent<Zone>();
             if (zone == null) continue;
             zone.ZoneId = Entity.Name;
+
+            ChildZones.Add(zone);
+            ChildZoneWeights.Add(totalWeight);
+            totalWeight += zone.Entity.Scale.X * zone.Entity.Scale.Y;
 
             var halfSize = zone.Entity.Scale * 0.5f;
             var min = zone.Entity.Position - halfSize;
@@ -107,6 +119,14 @@ public class FoodSpawnArea : Component
                 cursor.Y += step.Y;
             }
         }
+
+        if (totalWeight > 0)
+        {
+            for (int i = 0; i < ChildZoneWeights.Count; i++)
+            {
+                ChildZoneWeights[i] /= totalWeight;
+            }
+        }
     }
 
     public override void Update()
@@ -114,56 +134,105 @@ public class FoodSpawnArea : Component
         if (Network.IsClient) return;
         if (AreaDefinition == null) return;
 
-        float currentDensity = (float)ActiveFoodCount / (float)SpawnSlots.Count;
-
-        if (currentDensity < Density)
+        // spawn care packages
+        if (ChildZoneWeights.Count > 0)
         {
-            var rng = new Random();
+            Util.Assert(Network.IsServer);
 
-            int startIndex = rng.Next(SpawnSlots.Count);
-            for (int i = startIndex; i < (startIndex + SpawnSlots.Count); i++)
+            if (SpawnedCarePackage)
             {
-                int index = i % SpawnSlots.Count;
-                var slot = SpawnSlots[index];
-                if (slot.HasFood)
+                CarePackageSpawnTimeAcc = 0;
+            }
+            else
+            {
+                CarePackageSpawnTimeAcc += Time.DeltaTime;
+                if (CarePackageSpawnTimeAcc >= TimeBetweenCarePackages)
                 {
-                    continue;
-                }
-
-                // spawn the thing with the lowest current count
-                int lowestFoodValue = int.MaxValue;
-                int lowestFoodIndex = -1;
-                for (int j = 0; j < FoodCounts.Length; j++)
-                {
-                    if (FoodCounts[j] < lowestFoodValue)
+                    CarePackageSpawnTimeAcc = 0;
+                    var rng = new Random();
+                    float rnd = (float)rng.NextDouble();
+                    int zoneToUse = -1;
+                    for (int i = 0; i < ChildZoneWeights.Count; i++)
                     {
-                        lowestFoodValue = FoodCounts[j];
-                        lowestFoodIndex = j;
+                        if (rnd >= ChildZoneWeights[i])
+                        {
+                            zoneToUse = i;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    if (zoneToUse >= 0)
+                    {
+                        Zone zone = ChildZones[zoneToUse];
+                        var halfSize = zone.Entity.Scale * 0.5f;
+                        var min = zone.Entity.Position - halfSize;
+                        var max = zone.Entity.Position + halfSize;
+                        var pos = Util.RandomPositionInBox(min, max, rng);
+                        var carePackageEntity = Entity.Instantiate(References.Instance.CarePackagePrefab);
+                        carePackageEntity.Position = pos;
+                        SpawnedCarePackage = carePackageEntity.GetComponent<Interactable>();
+                        Util.Assert(SpawnedCarePackage != null);
+                        Network.Spawn(carePackageEntity);
                     }
                 }
+            }
+        }
 
-                var newFoodEntity = Entity.Instantiate(FoodPrefabs);
-                var food = newFoodEntity.GetComponent<Food>();
-                food.FoodId = AreaDefinition.FoodsToSpawn[lowestFoodIndex];
-                food.FoodIndexInAreaDefinition = lowestFoodIndex;
-                newFoodEntity.Position = slot.Position;
-                newFoodEntity.X += ((float)rng.NextDouble() * 2 - 1) * HalfCellSize.X;
-                newFoodEntity.Y += ((float)rng.NextDouble() * 2 - 1) * HalfCellSize.Y;
-                Network.Spawn(newFoodEntity);
+        // spawn food
+        {
+            float currentDensity = (float)ActiveFoodCount / (float)SpawnSlots.Count;
+            if (currentDensity < Density)
+            {
+                var rng = new Random();
 
-                FoodCounts[lowestFoodIndex] += 1;
-                slot.HasFood = true;
-                ActiveFoodCount += 1;
-
-                var thisSlot = slot;
-                food.OnEat += (Food food) =>
+                int startIndex = rng.Next(SpawnSlots.Count);
+                for (int i = startIndex; i < (startIndex + SpawnSlots.Count); i++)
                 {
-                    ActiveFoodCount -= 1;
-                    thisSlot.HasFood = false;
-                    FoodCounts[food.FoodIndexInAreaDefinition] -= 1;
-                };
+                    int index = i % SpawnSlots.Count;
+                    var slot = SpawnSlots[index];
+                    if (slot.HasFood)
+                    {
+                        continue;
+                    }
 
-                break;
+                    // spawn the thing with the lowest current count
+                    int lowestFoodValue = int.MaxValue;
+                    int lowestFoodIndex = -1;
+                    for (int j = 0; j < FoodCounts.Length; j++)
+                    {
+                        if (FoodCounts[j] < lowestFoodValue)
+                        {
+                            lowestFoodValue = FoodCounts[j];
+                            lowestFoodIndex = j;
+                        }
+                    }
+
+                    var newFoodEntity = Entity.Instantiate(FoodPrefabs);
+                    var food = newFoodEntity.GetComponent<Food>();
+                    food.FoodId = AreaDefinition.FoodsToSpawn[lowestFoodIndex];
+                    food.FoodIndexInAreaDefinition = lowestFoodIndex;
+                    newFoodEntity.Position = slot.Position;
+                    newFoodEntity.X += ((float)rng.NextDouble() * 2 - 1) * HalfCellSize.X;
+                    newFoodEntity.Y += ((float)rng.NextDouble() * 2 - 1) * HalfCellSize.Y;
+                    Network.Spawn(newFoodEntity);
+
+                    FoodCounts[lowestFoodIndex] += 1;
+                    slot.HasFood = true;
+                    ActiveFoodCount += 1;
+
+                    var thisSlot = slot;
+                    food.OnEat += (Food food) =>
+                    {
+                        ActiveFoodCount -= 1;
+                        thisSlot.HasFood = false;
+                        FoodCounts[food.FoodIndexInAreaDefinition] -= 1;
+                    };
+
+                    break;
+                }
             }
         }
     }

@@ -7,30 +7,6 @@ TODO(JOSH):
 -spawn carepackages in all worlds? just one world at a time? cycling? idk what the move is, ask arjan
 */
 
-public class CarePackageSpawner : System<CarePackageSpawner>
-{
-    public const double TimeBetweenCarePackages = 5;
-    public double CarePackageSpawnTimeAcc;
-
-    public override void Start()
-    {
-    }
-
-    public override void Update()
-    {
-        if (Network.IsServer)
-        {
-            CarePackageSpawnTimeAcc += Time.DeltaTime;
-            while (Util.Timer(ref CarePackageSpawnTimeAcc, TimeBetweenCarePackages))
-            {
-                var carePackageEntity = Entity.Instantiate(References.Instance.CarePackagePrefab);
-                carePackageEntity.Position = new Vector2(16, 0);
-                Network.Spawn(carePackageEntity);
-            }
-        }
-    }
-}
-
 public partial class CarePackage : Component
 {
     public bool Claimed;

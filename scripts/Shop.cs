@@ -376,8 +376,8 @@ public class Shop : System<Shop>
             }
 
             Guid guid = Guid.NewGuid();
-            player.CallClient_AddPet(guid.ToString(), selectedPet.Id, eggDefinition.Id);
-            player.CallClient_OpenEgg(eggDefinition.Id, selectedPet.Id);
+            player.CallClient_AddPet(guid.ToString(), selectedPet.Id);
+            // player.CallClient_OpenEgg(eggDefinition.Id, selectedPet.Id);
             return true;
         }
 
