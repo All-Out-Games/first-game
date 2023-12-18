@@ -220,14 +220,7 @@ public class Shop : System<Shop>
 
     public void Purchase(FatPlayer player, string itemId)
     {
-        if (Network.IsClient)
-        {
-            Log.Error("You cannot purchase items on the client!");
-            return;
-        }
-
         var item = ShopData.Items.First(i => i.Id == itemId);
-
         if (item.Currency == ShopData.Currency.Coins) 
         {
             if (player.Coins < item.Cost)
@@ -252,6 +245,11 @@ public class Shop : System<Shop>
             }
         }
 
+        if (Network.IsClient)
+        {
+            return;
+        }
+
         if (item.Currency == ShopData.Currency.Sparks)
         {
             Log.Error("Tried to purchase sparks item. This must be done through Purchasing.PromptPurchase");
@@ -260,7 +258,8 @@ public class Shop : System<Shop>
 
         // We get here if the item was purchased with coins or trophies and they could afford it
 
-        if (!GrantItem(player, item))
+        var (success, _) = GrantItem(player, item);
+        if (!success)
         {
             Log.Error($"Failed to grant item: {item.Id}. Cannot complete purhcase!");
             return;
@@ -286,10 +285,11 @@ public class Shop : System<Shop>
             return false;
         }
 
-        return GrantItem(purchaser, item);
+        var (success, _) = GrantItem(purchaser, item);
+        return success;
     }
 
-    public bool GrantItem(Player p, ShopData.Item item, bool allowOpeningEggs = true)
+    public (bool, string) GrantItem(Player p, ShopData.Item item, bool allowOpeningEggs = true)
     {
         FatPlayer player = (FatPlayer)p;
         
@@ -299,19 +299,19 @@ public class Shop : System<Shop>
             {
                 case "vip":
                 {
-                    return true;
+                    return (true, "");
                 }
                 case "2x_trophies":
                 {
-                    return true;
+                    return (true, "");
                 }
                 case "2x_food":
                 {
-                    return true;
+                    return (true, "");
                 }
                 default:
                     Log.Error($"Unknown pass: {item.Id}");
-                    return false;
+                    return (false, "");
             }
         }
 
@@ -321,8 +321,11 @@ public class Shop : System<Shop>
             if (pack == null)
             {
                 Log.Error($"Could not find pack definition for {item.Id}");
-                return false;
+                return (false, "");
             }
+
+            string[] eggIds = new string[0];
+            string[] petIds = new string[0];
 
             foreach(var itemId in pack.Items)
             {
@@ -333,18 +336,30 @@ public class Shop : System<Shop>
                     continue;
                 }
 
-                if (!GrantItem(player, packItem))
+                var (success, data) = GrantItem(player, packItem, false);
+                if (!success)
                 {
                     Log.Error($"Failed to grant pack item: {packItem.Id}");
                     continue;
                 }
+
+                if (packItem.Kind == ShopData.ItemKind.Egg)
+                {
+                    eggIds = eggIds.Append(packItem.Id).ToArray();
+                    petIds = petIds.Append(data).ToArray();
+                }
+            }
+
+            if (eggIds.Length > 0)
+            {
+                 player.CallClient_OpenMultipleEggs(eggIds, petIds);
             }
         }
 
         if (item.Kind == ShopData.ItemKind.Trophies)
         {
             player.Trophies += item.IntData;
-            return true;
+            return (true, "");
         }
 
         if (item.Kind == ShopData.ItemKind.Egg) 
@@ -352,7 +367,7 @@ public class Shop : System<Shop>
             if (!PetData.Eggs.TryGetValue(item.Id, out var eggDefinition))
             {
                 Log.Error($"Could not find egg definition for {item.Id}");
-                return false;
+                return (false, "");
             }
 
             var totalWeight = eggDefinition.PossiblePets.Sum(p => p.Weight);
@@ -372,17 +387,21 @@ public class Shop : System<Shop>
             if (selectedPet == null) 
             {
                 Log.Error($"Could not select pet from egg {item.Id}");
-                return false;
+                return (false, "");
             }
 
             Guid guid = Guid.NewGuid();
-            player.CallClient_AddPet(guid.ToString(), selectedPet.Id);
-            // player.CallClient_OpenEgg(eggDefinition.Id, selectedPet.Id);
-            return true;
+            player.CallClient_AddPet(guid.ToString(), selectedPet.Id, eggDefinition.Id);
+
+            if (allowOpeningEggs) 
+            {
+                player.CallClient_OpenEgg(eggDefinition.Id, selectedPet.Id);
+            }
+            return (true, selectedPet.Id);
         }
 
         Log.Error($"Unhandled item kind: {item.Kind}");
-        return false;
+        return (false, "");
     }
 }
 
@@ -432,7 +451,7 @@ public static class ShopData
 
     public static List<Pack> Packs = new List<Pack>()
     {
-        new () { Id = "starter_pack1", Items = new List<string>() { "egg1a" } },
+        new () { Id = "starter_pack1", Items = new List<string>() { "egg1a", "egg1a", "egg1a" } },
         new () { Id = "starter_pack2", Items = new List<string>() { "egg1b" } },
         new () { Id = "starter_pack3", Items = new List<string>() { "egg1c" } },
     };

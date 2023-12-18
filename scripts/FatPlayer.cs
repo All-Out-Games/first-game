@@ -634,7 +634,7 @@ public partial class FatPlayer : Player
     }
 
     [ClientRpc]
-    public void AddPet(string petId, string petDefinitionId)
+    public void AddPet(string petId, string petDefinitionId, string eggId)
     {
         PetManager.AddPet(petId, petDefinitionId);
     }
@@ -661,6 +661,25 @@ public partial class FatPlayer : Player
     public void DeleteAllPets()
     {
         PetManager.DeleteAllPets();
+    }
+
+    [ClientRpc]
+    public void OpenEgg(string eggId, string petId)
+    {
+        if (!this.IsLocal) return;
+        Log.Info($"Open egg: {eggId} {petId}");
+    }
+
+    [ClientRpc]
+    public void OpenMultipleEggs(string[] eggIds, string[] petIds)
+    {
+        if (!this.IsLocal) return;
+
+        Log.Info("Open multiple eggs");
+        for (int i = 0; i < eggIds.Length; i++)
+        {
+            Log.Info($"Open egg: {eggIds[i]} {petIds[i]}");
+        }
     }
 
     [ServerRpc]
