@@ -66,7 +66,7 @@ public class FoodSpawnArea : Component
 
     public Vector2 HalfCellSize;
 
-    public const double TimeBetweenCarePackages = 30; // todo(josh): @Incomplete: figure out what we want for this
+    public const double TimeBetweenCarePackages = 10; // todo(josh): @Incomplete: figure out what we want for this
     public double CarePackageSpawnTimeAcc;
     public Interactable SpawnedCarePackage;
 
@@ -139,7 +139,7 @@ public class FoodSpawnArea : Component
         {
             Util.Assert(Network.IsServer);
 
-            if (SpawnedCarePackage)
+            if (SpawnedCarePackage.Alive())
             {
                 CarePackageSpawnTimeAcc = 0;
             }

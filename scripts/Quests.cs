@@ -69,7 +69,7 @@ public partial class CarePackage : Component
             case QuestType.BigBoiDiet:     { player.CurrentQuest = new BigBoiDietQuest();     break; }
             case QuestType.MarathonEater:  { player.CurrentQuest = new MarathonEaterQuest();  break; }
             case QuestType.BossBrawl:      { player.CurrentQuest = new BossBrawlQuest();      break; }
-            case QuestType.TheGoldenApple: { player.CurrentQuest = new TheGoldenAppleQuest(); break; }
+            // case QuestType.TheGoldenApple: { player.CurrentQuest = new TheGoldenAppleQuest(); break; }
             case QuestType.Trackstar:      { player.CurrentQuest = new TrackstarQuest();      break; }
             default: {
                 Log.Error("Unknown quest type: " + questType);
@@ -96,7 +96,7 @@ public enum QuestType
     BigBoiDiet,
     MarathonEater,
     BossBrawl,
-    TheGoldenApple,
+    // TheGoldenApple,
     Trackstar,
 
     COUNT,
@@ -305,39 +305,39 @@ public class BossBrawlQuest : Quest
     }
 }
 
-public class TheGoldenAppleQuest : Quest
-{
-    public override string QuestName => "The Golden Apple";
-    public override string Objective => "Find the golden apple and sell it in less than 30 seconds!";
-    public override string RewardDescription => "1000 Coins.";
-    public override float QuestTime => 30;
-    public override int ProgressRequired => 1;
+// public class TheGoldenAppleQuest : Quest
+// {
+//     public override string QuestName => "The Golden Apple";
+//     public override string Objective => "Find the golden apple and sell it in less than 30 seconds!";
+//     public override string RewardDescription => "1000 Coins.";
+//     public override float QuestTime => 30;
+//     public override int ProgressRequired => 1;
 
-    public override void GiveRewards()
-    {
-        Player.Coins += 1000;
-    }
+//     public override void GiveRewards()
+//     {
+//         Player.Coins += 1000;
+//     }
 
-    public bool Found;
+//     public bool Found;
 
-    public override void OnFoodEatenServer(Food food)
-    {
-        Util.Assert(Network.IsServer);
-        if (food.Definition.Id == "golden_apple")
-        {
-            Found = true;
-        }
-    }
+//     public override void OnFoodEatenServer(Food food)
+//     {
+//         Util.Assert(Network.IsServer);
+//         if (food.Definition.Id == "golden_apple")
+//         {
+//             Found = true;
+//         }
+//     }
 
-    public override void OnSoldItemsServer()
-    {
-        Util.Assert(Network.IsServer);
-        if (Found)
-        {
-            ReportProgress(1);
-        }
-    }
-}
+//     public override void OnSoldItemsServer()
+//     {
+//         Util.Assert(Network.IsServer);
+//         if (Found)
+//         {
+//             ReportProgress(1);
+//         }
+//     }
+// }
 
 public class TrackstarQuest : Quest
 {
