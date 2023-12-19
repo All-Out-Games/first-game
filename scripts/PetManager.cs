@@ -23,7 +23,7 @@ public partial class PetManager : Component
         }
     }
 
-    [AOIgnore] public List<OwnedPet> OwnedPets = new List<OwnedPet>();
+    public List<OwnedPet> OwnedPets = new List<OwnedPet>();
     
     public override void Start()
     {

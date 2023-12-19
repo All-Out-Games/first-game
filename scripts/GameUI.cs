@@ -352,7 +352,6 @@ public class GameUI : System<GameUI>
             }
 
             var equippedPetsCount = localPlayer.PetManager.OwnedPets.Count(p => p.Equipped);
-
             var equippedCapacityRect = windowRect.TopRightRect().Offset(-250, 0).Grow(20, 115, 20, 115);
             var equippedCapacityRectHeight = equippedCapacityRect.Height;
             UI.Image(equippedCapacityRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
@@ -444,7 +443,8 @@ public class GameUI : System<GameUI>
                 }
                 else 
                 {
-                    if (equippedPetsCount >= localPlayer.MaxEquippedPets) {
+                    if (equippedPetsCount >= localPlayer.MaxEquippedPets)
+                    {
                         UI.PushDisabled();
                     }
                     var equipButtonResult = UI.Button(equipButtonRect, "Equip", new UI.ButtonSettings(){ sprite = References.Instance.GreenButton, slice = References.Instance.FrameSlice }, buttonTs);
@@ -474,14 +474,16 @@ public class GameUI : System<GameUI>
                 var petsRect = scrollView.contentRect.TopRect();
                 var grid = UI.GridLayout.Make(petsRect, 165, 165, UI.GridLayout.SizeSource.ELEMENT_SIZE);
 
-                foreach (var pet in localPlayer.PetManager.OwnedPets)
+                int petCount = Math.Min(localPlayer.MaxPetsInStorage, localPlayer.PetManager.OwnedPets.Count);
+                for (int i = 0; i < petCount; i++)
                 {
+                    var pet = localPlayer.PetManager.OwnedPets[i];
                     bool isSelected = SelectedPet == pet;
                     UI.PushId(pet.Id);
                     using var _2 = AllOut.Defer(UI.PopId);
 
                     var petRect = grid.Next();
-                    petRect = petRect.Inset(5,5,5,5);
+                    petRect = petRect.Inset(5);
                     buttonSettings.sprite = References.Instance.FrameWhite;
 
                     if (isSelected) {
@@ -515,8 +517,36 @@ public class GameUI : System<GameUI>
                         var checkmarkRect = petRect.BottomLeftRect().Grow(15).Offset(25, 25);
                         UI.Image(checkmarkRect, References.Instance.CheckMark, Vector4.White, new UI.NineSlice());
                     }
+                }
 
-                    UI.ExpandCurrentScrollView(petRect);
+                int petsInColdStorage = localPlayer.PetManager.OwnedPets.Count - petCount;
+                if (petsInColdStorage > 0)
+                {
+                    UI.PushId("coldstorage");
+                    using var _ = AllOut.Defer(UI.PopId);
+
+                    var petRect = grid.Next();
+                    petRect = petRect.Inset(5);
+                    buttonSettings.sprite = References.Instance.FrameWhite;
+
+                    buttonSettings.colorMultiplier = RarityColorCommon;
+                    var coldStorageTextSettings = new UI.TextSettings()
+                    {
+                        font = UI.TextSettings.Font.AlphaKind,
+                        size = 40,
+                        color = Vector4.White,
+                        horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                        verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                        wordWrap = true,
+                        outline = true,
+                        // dropShadow = false,
+                    };
+
+                    var petButtonResult = UI.Button(petRect, $"+{petsInColdStorage} in storage", buttonSettings, coldStorageTextSettings);
+                    if (petButtonResult.clicked)
+                    {
+                        // todo(josh): open shop and scroll to the storage increase IAPs
+                    }
                 }
 
                 // Make an extra row for buffer at then end of the grid
@@ -743,7 +773,7 @@ public class GameUI : System<GameUI>
                 double needs = currentRebirthData.TrophiesCost;
 
                 var rebirthProgress = Math.Clamp(has / needs, 0, 1);
-                var rebirthProgressRect = sliderRect.Inset(5,5,5,5).SubRect(0, 0, (float)rebirthProgress, 1, 0, 0, 0, 0);
+                var rebirthProgressRect = sliderRect.Inset(5).SubRect(0, 0, (float)rebirthProgress, 1, 0, 0, 0, 0);
                 UI.Image(rebirthProgressRect, References.Instance.BlueFill, Vector4.White, new UI.NineSlice());
                 UI.Text(sliderRect, $"{Util.FormatDouble(localPlayer.Trophies)} / {Util.FormatDouble(nextRebirthData.TrophiesCost)}", upgradeItemTextSettings);
 
@@ -775,8 +805,8 @@ public class GameUI : System<GameUI>
             double myProgress   = Math.Min(1.0, (double)localPlayer.MyProgress   / (double)localPlayer.CurrentBoss.AmountToWin);
             double bossProgress = Math.Min(1.0, (double)localPlayer.BossProgress / (double)localPlayer.CurrentBoss.AmountToWin);
 
-            var myProgressRect   = myRect.Inset(5,5,5,5).SubRect(0, 0, 1, (float)myProgress, 0, 0, 0, 0);
-            var bossProgressRect = bossRect.Inset(5,5,5,5).SubRect(0, 0, 1, (float)bossProgress, 0, 0, 0, 0);
+            var myProgressRect   = myRect.Inset(5).SubRect(0, 0, 1, (float)myProgress, 0, 0, 0, 0);
+            var bossProgressRect = bossRect.Inset(5).SubRect(0, 0, 1, (float)bossProgress, 0, 0, 0, 0);
 
             UI.Image(myRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
             UI.Image(myProgressRect, References.Instance.GreenFill, Vector4.White, new UI.NineSlice());

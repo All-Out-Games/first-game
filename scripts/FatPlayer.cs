@@ -16,17 +16,27 @@ public partial class FatPlayer : Player
     public int _chewSpeedLevel;
     public int _rebirth;
 
-    public int _maxEquippedPets = 3;
     public int MaxEquippedPets
     {
-        get => _maxEquippedPets;
-        set
+        get
         {
-            _maxEquippedPets = value;
-            if (Network.IsServer) {
-                Save.SetInt(this, "MaxEquippedPets", value);
-                CallClient_NotifyMaxEquippedPetsUpdate(value);
-            }
+            int result = 3;
+            if (GamePasses.HasPetEquipCap1) { result += 1; }
+            if (GamePasses.HasPetEquipCap2) { result += 3; }
+            if (GamePasses.HasPetEquipCap3) { result += 6; }
+            return result;
+        }
+    }
+
+    public int MaxPetsInStorage
+    {
+        get
+        {
+            int result = 10;
+            if (GamePasses.HasPetStorageCap1) { result += 10; }
+            if (GamePasses.HasPetStorageCap2) { result += 25; }
+            if (GamePasses.HasPetStorageCap3) { result += 50; }
+            return result;
         }
     }
 
@@ -59,6 +69,9 @@ public partial class FatPlayer : Player
 
     public List<StatModifier> TemporaryBuffs = new();
 
+    public PlayerGamePasses GamePasses;
+    public HashSet<string>  GamePassesHashSet = new();
+
     public override void Start()
     {
     }
@@ -75,6 +88,11 @@ public partial class FatPlayer : Player
         if (won) 
         {
             Trophies += CurrentBoss.Reward;
+            if (GamePasses.Has2xTrophies)
+            {
+                Trophies *= 2;
+            }
+
             if (IsLocal)
             {
                 Notifications.Show("You won the boss fight!");
@@ -155,6 +173,21 @@ public partial class FatPlayer : Player
 
     public override void Update()
     {
+        if (Input.GetKeyDown(Input.Keycode.KEYCODE_P))
+        {
+            Log.Info($"HasVIP:                {GamePasses.HasVIP}");
+            Log.Info($"Has2xTrophies:         {GamePasses.Has2xTrophies}");
+            Log.Info($"Has2xMoney:            {GamePasses.Has2xMoney}");
+            Log.Info($"HasTeleporter:         {GamePasses.HasTeleporter}");
+            Log.Info($"HasBossAutoclicker:    {GamePasses.HasBossAutoclicker}");
+            Log.Info($"HasPetEquipCap1:       {GamePasses.HasPetEquipCap1}");
+            Log.Info($"HasPetEquipCap2:       {GamePasses.HasPetEquipCap2}");
+            Log.Info($"HasPetEquipCap3:       {GamePasses.HasPetEquipCap3}");
+            Log.Info($"HasPetStorageCap1:     {GamePasses.HasPetStorageCap1}");
+            Log.Info($"HasPetStorageCap2:     {GamePasses.HasPetStorageCap2}");
+            Log.Info($"HasPetStorageCap3:     {GamePasses.HasPetStorageCap3}");
+        }
+
         if (Input.GetKeyHeld(Input.Keycode.KEYCODE_LEFT_CONTROL)) {
             if (Input.GetKeyHeld(Input.Keycode.KEYCODE_LEFT_SHIFT)) {
                 if (Input.GetKeyDown(Input.Keycode.KEYCODE_R)) {
@@ -302,22 +335,82 @@ public partial class FatPlayer : Player
     {
         if (Network.IsServer)
         {
-            Trophies = Save.GetDouble(this, "Trophies", 0);
-            Coins = Save.GetDouble(this, "Coins", 0);
+            Trophies              = Save.GetDouble(this, "Trophies", 0);
+            Coins                 = Save.GetDouble(this, "Coins", 0);
             AmountOfFoodInStomach = Save.GetDouble(this, "AmountOfFoodInStomach", 0);
-            ValueOfFoodInStomach = Save.GetDouble(this, "ValueOfFoodInStomach", 0);
-            MaxFoodLevel = Save.GetInt(this, "MaxFood", 0);
-            MouthSizeLevel = Save.GetInt(this, "MouthSize", 0);
-            ChewSpeedLevel = Save.GetInt(this, "ChewSpeed", 0);
-            Rebirth = Save.GetInt(this, "Rebirth", 0);
+            ValueOfFoodInStomach  = Save.GetDouble(this, "ValueOfFoodInStomach", 0);
+            MaxFoodLevel          = Save.GetInt(this, "MaxFood", 0);
+            MouthSizeLevel        = Save.GetInt(this, "MouthSize", 0);
+            ChewSpeedLevel        = Save.GetInt(this, "ChewSpeed", 0);
+            Rebirth               = Save.GetInt(this, "Rebirth", 0);
+
+            var gamePassesStr = Save.GetString(this, "GamePasses", "[]");
+            CallClient_LoadGamePasses(gamePassesStr);
 
             var zones = Save.GetString(this, "UnlockedZones", "[]");
             CallClient_LoadZoneData(zones);
 
             var pets = Save.GetString(this, "AllPets", "[]");
             CallClient_LoadPetData(pets);
+        }
+    }
 
-            MaxEquippedPets = Save.GetInt(this, "MaxEquippedPets", 3);
+    [ClientRpc]
+    public void LoadGamePasses(string gamePassesStr)
+    {
+        string[] gamePassesArray = gamePassesStr.FromJson<string[]>();
+        if (gamePassesArray == null)
+        {
+            return;
+        }
+        GamePassesHashSet.Clear();
+        GamePasses = new();
+        foreach (var pass in gamePassesArray)
+        {
+            EnableGamePass(pass); // note(josh): intentionally non-rpc
+        }
+    }
+
+    public void ServerSaveGamePasses()
+    {
+        Util.Assert(Network.IsServer);
+        string[] gamePassesArray = GamePassesHashSet.ToArray();
+        string saveValue = JSONWriter.ToJson(gamePassesArray);
+        Log.Info($"Saving game passes: {saveValue}");
+        Save.SetString(this, "GamePasses", saveValue);
+    }
+
+    public void ServerOnBuyGamePass(string pass)
+    {
+        Util.Assert(Network.IsServer);
+        CallClient_EnableGamePass(pass);
+        ServerSaveGamePasses();
+    }
+
+    [ClientRpc]
+    public void EnableGamePass(string pass)
+    {
+        Log.Info($"Enabling game pass: {pass}");
+        GamePassesHashSet.Add(pass);
+        switch (pass)
+        {
+            case "vip":               { GamePasses.HasVIP             = true; break; }
+            case "2x_trophies":       { GamePasses.Has2xTrophies      = true; break; }
+            case "2x_money":          { GamePasses.Has2xMoney         = true; break; }
+            case "teleporter":        { GamePasses.HasTeleporter      = true; break; }
+            case "boss_autoclicker":  { GamePasses.HasBossAutoclicker = true; break; }
+            case "pet_equip_cap_1":   { GamePasses.HasPetEquipCap1    = true; break; }
+            case "pet_equip_cap_2":   { GamePasses.HasPetEquipCap2    = true; break; }
+            case "pet_equip_cap_3":   { GamePasses.HasPetEquipCap3    = true; break; }
+            case "pet_storage_cap_1": { GamePasses.HasPetStorageCap1  = true; break; }
+            case "pet_storage_cap_2": { GamePasses.HasPetStorageCap2  = true; break; }
+            case "pet_storage_cap_3": { GamePasses.HasPetStorageCap3  = true; break; }
+            case "pet_storage_cap_4": { GamePasses.HasPetStorageCap4  = true; break; }
+            case "pet_storage_cap_5": { GamePasses.HasPetStorageCap5  = true; break; }
+            default: {
+                Log.Error($"Unknown game pass {pass}");
+                break;
+            }
         }
     }
 
@@ -518,7 +611,18 @@ public partial class FatPlayer : Player
     public double BaseChewSpeedValue      => ChewSpeedByLevel  [Math.Clamp(_chewSpeedLevel, 0, ChewSpeedByLevel.Length-1)].Value;
     public double BaseMouthSizeValue      => MouthSizeByLevel  [Math.Clamp(_mouthSizeLevel, 0, MouthSizeByLevel.Length-1)].Value;
     public double BaseStomachSizeValue    => StomachSizeByLevel[Math.Clamp(_maxFoodLevel,   0, StomachSizeByLevel.Length-1)].Value;
-    public double BaseCashMultiplierValue => global::Rebirth.Instance.GetRebirthData(Rebirth).CashMultiplier;
+    public double BaseCashMultiplierValue
+    {
+        get
+        {
+            double result = global::Rebirth.Instance.GetRebirthData(Rebirth).CashMultiplier;
+            if (GamePasses.Has2xMoney)
+            {
+                result *= 2;
+            }
+            return result;
+        }
+    }
 
     public double ModifiedChewSpeed      => BaseChewSpeedValue      * CalculateTotalMultiplierFromPets(StatModifierKind.ChewSpeed)      * CalculateTotalMultiplierFromBuffs(StatModifierKind.ChewSpeed);
     public double ModifiedMouthSize      => BaseMouthSizeValue      * CalculateTotalMultiplierFromPets(StatModifierKind.MouthSize)      * CalculateTotalMultiplierFromBuffs(StatModifierKind.MouthSize);
@@ -689,7 +793,6 @@ public partial class FatPlayer : Player
         if (equippedPetsCount >= MaxEquippedPets) {
             return;
         }
-
         CallClient_EquipPet(id);
     }
 
@@ -742,7 +845,6 @@ public partial class FatPlayer : Player
     [ClientRpc] public void NotifyMouthSizeUpdate(int val)                     { if (Network.IsClient) MouthSizeLevel        = val; }
     [ClientRpc] public void NotifyChewSpeedUpdate(int val)                     { if (Network.IsClient) ChewSpeedLevel        = val; }
     [ClientRpc] public void NotifyRebirthUpdate(int val)                       { if (Network.IsClient) Rebirth               = val; }
-    [ClientRpc] public void NotifyMaxEquippedPetsUpdate(int val)               { if (Network.IsClient) _maxEquippedPets      = val; }
 
     [ServerRpc]
     public void RequestPurchaseStomachSize()
@@ -953,4 +1055,21 @@ public partial class FatPlayer : Player
         new UpgradeStatAndCost(){ Value = 580, Cost = 1839374 },
         new UpgradeStatAndCost(){ Value = 590, Cost = 2427973 },
     };
+}
+
+public struct PlayerGamePasses
+{
+    public bool HasVIP;
+    public bool Has2xTrophies;
+    public bool Has2xMoney;
+    public bool HasTeleporter;
+    public bool HasBossAutoclicker;
+    public bool HasPetEquipCap1;
+    public bool HasPetEquipCap2;
+    public bool HasPetEquipCap3;
+    public bool HasPetStorageCap1;
+    public bool HasPetStorageCap2;
+    public bool HasPetStorageCap3;
+    public bool HasPetStorageCap4;
+    public bool HasPetStorageCap5;
 }
