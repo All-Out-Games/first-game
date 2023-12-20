@@ -119,10 +119,30 @@ public class Shop : System<Shop>
                             var widthDiff = entryRect.Width - (entry.Icons.Count * iconSize);
                             var iconsRect = entryRect.SubRect(0, 0.5f, 0, 0.5f, 0, 0, 0, 0).Grow(iconSize/2, 0, iconSize/2, 0).Offset(widthDiff / 2, 0);
                             var iconGrid = UI.GridLayout.Make(iconsRect, iconSize, iconSize, UI.GridLayout.SizeSource.ELEMENT_SIZE);
-                            foreach (var icon in entry.Icons)
+
+
+                            var pack = ShopData.Packs.FirstOrDefault(p => p.Id == item.Id);
+                            if (pack != null)
                             {
-                                var iconRect = iconGrid.Next();
-                                UI.Image(iconRect, References.Instance.FrameDark, Vector4.White, References.Instance.FrameSlice);
+                                foreach (var packItemId in pack.Items)
+                                {
+                                    var packItem = ShopData.Items.FirstOrDefault(i => i.Id == packItemId);
+                                    if (packItem == null) continue;
+
+                                    var packProduct = Purchasing.GetProduct(packItem.ProductId);
+                                    if (!packProduct.IsValid()) continue;
+
+                                    var iconRect = iconGrid.Next();
+                                    UI.Image(iconRect, packProduct.Icon, Vector4.White, References.Instance.FrameSlice);
+                                }
+                            }
+                            else 
+                            {
+                                foreach (var icon in entry.Icons)
+                                {
+                                    var iconRect = iconGrid.Next();
+                                    UI.Image(iconRect, References.Instance.FrameDark, Vector4.White, References.Instance.FrameSlice);
+                                }
                             }
 
                             var buttonRect = entryRect.BottomRightRect().Grow(100, 0, 0, 200).Offset(-15, 15);
@@ -164,26 +184,27 @@ public class Shop : System<Shop>
                             Purchasing.PromptPurchase(item.ProductId);
                         }
 
+                        var entryCutRect = entryRect;
                              if (buyResult.pressed)  entryRect = entryRect.Inset(3);
                         else if (buyResult.hovering) entryRect = entryRect.Grow(3);
                         
                         UI.Image(entryRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
 
-                        var titleTextRect = entryRect.CutTop(100);
+                        var titleTextRect = entryCutRect.CutTop(100);
                         UI.Text(titleTextRect, product.Name, new UI.TextSettings() { size = 72, color = Vector4.White, outline = true, outlineThickness = 2, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom, wordWrap = true });
 
-                        var descriptionAndIconRect = entryRect.CutTop(150).Offset(0, -25);
+                        var descriptionAndIconRect = entryCutRect.CutTop(150).Offset(0, -25);
                         var iconRect = descriptionAndIconRect.CutLeft(descriptionAndIconRect.Width * 0.4f).FitAspect(1.0f, Rect.FitAspectKind.KEEP_WIDTH).Offset(20, 0);
                         var descriptionRect = descriptionAndIconRect.Inset(0, 10, 0, 10);
-                        UI.Image(iconRect, References.Instance.FrameDark, Vector4.White, References.Instance.FrameSlice);
+                        UI.Image(iconRect, product.Icon, Vector4.White, new UI.NineSlice());
                         UI.Text(descriptionRect, product.Description, new UI.TextSettings() { size = 42, color = Vector4.White, outline = true, outlineThickness = 2, wordWrap = true, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom });
 
-                        var priceRect = entryRect.CutBottom(100).Offset(0, 10);
+                        var priceRect = entryCutRect.CutBottom(100).Offset(0, 10);
                         UI.Text(priceRect, $"{product.Price}", new UI.TextSettings() { size = 72, color = Vector4.White, outline = true, outlineThickness = 2, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom });
 
                         if (Purchasing.OwnsGamePassLocal(item.ProductId))
                         {
-                            var checkmarkRect = entryRect.TopLeftRect().Grow(0, 50, 50, 0).Offset(10, -10);
+                            var checkmarkRect = entryCutRect.TopLeftRect().Grow(0, 50, 50, 0).Offset(10, -10);
                             UI.Image(checkmarkRect, References.Instance.CheckMark, Vector4.White, new UI.NineSlice());
                         }
 

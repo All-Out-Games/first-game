@@ -783,8 +783,6 @@ public class GameUI : System<GameUI>
                     localPlayer.CallServer_RequestRebirth();
                 }
 
-                Log.Info($"Rebirth progress: {rebirthProgress}");
-
                 buttonSettings.sprite = References.Instance.OrangeButton;
                 var skipRebirthButtonRect = bottomRect;
                 if (UI.Button(skipRebirthButtonRect, "Skip", buttonSettings, buttonTextSettings).clicked)
