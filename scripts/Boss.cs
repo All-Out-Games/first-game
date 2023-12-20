@@ -10,6 +10,15 @@ public class Boss : Component
     public int AmountToWin => Definition.AmountPerClick * 30;
     public double Reward => Definition.Reward;
 
+    public void NotifyRequirementNotMetLocal(FatPlayer player, string statName, int level, int required)
+    {
+        if (!player.IsLocal)
+        {
+            return;
+        }
+        Notifications.Show($"Your {statName} level ({level}) must be at least {required}.");
+    }
+
     public override void Start()
     {
         Definition = BossDefinitions.FirstOrDefault(d => d.WorldIndex == WorldIndex && d.IndexInWorld == BossIndex);
@@ -23,6 +32,29 @@ public class Boss : Component
         interactable.OnInteract += (Player p) =>
         {
             var player = (FatPlayer) p;
+
+            var meetsReq = true;
+            if ((Definition.RequiredStatFlags & BossRequiredStat.MouthSize) != 0 && player.MouthSizeLevel < Definition.RequiredLevel)
+            {
+                meetsReq = false;
+                NotifyRequirementNotMetLocal(player, "Mouth Size", player.MouthSizeLevel, Definition.RequiredLevel);
+            }
+            if ((Definition.RequiredStatFlags & BossRequiredStat.ChewSpeed) != 0 && player.ChewSpeedLevel < Definition.RequiredLevel)
+            {
+                meetsReq = false;
+                NotifyRequirementNotMetLocal(player, "Chew Speed", player.ChewSpeedLevel, Definition.RequiredLevel);
+            }
+            if ((Definition.RequiredStatFlags & BossRequiredStat.StomachSize) != 0 && player.StomachSizeLevel < Definition.RequiredLevel)
+            {
+                meetsReq = false;
+                NotifyRequirementNotMetLocal(player, "Stomach Size", player.StomachSizeLevel, Definition.RequiredLevel);
+            }
+
+            if (!meetsReq)
+            {
+                return;
+            }
+
             if (Network.IsServer) {
                 Log.Info("Starting boss fight with " + player.Name);
                 player.CallClient_StartBossFight(Entity.NetworkId);
@@ -47,32 +79,40 @@ public class Boss : Component
     public static BossDefinition[] BossDefinitions = new BossDefinition[]
     {
         // world 1
-        new BossDefinition(){ WorldIndex = 0, IndexInWorld = 0, RequiredLevel = 3,   TimeBetweenClicks = 0.25, AmountPerClick = 1,  Reward = 5 },
-        new BossDefinition(){ WorldIndex = 0, IndexInWorld = 1, RequiredLevel = 9,   TimeBetweenClicks = 0.25, AmountPerClick = 3,  Reward = 10 },
-        new BossDefinition(){ WorldIndex = 0, IndexInWorld = 2, RequiredLevel = 21,  TimeBetweenClicks = 0.25, AmountPerClick = 7,  Reward = 30 },
-        new BossDefinition(){ WorldIndex = 0, IndexInWorld = 3, RequiredLevel = 36,  TimeBetweenClicks = 0.25, AmountPerClick = 12, Reward = 120 },
-        new BossDefinition(){ WorldIndex = 0, IndexInWorld = 4, RequiredLevel = 57,  TimeBetweenClicks = 0.25, AmountPerClick = 19, Reward = 600 },
+        new BossDefinition(){ WorldIndex = 0, IndexInWorld = 0, Reward = 5,          AmountPerClick = 2,  TimeBetweenClicks = 0.1, RequiredLevel = 3,   RequiredStatFlags = BossRequiredStat.MouthSize, },
+        new BossDefinition(){ WorldIndex = 0, IndexInWorld = 1, Reward = 10,         AmountPerClick = 3,  TimeBetweenClicks = 0.1, RequiredLevel = 5,   RequiredStatFlags = BossRequiredStat.ChewSpeed, },
+        new BossDefinition(){ WorldIndex = 0, IndexInWorld = 2, Reward = 30,         AmountPerClick = 7,  TimeBetweenClicks = 0.1, RequiredLevel = 8,   RequiredStatFlags = BossRequiredStat.StomachSize, },
+        new BossDefinition(){ WorldIndex = 0, IndexInWorld = 3, Reward = 120,        AmountPerClick = 10, TimeBetweenClicks = 0.1, RequiredLevel = 12,  RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.ChewSpeed, },
+        new BossDefinition(){ WorldIndex = 0, IndexInWorld = 4, Reward = 600,        AmountPerClick = 17, TimeBetweenClicks = 0.1, RequiredLevel = 19,  RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.ChewSpeed | BossRequiredStat.StomachSize, },
 
         // world 2
-        new BossDefinition(){ WorldIndex = 1, IndexInWorld = 0, RequiredLevel = 66,  TimeBetweenClicks = 0.25, AmountPerClick = 22, Reward = 2700 },
-        new BossDefinition(){ WorldIndex = 1, IndexInWorld = 1, RequiredLevel = 78,  TimeBetweenClicks = 0.25, AmountPerClick = 26, Reward = 13600 },
-        new BossDefinition(){ WorldIndex = 1, IndexInWorld = 2, RequiredLevel = 96,  TimeBetweenClicks = 0.25, AmountPerClick = 32, Reward = 68000 },
-        new BossDefinition(){ WorldIndex = 1, IndexInWorld = 3, RequiredLevel = 120, TimeBetweenClicks = 0.25, AmountPerClick = 40, Reward = 340000 },
-        new BossDefinition(){ WorldIndex = 1, IndexInWorld = 4, RequiredLevel = 147, TimeBetweenClicks = 0.25, AmountPerClick = 49, Reward = 1700000 },
+        new BossDefinition(){ WorldIndex = 1, IndexInWorld = 0, Reward = 2700,       AmountPerClick = 19, TimeBetweenClicks = 0.1, RequiredLevel = 21,  RequiredStatFlags = BossRequiredStat.StomachSize, },
+        new BossDefinition(){ WorldIndex = 1, IndexInWorld = 1, Reward = 13600,      AmountPerClick = 23, TimeBetweenClicks = 0.1, RequiredLevel = 25,  RequiredStatFlags = BossRequiredStat.ChewSpeed, },
+        new BossDefinition(){ WorldIndex = 1, IndexInWorld = 2, Reward = 68000,      AmountPerClick = 30, TimeBetweenClicks = 0.1, RequiredLevel = 32,  RequiredStatFlags = BossRequiredStat.MouthSize, },
+        new BossDefinition(){ WorldIndex = 1, IndexInWorld = 3, Reward = 340000,     AmountPerClick = 42, TimeBetweenClicks = 0.1, RequiredLevel = 44,  RequiredStatFlags = BossRequiredStat.StomachSize | BossRequiredStat.ChewSpeed, },
+        new BossDefinition(){ WorldIndex = 1, IndexInWorld = 4, Reward = 1700000,    AmountPerClick = 56, TimeBetweenClicks = 0.1, RequiredLevel = 58,  RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.ChewSpeed | BossRequiredStat.StomachSize, },
 
         // world 3
-        new BossDefinition(){ WorldIndex = 2, IndexInWorld = 0, RequiredLevel = 165, TimeBetweenClicks = 0.25, AmountPerClick = 55, Reward = 7800000 },
-        new BossDefinition(){ WorldIndex = 2, IndexInWorld = 1, RequiredLevel = 189, TimeBetweenClicks = 0.25, AmountPerClick = 63, Reward = 39000000 },
-        new BossDefinition(){ WorldIndex = 2, IndexInWorld = 2, RequiredLevel = 216, TimeBetweenClicks = 0.25, AmountPerClick = 72, Reward = 195000000 },
-        new BossDefinition(){ WorldIndex = 2, IndexInWorld = 3, RequiredLevel = 252, TimeBetweenClicks = 0.25, AmountPerClick = 84, Reward = 975000000 },
-        new BossDefinition(){ WorldIndex = 2, IndexInWorld = 4, RequiredLevel = 297, TimeBetweenClicks = 0.25, AmountPerClick = 99, Reward = 4800000000 },
+        new BossDefinition(){ WorldIndex = 2, IndexInWorld = 0, Reward = 7800000,    AmountPerClick = 55, TimeBetweenClicks = 0.1, RequiredLevel = 165, RequiredStatFlags = BossRequiredStat.ChewSpeed, },
+        new BossDefinition(){ WorldIndex = 2, IndexInWorld = 1, Reward = 39000000,   AmountPerClick = 63, TimeBetweenClicks = 0.1, RequiredLevel = 189, RequiredStatFlags = BossRequiredStat.MouthSize, },
+        new BossDefinition(){ WorldIndex = 2, IndexInWorld = 2, Reward = 195000000,  AmountPerClick = 72, TimeBetweenClicks = 0.1, RequiredLevel = 216, RequiredStatFlags = BossRequiredStat.StomachSize, },
+        new BossDefinition(){ WorldIndex = 2, IndexInWorld = 3, Reward = 975000000,  AmountPerClick = 84, TimeBetweenClicks = 0.1, RequiredLevel = 252, RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.StomachSize, },
+        new BossDefinition(){ WorldIndex = 2, IndexInWorld = 4, Reward = 4800000000, AmountPerClick = 99, TimeBetweenClicks = 0.1, RequiredLevel = 297, RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.ChewSpeed | BossRequiredStat.StomachSize, },
     };
+}
+
+public enum BossRequiredStat
+{
+    MouthSize   = 1 << 0,
+    ChewSpeed   = 1 << 1,
+    StomachSize = 1 << 2,
 }
 
 public class BossDefinition
 {
     public int    WorldIndex;
     public int    IndexInWorld;
+    public BossRequiredStat RequiredStatFlags;
     public int    RequiredLevel;
     public double Reward;
     public double TimeBetweenClicks;
