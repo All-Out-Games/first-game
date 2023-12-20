@@ -169,7 +169,7 @@ public partial class Food : Component
 
         if (CurrentEater != null)
         {
-            EatingTime += (double)Time.DeltaTime * CurrentEater.ModifiedChewSpeed;
+            // EatingTime += (double)Time.DeltaTime * 0.2f;
 
             if (Network.IsClient) return;
             if (EatingTime >= ConsumptionTime)
@@ -188,7 +188,7 @@ public partial class Food : Component
         CurrentEater = player;
         CurrentEater.AddFreezeReason(EatingFreezeReason);
         player.FoodBeingEaten = this;
-        EatingTime = 0;
+        EatingTime = player.FoodProgressPerClick;
     }
 
     [ClientRpc]

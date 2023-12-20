@@ -41,6 +41,8 @@ public partial class FatPlayer : Player
     }
 
     public Food FoodBeingEaten;
+    public float LastFoodClickTime;
+    public float FoodProgressLerp;
     
     private PetManager _petManager;
     public PetManager PetManager 
@@ -172,6 +174,8 @@ public partial class FatPlayer : Player
         return DefaultPlayerVelocityCalculation(currentVelocity, input, deltaTime, (float)ModifiedMoveSpeed);
     }
 
+    public float FoodProgressPerClick => 0.35f;
+
     public override void Update()
     {
         if (Input.GetKeyDown(Input.Keycode.KEYCODE_P))
@@ -283,14 +287,27 @@ public partial class FatPlayer : Player
 
         if (FoodBeingEaten != null)
         {
+            if (this.IsMouseUpLeft())
+            {
+                FoodBeingEaten.EatingTime += FoodProgressPerClick;
+                LastFoodClickTime = Time.TimeSinceStartup;
+            }
+
             var chewRect = UI.GetPlayerRect(this);
             chewRect = chewRect.Grow(50, 50, 0, 50).Offset(0, 10);
-
+            float scale01 = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - LastFoodClickTime, 0.25f));
+            float scale = AOMath.Lerp(1.5f, 1.0f, scale01);
+            chewRect = chewRect.Scale(scale, scale);
             UI.Image(chewRect, null, Vector4.White, new UI.NineSlice());
 
-            var chewProgress = Math.Min(1.0, FoodBeingEaten.EatingTime / FoodBeingEaten.ConsumptionTime);
-            var chewProgressRect = chewRect.SubRect(0, 0, (float)chewProgress, 1, 0, 0, 0, 0);
-            UI.Image(chewProgressRect, null, Vector4.HSVLerp(Vector4.Red, Vector4.Green, (float)chewProgress), new UI.NineSlice());
+            float foodProgressTarget = (float)Math.Min(1.0, FoodBeingEaten.EatingTime / FoodBeingEaten.ConsumptionTime);
+            FoodProgressLerp = AOMath.Lerp(FoodProgressLerp, foodProgressTarget, 20 * Time.DeltaTime);
+            var chewProgressRect = chewRect.SubRect(0, 0, FoodProgressLerp, 1, 0, 0, 0, 0);
+            UI.Image(chewProgressRect, null, Vector4.HSVLerp(Vector4.Red, Vector4.Green, FoodProgressLerp), new UI.NineSlice());
+        }
+        else
+        {
+            FoodProgressLerp = 0;
         }
 
         if (this.IsLocal) 
