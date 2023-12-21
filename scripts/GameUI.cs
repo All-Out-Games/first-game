@@ -166,16 +166,19 @@ public class GameUI : System<GameUI>
             var trophiesRect = topBarGrid.Next().Inset(0, 10, 0, 10);
             UI.Image(trophiesRect, References.Instance.TopBarBg, Vector4.White, References.Instance.TopBarSlice);
             var trophiesIconRect = trophiesRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(9, 0);
-            UI.Image(trophiesIconRect, References.Instance.CoinIcon, Vector4.White, new UI.NineSlice());
+            UI.Image(trophiesIconRect, References.Instance.TrophyIcon, Vector4.White, new UI.NineSlice());
             textSettings.color = References.Instance.YellowText;
-            UI.Text(trophiesRect, $"{Util.FormatDouble(localPlayer.Trophies)}", textSettings);
+            var trophyTextSettings = textSettings;
+            var trophyEase = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - localPlayer.LastTrophyParticleArriveTime, 0.25f));
+            trophyTextSettings.size = AOMath.Lerp(trophyTextSettings.size * 1.5f, trophyTextSettings.size, trophyEase);
+            UI.Text(trophiesRect, $"{Util.FormatDouble(localPlayer.TrophiesVisual)}", trophyTextSettings);
             
             var cashRect = topBarGrid.Next().Inset(0, 10, 0, 10);
             UI.Image(cashRect, References.Instance.TopBarBg, Vector4.White, References.Instance.TopBarSlice);
             var cashIconRect = cashRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(9, 0);
             UI.Image(cashIconRect, References.Instance.CoinIcon, Vector4.White, new UI.NineSlice());
             textSettings.color = References.Instance.GreenText;
-            UI.Text(cashRect, $"{Util.FormatDouble(localPlayer.Coins)}", textSettings);
+            UI.Text(cashRect, $"{Util.FormatDouble(localPlayer.CoinsVisual)}", textSettings);
 
             var foodTextSettings = textSettings;
             var foodRect = topBarGrid.Next().Inset(0, 10, 0, 10);
@@ -183,10 +186,9 @@ public class GameUI : System<GameUI>
             var foodIconRect = foodRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(9, 0);
             UI.Image(foodIconRect, References.Instance.FoodIcon, Vector4.White, new UI.NineSlice());
             foodTextSettings.color = References.Instance.RedText;
-            var ease = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - localPlayer.LastParticleArriveTime, 0.25f));
-            foodTextSettings.size = AOMath.Lerp(foodTextSettings.size * 1.5f, foodTextSettings.size, ease);
-            var foodAmount = localPlayer.AmountOfFoodInStomach - localPlayer.ActiveFoodParticles.Count;
-            UI.Text(foodRect, $"{Util.FormatDouble(foodAmount)}/{Util.FormatDouble(localPlayer.ModifiedStomachSize)}", foodTextSettings);
+            var foodEase = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - localPlayer.LastFoodParticleArriveTime, 0.25f));
+            foodTextSettings.size = AOMath.Lerp(foodTextSettings.size * 1.5f, foodTextSettings.size, foodEase);
+            UI.Text(foodRect, $"{Util.FormatDouble(localPlayer.AmountOfFoodInStomachVisual)}/{Util.FormatDouble(localPlayer.ModifiedStomachSize)}", foodTextSettings);
         }
 
         // top-left stats
