@@ -207,13 +207,13 @@ public class SequencedEaterQuest : Quest
 {
     public override string QuestName => "Sequenced Eater";
     public override string Objective => "Don't eat the same food in a row for 30 seconds! (minimum 5 foods eaten)";
-    public override string RewardDescription => "2x Chew Speed for 60 seconds.";
+    public override string RewardDescription => "2x Click Power for 60 seconds.";
     public override float QuestTime => 30;
     public override int ProgressRequired => 5;
 
     public override void GiveRewards()
     {
-        Player.ServerGiveTemporaryBuff(StatModifierKind.ChewSpeed, 2.0f, 60);
+        Player.ServerGiveTemporaryBuff(StatModifierKind.ClickPower, 2.0f, 60);
     }
 
     public HashSet<FoodDefinition> FoodsEaten = new();

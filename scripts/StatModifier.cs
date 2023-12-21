@@ -4,7 +4,7 @@ public enum StatModifierKind
 {
     StomachSize,
     MouthSize,
-    ChewSpeed,
+    ClickPower,
     CashMultiplier,
     MoveSpeed,
 }

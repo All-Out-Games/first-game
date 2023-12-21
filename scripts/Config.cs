@@ -73,7 +73,7 @@ public partial class Config : System<Config>
     {
         UpgradeConfig.Load(csv);
         FatPlayer.MouthSizeByLevel = UpgradeConfig.Instance.MouthSizeLevels.ToArray();
-        FatPlayer.ChewSpeedByLevel = UpgradeConfig.Instance.ChewSpeedLevels.ToArray();
+        FatPlayer.ClickPowerByLevel = UpgradeConfig.Instance.ClickPowerLevels.ToArray();
         FatPlayer.StomachSizeByLevel = UpgradeConfig.Instance.StomachSizeLevels.ToArray();
     }
 
@@ -108,7 +108,7 @@ public partial class Config : System<Config>
             }
             if (b.RequiredSkills.Contains("CHEW"))
             {
-                bossDef.RequiredStatFlags |= BossRequiredStat.ChewSpeed;
+                bossDef.RequiredStatFlags |= BossRequiredStat.ClickPower;
             }
             if (b.RequiredSkills.Contains("STOMACH"))
             {
@@ -202,7 +202,7 @@ public struct UpgradeConfig
     {
         var lines = csv.Split('\n');
 
-        Instance = new UpgradeConfig() { MouthSizeLevels = new List<FatPlayer.UpgradeStatAndCost>(), ChewSpeedLevels = new List<FatPlayer.UpgradeStatAndCost>(), StomachSizeLevels = new List<FatPlayer.UpgradeStatAndCost>() };
+        Instance = new UpgradeConfig() { MouthSizeLevels = new List<FatPlayer.UpgradeStatAndCost>(), ClickPowerLevels = new List<FatPlayer.UpgradeStatAndCost>(), StomachSizeLevels = new List<FatPlayer.UpgradeStatAndCost>() };
         for (int i = 0; i < lines.Length; i++)
         {
             if (i < 5) continue; // Some identifiers are missing from the csv when downloaded
@@ -220,7 +220,7 @@ public struct UpgradeConfig
                 Cost = double.Parse(columns[3]),
             });
 
-            Instance.ChewSpeedLevels.Add(new FatPlayer.UpgradeStatAndCost()
+            Instance.ClickPowerLevels.Add(new FatPlayer.UpgradeStatAndCost()
             {
                 Value = double.Parse(columns[7]),
                 Cost = double.Parse(columns[8]),
@@ -235,7 +235,7 @@ public struct UpgradeConfig
     }
 
     public List<FatPlayer.UpgradeStatAndCost> MouthSizeLevels;
-    public List<FatPlayer.UpgradeStatAndCost> ChewSpeedLevels;
+    public List<FatPlayer.UpgradeStatAndCost> ClickPowerLevels;
     public List<FatPlayer.UpgradeStatAndCost> StomachSizeLevels;
 }
 

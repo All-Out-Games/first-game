@@ -13,7 +13,7 @@ public partial class FatPlayer : Player
     // these are levels, not the modified values, so we just use an int
     public int _stomachSizeLevel;
     public int _mouthSizeLevel;
-    public int _chewSpeedLevel;
+    public int _clickPowerLevel;
     public int _rebirth;
 
     public int MaxEquippedPets
@@ -66,7 +66,7 @@ public partial class FatPlayer : Player
     public double BossAutoclickerAccumulator;
     public double TimeLastTeleported;
 
-    public int PlayerLevel => 1 + _stomachSizeLevel + _mouthSizeLevel + _chewSpeedLevel;
+    public int PlayerLevel => 1 + _stomachSizeLevel + _mouthSizeLevel + _clickPowerLevel;
 
     public List<string> UnlockedZones = new List<string>();
 
@@ -150,7 +150,7 @@ public partial class FatPlayer : Player
         ValueOfFoodInStomach = 0;
         StomachSizeLevel = 0;
         MouthSizeLevel = 0;
-        ChewSpeedLevel = 0;
+        ClickPowerLevel = 0;
         Rebirth = 0;
         CallClient_DeleteAllPets();
     }
@@ -193,8 +193,6 @@ public partial class FatPlayer : Player
     {
         return DefaultPlayerVelocityCalculation(currentVelocity, input, deltaTime, (float)ModifiedMoveSpeed);
     }
-
-    public float FoodProgressPerClick => 0.35f;
 
     public override void Update()
     {
@@ -377,7 +375,7 @@ public partial class FatPlayer : Player
         if (CurrentBoss != null)
         {
             var progressPerClick = StomachSizeLevel;
-            progressPerClick = Math.Min(progressPerClick, ChewSpeedLevel);
+            progressPerClick = Math.Min(progressPerClick, ClickPowerLevel);
             progressPerClick = Math.Min(progressPerClick, MouthSizeLevel);
             progressPerClick = Math.Max(progressPerClick, 1);
 
@@ -418,20 +416,21 @@ public partial class FatPlayer : Player
         {
             if (this.IsMouseUpLeft())
             {
-                FoodBeingEaten.EatingTime += FoodProgressPerClick;
+                FoodBeingEaten.CurrentHealth -= 1;
+                if (FoodBeingEaten.CurrentHealth < 0) FoodBeingEaten.CurrentHealth = 0;
                 LastFoodClickTime = Time.TimeSinceStartup;
             }
 
-            var chewRect = UI.GetPlayerRect(this);
-            chewRect = chewRect.Grow(50, 50, 0, 50).Offset(0, 10);
+            var clickPowerRect = UI.GetPlayerRect(this);
+            clickPowerRect = clickPowerRect.Grow(50, 50, 0, 50).Offset(0, 10);
             float scale01 = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - LastFoodClickTime, 0.25f));
             float scale = AOMath.Lerp(1.5f, 1.0f, scale01);
-            chewRect = chewRect.Scale(scale, scale);
-            UI.Image(chewRect, null, Vector4.White, new UI.NineSlice());
+            clickPowerRect = clickPowerRect.Scale(scale, scale);
+            UI.Image(clickPowerRect, null, Vector4.White, new UI.NineSlice());
 
-            float foodProgressTarget = (float)Math.Min(1.0, FoodBeingEaten.EatingTime / FoodBeingEaten.ConsumptionTime);
-            FoodProgressLerp = AOMath.Lerp(FoodProgressLerp, foodProgressTarget, 20 * Time.DeltaTime);
-            var chewProgressRect = chewRect.SubRect(0, 0, FoodProgressLerp, 1, 0, 0, 0, 0);
+            float foodHealth01 = 1.0f - (float)Math.Clamp((float)FoodBeingEaten.CurrentHealth / (float)FoodBeingEaten.ClicksRequired, 0, 1);
+            FoodProgressLerp = AOMath.Lerp(FoodProgressLerp, foodHealth01, 20 * Time.DeltaTime);
+            var chewProgressRect = clickPowerRect.SubRect(0, 0, FoodProgressLerp, 1, 0, 0, 0, 0);
             UI.Image(chewProgressRect, null, Vector4.HSVLerp(Vector4.Red, Vector4.Green, FoodProgressLerp), new UI.NineSlice());
 
             var pendingTextSettings = new UI.TextSettings()
@@ -450,9 +449,7 @@ public partial class FatPlayer : Player
             pendingTextSettings.color.Y = colorEase;
             pendingTextSettings.color.Z = colorEase;
             pendingTextSettings.size = AOMath.Lerp(48, 32, colorEase);
-            double progress01 = FoodBeingEaten.EatingTime / FoodBeingEaten.ConsumptionTime;
-            double pendingFoodValue = FoodBeingEaten.StomachSpace * progress01;
-            UI.Text(chewRect, $"+{Util.FormatDouble(pendingFoodValue)}", pendingTextSettings);
+            UI.Text(clickPowerRect, $"{FoodBeingEaten.CurrentHealth}", pendingTextSettings);
         }
         else
         {
@@ -565,7 +562,7 @@ public partial class FatPlayer : Player
             ValueOfFoodInStomach  = Save.GetDouble(this, "ValueOfFoodInStomach", 0);
             StomachSizeLevel      = Save.GetInt(this, "MaxFood", 0);
             MouthSizeLevel        = Save.GetInt(this, "MouthSize", 0);
-            ChewSpeedLevel        = Save.GetInt(this, "ChewSpeed", 0);
+            ClickPowerLevel       = Save.GetInt(this, "ChewSpeed", 0);
             Rebirth               = Save.GetInt(this, "Rebirth", 0);
 
             var gamePassesStr = Save.GetString(this, "GamePasses", "[]");
@@ -805,16 +802,16 @@ public partial class FatPlayer : Player
         } 
     }
 
-    public int ChewSpeedLevel
+    public int ClickPowerLevel
     { 
-        get => _chewSpeedLevel;
+        get => _clickPowerLevel;
         set 
         { 
-            _chewSpeedLevel = value;
+            _clickPowerLevel = value;
             if (Network.IsServer) 
             {
                 Save.SetDouble(this, "ChewSpeed", value);
-                CallClient_NotifyChewSpeedUpdate(value);
+                CallClient_NotifyClickPowerUpdate(value);
             }
         } 
     }
@@ -833,7 +830,7 @@ public partial class FatPlayer : Player
         }
     }
 
-    public double BaseChewSpeedValue      => ChewSpeedByLevel  [Math.Clamp(_chewSpeedLevel,   0, ChewSpeedByLevel.Length-1)].Value;
+    public double BaseClickPowerValue     => ClickPowerByLevel [Math.Clamp(_clickPowerLevel,  0, ClickPowerByLevel.Length-1)].Value;
     public double BaseMouthSizeValue      => MouthSizeByLevel  [Math.Clamp(_mouthSizeLevel,   0, MouthSizeByLevel.Length-1)].Value;
     public double BaseStomachSizeValue    => StomachSizeByLevel[Math.Clamp(_stomachSizeLevel, 0, StomachSizeByLevel.Length-1)].Value;
     public double BaseCashMultiplierValue
@@ -849,7 +846,7 @@ public partial class FatPlayer : Player
         }
     }
 
-    public double ModifiedChewSpeed      => BaseChewSpeedValue      * CalculateTotalMultiplierFromPets(StatModifierKind.ChewSpeed)      * CalculateTotalMultiplierFromBuffs(StatModifierKind.ChewSpeed);
+    public double ModifiedClickPower     => BaseClickPowerValue     * CalculateTotalMultiplierFromPets(StatModifierKind.ClickPower)     * CalculateTotalMultiplierFromBuffs(StatModifierKind.ClickPower);
     public double ModifiedMouthSize      => BaseMouthSizeValue      * CalculateTotalMultiplierFromPets(StatModifierKind.MouthSize)      * CalculateTotalMultiplierFromBuffs(StatModifierKind.MouthSize);
     public double ModifiedStomachSize    => BaseStomachSizeValue    * CalculateTotalMultiplierFromPets(StatModifierKind.StomachSize)    * CalculateTotalMultiplierFromBuffs(StatModifierKind.StomachSize);
     public double ModifiedCashMultiplier => BaseCashMultiplierValue * CalculateTotalMultiplierFromPets(StatModifierKind.CashMultiplier) * CalculateTotalMultiplierFromBuffs(StatModifierKind.CashMultiplier);
@@ -890,22 +887,6 @@ public partial class FatPlayer : Player
                 summedMultipliers += buff.MultiplyValue - 1.0;
             }
         }
-
-        /*
-        todo(josh): we could add game passes here like
-        foreach (var pass in GamePasses)
-        {
-            if (pass.Id == "super_chew")
-            {
-                if (kind == StatModifierKind.ChewSpeed)
-                {
-                    // 5x chew speed multiplier
-                    summedMultipliers += 5.0f - 1.0;
-                }
-            }
-        }
-        */
-
         return 1 + summedMultipliers;
     }
 
@@ -1055,7 +1036,7 @@ public partial class FatPlayer : Player
         this.Trophies -= rbd.TrophiesCost;
         this.Rebirth += 1;
         this.Coins = 0;
-        this.ChewSpeedLevel = 0;
+        this.ClickPowerLevel = 0;
         this.MouthSizeLevel = 0;
         this.StomachSizeLevel = 0;
         
@@ -1068,7 +1049,7 @@ public partial class FatPlayer : Player
     [ClientRpc] public void NotifyValueOfFoodInStomachUpdate(double val)       { if (Network.IsClient) ValueOfFoodInStomach  = val; }
     [ClientRpc] public void NotifyMaxFoodUpdate(int val)                       { if (Network.IsClient) StomachSizeLevel      = val; }
     [ClientRpc] public void NotifyMouthSizeUpdate(int val)                     { if (Network.IsClient) MouthSizeLevel        = val; }
-    [ClientRpc] public void NotifyChewSpeedUpdate(int val)                     { if (Network.IsClient) ChewSpeedLevel        = val; }
+    [ClientRpc] public void NotifyClickPowerUpdate(int val)                    { if (Network.IsClient) ClickPowerLevel       = val; }
     [ClientRpc] public void NotifyRebirthUpdate(int val)                       { if (Network.IsClient) Rebirth               = val; }
 
     [ServerRpc]
@@ -1096,15 +1077,15 @@ public partial class FatPlayer : Player
     }
 
     [ServerRpc]
-    public void RequestPurchaseChewSpeed()
+    public void RequestPurchaseClickPower()
     {
         if (Network.IsClient) return;
-        if (ChewSpeedLevel >= ChewSpeedByLevel.Length) return;
-        double cost = ChewSpeedByLevel[ChewSpeedLevel].Cost;
+        if (ClickPowerLevel >= ClickPowerByLevel.Length) return;
+        double cost = ClickPowerByLevel[ClickPowerLevel].Cost;
         if (Coins < cost) return;
 
         Coins -= cost;
-        ChewSpeedLevel += 1;
+        ClickPowerLevel += 1;
     }
 
     [ServerRpc]
@@ -1173,7 +1154,7 @@ public partial class FatPlayer : Player
         new UpgradeStatAndCost(){ Value = 981, Cost = 15011671 },
     };
 
-    public static UpgradeStatAndCost[] ChewSpeedByLevel = new UpgradeStatAndCost[]
+    public static UpgradeStatAndCost[] ClickPowerByLevel = new UpgradeStatAndCost[]
     {
         new UpgradeStatAndCost(){ Value = 1,    Cost = 5 },
         new UpgradeStatAndCost(){ Value = 1.1,  Cost = 7 },

@@ -60,7 +60,8 @@ public partial class Food : Component
     public double StomachSpace    => Definition.StomachSpace;
 
     public FatPlayer CurrentEater;
-    public double EatingTime;
+    public long CurrentHealth;
+    public long ClicksRequired;
 
     public int FoodIndexInAreaDefinition; // only on server
 
@@ -126,7 +127,8 @@ public partial class Food : Component
 
             if (Network.IsServer)
             {
-                CallClient_StartEating(p.Entity.NetworkId);
+                long clicksRequired = (long)Math.Ceiling(ConsumptionTime / player.ModifiedClickPower);
+                CallClient_StartEating(p.Entity.NetworkId, clicksRequired);
             }
         };
 
@@ -169,10 +171,8 @@ public partial class Food : Component
 
         if (CurrentEater != null)
         {
-            // EatingTime += (double)Time.DeltaTime * 0.2f;
-
             if (Network.IsClient) return;
-            if (EatingTime >= ConsumptionTime)
+            if (CurrentHealth <= 0)
             {
                 CallClient_FinishEating(true);
             }
@@ -180,7 +180,7 @@ public partial class Food : Component
     }
 
     [ClientRpc]
-    public void StartEating(ulong playerNetworkId)
+    public void StartEating(ulong playerNetworkId, long clicksRequired)
     {
         var player = Entity.FindByNetworkId(playerNetworkId).GetComponent<FatPlayer>();
         if (player == null) return;
@@ -188,7 +188,8 @@ public partial class Food : Component
         CurrentEater = player;
         CurrentEater.AddFreezeReason(EatingFreezeReason);
         player.FoodBeingEaten = this;
-        EatingTime = player.FoodProgressPerClick;
+        CurrentHealth  = clicksRequired;
+        ClicksRequired = clicksRequired;
     }
 
     [ClientRpc]
