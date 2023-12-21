@@ -3,9 +3,13 @@ using AO;
 public class References : Component
 {
     [Serialized] public Texture CoinIcon;
+    [Serialized] public Texture TrophyIcon;
     [Serialized] public Texture FoodIcon;
     [Serialized] public Texture MouthSizeIcon;
     [Serialized] public Texture ChewSpeedIcon;
+
+    [Serialized] public Texture MenuIcon;
+    [Serialized] public Texture TopBarBg;
 
     [Serialized] public Texture GreenButton;
     [Serialized] public Texture RedButton;
@@ -37,6 +41,7 @@ public class References : Component
     [Serialized] public Prefab PetPrefab;
 
     public UI.NineSlice FrameSlice = new UI.NineSlice() { slice = new Vector4(12, 12, 48, 48), sliceScale = 1f };
+    public UI.NineSlice TopBarSlice = new UI.NineSlice() { slice = new Vector4(37, 35, 37, 35), sliceScale = 1f };
 
     public UI.TextSettings NoTextSettings = new UI.TextSettings() { size = 0, color = Vector4.Zero };
 

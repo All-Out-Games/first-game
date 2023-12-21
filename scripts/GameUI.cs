@@ -164,22 +164,22 @@ public class GameUI : System<GameUI>
             var topBarGrid = UI.GridLayout.Make(topBarRect, 3, 1, UI.GridLayout.SizeSource.GRID_SIZE, 0);
             
             var trophiesRect = topBarGrid.Next().Inset(0, 10, 0, 10);
-            UI.Image(trophiesRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
-            var trophiesIconRect = trophiesRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(6, 0);
+            UI.Image(trophiesRect, References.Instance.TopBarBg, Vector4.White, References.Instance.TopBarSlice);
+            var trophiesIconRect = trophiesRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(9, 0);
             UI.Image(trophiesIconRect, References.Instance.CoinIcon, Vector4.White, new UI.NineSlice());
             textSettings.color = References.Instance.YellowText;
             UI.Text(trophiesRect, $"{Util.FormatDouble(localPlayer.Trophies)}", textSettings);
             
             var cashRect = topBarGrid.Next().Inset(0, 10, 0, 10);
-            UI.Image(cashRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
-            var cashIconRect = cashRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(6, 0);
+            UI.Image(cashRect, References.Instance.TopBarBg, Vector4.White, References.Instance.TopBarSlice);
+            var cashIconRect = cashRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(9, 0);
             UI.Image(cashIconRect, References.Instance.CoinIcon, Vector4.White, new UI.NineSlice());
             textSettings.color = References.Instance.GreenText;
             UI.Text(cashRect, $"{Util.FormatDouble(localPlayer.Coins)}", textSettings);
 
             var foodRect = topBarGrid.Next().Inset(0, 10, 0, 10);
-            UI.Image(foodRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
-            var foodIconRect = foodRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(6, 0);
+            UI.Image(foodRect, References.Instance.TopBarBg, Vector4.White, References.Instance.TopBarSlice);
+            var foodIconRect = foodRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(9, 0);
             UI.Image(foodIconRect, References.Instance.FoodIcon, Vector4.White, new UI.NineSlice());
             textSettings.color = References.Instance.RedText;
             UI.Text(foodRect, $"{Util.FormatDouble(localPlayer.AmountOfFoodInStomach)}/{Util.FormatDouble(localPlayer.ModifiedStomachSize)}", textSettings);
@@ -201,10 +201,6 @@ public class GameUI : System<GameUI>
             DoSingleStatUI(ref statsRect, "chew",    statsTextSettings, $"Chew Level: {localPlayer._chewSpeedLevel}",  $"Chew Speed: {localPlayer.ModifiedChewSpeed.ToString("F2")}x",           $"Base: {localPlayer.BaseChewSpeedValue.ToString("F2")}",      $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.ChewSpeed).ToString("F2")}x",      $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.ChewSpeed).ToString("F2")}x");
             DoSingleStatUI(ref statsRect, "rebirth", statsTextSettings, $"Rebirth Level: {localPlayer._rebirth}",      $"Cash Multiplier: {localPlayer.ModifiedCashMultiplier.ToString("F2")}x", $"Base: {localPlayer.BaseCashMultiplierValue.ToString("F2")}", $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.CashMultiplier).ToString("F2")}x", $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.CashMultiplier).ToString("F2")}x");
         }
-
-        var sideBarRect = UI.SafeRect.LeftRect();
-        sideBarRect = sideBarRect.GrowRight(200)
-                                 .Inset(300, 0, 300, 0);
 
         var buttonSettings = new UI.ButtonSettings();
         buttonSettings.color = Vector4.White;
@@ -228,33 +224,67 @@ public class GameUI : System<GameUI>
         };
 
         UI.PushId("SIDEBAR");
-    
-        var upgradesButtonRect = sideBarRect.CutTop(100).Inset(10, 10, 10, 10);
-        var upgradesButtonResult = UI.Button(upgradesButtonRect, "Upgrades", buttonSettings, buttonTextSettings);
-        if (upgradesButtonResult.clicked) 
+
+        var sideBarRect = UI.SafeRect.LeftRect().GrowRight(100).Inset(200, 0, 0, 0).Offset(15, 0);
+        var sidebarGrid = UI.GridLayout.Make(sideBarRect, 100, 100, UI.GridLayout.SizeSource.ELEMENT_SIZE);
+
+        bool drawSidebarButton(String text, Texture icon) 
         {
-            IsShowingUpgradesWindow = !IsShowingUpgradesWindow;
+            var sidebarButtonTextSettings = new UI.TextSettings() 
+            {
+                font = UI.TextSettings.Font.AlphaKind,
+                size = 26,
+                color = Vector4.White,
+                horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom,
+                wordWrap = false,
+                outline = true,
+                outlineThickness = 3,
+            };
+
+            var sidebarButtonSettings = new UI.ButtonSettings()
+            {
+                color = Vector4.White,
+                clickedColor = new Vector4(0.7f, 0.7f, 0.7f, 1.0f),
+                hoverColor   = new Vector4(0.9f, 0.9f, 0.9f, 1.0f),
+                pressedColor = new Vector4(0.5f, 0.5f, 0.5f, 1.0f),
+                slice = new UI.NineSlice() { slice = new Vector4(12, 15, 48, 48), sliceScale = 1f },
+            };
+
+            using var _1 = UI.PUSH_ID(text);
+            var buttonRect = sidebarGrid.Next().Inset(7);
+            var buttonResult = UI.Button(buttonRect, text, sidebarButtonSettings, sidebarButtonTextSettings);
+            using var _ = UI.PUSH_COLOR(buttonResult.ColorMultiplier);
+            UI.PushLayerRelative(-1);
+            using var _2 = AllOut.Defer(UI.PopLayer);
+            UI.Image(buttonRect, References.Instance.MenuIcon, Vector4.White, new UI.NineSlice());
+            UI.Image(buttonRect.Inset(10), icon, Vector4.White, new UI.NineSlice());
+            return buttonResult.clicked;
         }
 
-        var shopButtonRect = sideBarRect.CutTop(100).Inset(10, 10, 10, 10);
-        var shopButtonResult = UI.Button(shopButtonRect, "Shop", buttonSettings, buttonTextSettings);
-        if (shopButtonResult.clicked) 
+        if (drawSidebarButton("Store", References.Instance.Shop)) 
         {
             IsShowingShopWindow = !IsShowingShopWindow;
         }
 
-        var petsButtonRect = sideBarRect.CutTop(100).Inset(10, 10, 10, 10);
-        var petsButtonResult = UI.Button(petsButtonRect, "Pets", buttonSettings, buttonTextSettings);
-        if (petsButtonResult.clicked) 
+        if (drawSidebarButton("Upgrade", References.Instance.Upgrade)) 
+        {
+            IsShowingUpgradesWindow = !IsShowingUpgradesWindow;
+        }
+
+        if (drawSidebarButton("Rebirth", References.Instance.Rebirth)) 
+        {
+            IsShowingRebirthWindow = !IsShowingRebirthWindow;
+        }
+
+        if (drawSidebarButton("Pets", References.Instance.PetBrown)) 
         {
             IsShowingPetsWindow = !IsShowingPetsWindow;
         }
 
-        var rebirthButtonRect = sideBarRect.CutTop(100).Inset(10, 10, 10, 10);
-        var rebirthButtonResult = UI.Button(rebirthButtonRect, "Rebirth", buttonSettings, buttonTextSettings);
-        if (rebirthButtonResult.clicked) 
+        if (drawSidebarButton("Stats", References.Instance.Stats)) 
         {
-            IsShowingRebirthWindow = !IsShowingRebirthWindow;
+
         }
 
         UI.PopId();
