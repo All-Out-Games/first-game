@@ -2,6 +2,7 @@ using AO;
 
 public class References : Component
 {
+    [Serialized] public Texture TrophyIcon;
     [Serialized] public Texture CoinIcon;
     [Serialized] public Texture FoodIcon;
     [Serialized] public Texture MouthSizeIcon;

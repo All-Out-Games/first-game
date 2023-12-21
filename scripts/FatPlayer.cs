@@ -75,8 +75,20 @@ public partial class FatPlayer : Player
     public PlayerGamePasses GamePasses;
     public HashSet<string>  GamePassesHashSet = new();
 
-    public List<FoodParticle> ActiveFoodParticles = new();
-    public float LastParticleArriveTime;
+    public long ActiveFoodParticles;
+    public long ActiveTrophyParticles;
+    public List<ResourceParticle> ActiveParticles = new();
+    public float LastFoodParticleArriveTime;
+    public float LastTrophyParticleArriveTime;
+
+    public double _lerpedMoney;
+    public double CoinsVisual => _lerpedMoney;
+
+    public double _lerpedFoodInStomach;
+    public double AmountOfFoodInStomachVisual => _lerpedFoodInStomach;
+
+    public double _lerpedTrophies;
+    public double TrophiesVisual => _lerpedTrophies;
 
     public override void Start()
     {
@@ -94,6 +106,11 @@ public partial class FatPlayer : Player
         if (won) 
         {
             Trophies += CurrentBoss.Reward;
+            if (Network.IsClient)
+            {
+                SpawnParticles(CurrentBoss.Entity.Position, (int)CurrentBoss.Reward, false);
+            }
+
             if (GamePasses.Has2xTrophies)
             {
                 Trophies *= 2;
@@ -181,7 +198,24 @@ public partial class FatPlayer : Player
 
     public override void Update()
     {
-        if (ActiveFoodParticles.Count > 0)
+        // food
+        var foodLerpTarget = AmountOfFoodInStomach - ActiveFoodParticles;
+        _lerpedFoodInStomach = _lerpedFoodInStomach + (foodLerpTarget - _lerpedFoodInStomach) * 0.15f;
+        if (Math.Abs(_lerpedFoodInStomach - foodLerpTarget) <= 1) {
+            _lerpedFoodInStomach = foodLerpTarget;
+        }
+
+        // food
+        var trophyLerpTarget = Trophies - ActiveTrophyParticles;
+        _lerpedTrophies = _lerpedTrophies + (trophyLerpTarget - _lerpedTrophies) * 0.15f;
+        if (Math.Abs(_lerpedTrophies - trophyLerpTarget) <= 1) {
+            _lerpedTrophies = trophyLerpTarget;
+        }
+
+        // money
+        _lerpedMoney = _lerpedMoney + (Coins - _lerpedMoney) * 0.15f;
+
+        if (ActiveParticles.Count > 0)
         {
             UI.PushContext(UI.Context.WORLD);
             using var _1 = AllOut.Defer(UI.PopContext);
@@ -190,9 +224,9 @@ public partial class FatPlayer : Player
             using var _2 = AllOut.Defer(UI.PopLayer);
 
             var quads = new List<IM.QuadData>(); // todo(josh): nonalloc
-            for (int i = 0; i < ActiveFoodParticles.Count; i++)
+            for (int i = 0; i < ActiveParticles.Count; i++)
             {
-                var particle = ActiveFoodParticles[i];
+                var particle = ActiveParticles[i];
 
                 particle.Velocity *= 0.9f;
                 particle.Lifetime += Time.DeltaTime;
@@ -205,23 +239,33 @@ public partial class FatPlayer : Player
                     particle.Position = particle.Position.MoveTo(playerCenter, 20 * Time.DeltaTime * particle.MoveTowardSpeed, out var arrived);
                     if (arrived)
                     {
-                        ActiveFoodParticles[i] = ActiveFoodParticles[ActiveFoodParticles.Count-1];
-                        ActiveFoodParticles.RemoveAt(ActiveFoodParticles.Count-1);
+                        if (particle.FoodOrTrophy)
+                        {
+                            ActiveFoodParticles -= 1;
+                            LastFoodParticleArriveTime = Time.TimeSinceStartup;
+                        }
+                        else
+                        {
+                            ActiveTrophyParticles -= 1;
+                            LastTrophyParticleArriveTime = Time.TimeSinceStartup;
+                        }
+
+                        ActiveParticles[i] = ActiveParticles[ActiveParticles.Count-1];
+                        ActiveParticles.RemoveAt(ActiveParticles.Count-1);
                         i -= 1;
-                        LastParticleArriveTime = Time.TimeSinceStartup;
                         continue;
                     }
                 }
 
                 particle.Position += particle.Velocity * Time.DeltaTime;
-                ActiveFoodParticles[i] = particle;
+                ActiveParticles[i] = particle;
                 var pos = particle.Position;
                 var quad = new IM.QuadData();
                 float hs = 0.2f;
                 quad.p1 = pos - new Vector2(hs, hs);
                 quad.p2 = pos + new Vector2(hs, hs);
                 quad.color = Vector4.White;
-                quad.texture = References.Instance.FoodIcon;
+                quad.texture = particle.Texture;
                 quads.Add(quad);
             }
             if (quads.Count > 0)
@@ -396,16 +440,30 @@ public partial class FatPlayer : Player
         }
     }
 
-    public void SpawnFoodParticles(Vector2 position, int amount)
+    public void SpawnParticles(Vector2 position, int amount, bool foodOrTrophies)
     {
+        Texture tex = null;
+        if (foodOrTrophies)
+        {
+            tex = References.Instance.FoodIcon;
+            ActiveFoodParticles += amount;
+        }
+        else
+        {
+            tex = References.Instance.TrophyIcon;
+            ActiveTrophyParticles += amount;
+        }
+
         var rng = new Random();
         for (int i = 0; i < amount; i++)
         {
-            FoodParticle particle = new FoodParticle();
+            ResourceParticle particle = new ResourceParticle();
             var dir = new Vector2((float)rng.NextDouble() * 2 - 1, (float)rng.NextDouble() * 2 - 1); // note(josh): non-uniform distribution but WHO CARES
             particle.Position = position;
             particle.Velocity = dir * 10;
-            ActiveFoodParticles.Add(particle);
+            particle.Texture = tex;
+            particle.FoodOrTrophy = foodOrTrophies;
+            ActiveParticles.Add(particle);
         }
     }
 
@@ -1196,10 +1254,12 @@ public struct PlayerGamePasses
     public bool HasPetStorageCap5;
 }
 
-public struct FoodParticle
+public struct ResourceParticle
 {
     public Vector2 Velocity;
     public Vector2 Position;
     public float Lifetime;
     public float MoveTowardSpeed;
+    public Texture Texture;
+    public bool FoodOrTrophy;
 }
