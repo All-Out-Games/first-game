@@ -75,6 +75,9 @@ public partial class FatPlayer : Player
     public PlayerGamePasses GamePasses;
     public HashSet<string>  GamePassesHashSet = new();
 
+    public List<FoodParticle> ActiveFoodParticles = new();
+    public float LastParticleArriveTime;
+
     public override void Start()
     {
     }
@@ -178,6 +181,55 @@ public partial class FatPlayer : Player
 
     public override void Update()
     {
+        if (ActiveFoodParticles.Count > 0)
+        {
+            UI.PushContext(UI.Context.WORLD);
+            using var _1 = AllOut.Defer(UI.PopContext);
+
+            UI.PushLayerRelative(1);
+            using var _2 = AllOut.Defer(UI.PopLayer);
+
+            var quads = new List<IM.QuadData>(); // todo(josh): nonalloc
+            for (int i = 0; i < ActiveFoodParticles.Count; i++)
+            {
+                var particle = ActiveFoodParticles[i];
+
+                particle.Velocity *= 0.9f;
+                particle.Lifetime += Time.DeltaTime;
+                if (particle.Lifetime >= 0.75f)
+                {
+                    particle.Velocity = default;
+                    var playerCenter = Entity.Position + new Vector2(0, 0.5f);
+                    var dirToPlayer = (playerCenter - particle.Position).Normalized;
+                    particle.MoveTowardSpeed += Time.DeltaTime * 4;
+                    particle.Position = particle.Position.MoveTo(playerCenter, 20 * Time.DeltaTime * particle.MoveTowardSpeed, out var arrived);
+                    if (arrived)
+                    {
+                        ActiveFoodParticles[i] = ActiveFoodParticles[ActiveFoodParticles.Count-1];
+                        ActiveFoodParticles.RemoveAt(ActiveFoodParticles.Count-1);
+                        i -= 1;
+                        LastParticleArriveTime = Time.TimeSinceStartup;
+                        continue;
+                    }
+                }
+
+                particle.Position += particle.Velocity * Time.DeltaTime;
+                ActiveFoodParticles[i] = particle;
+                var pos = particle.Position;
+                var quad = new IM.QuadData();
+                float hs = 0.2f;
+                quad.p1 = pos - new Vector2(hs, hs);
+                quad.p2 = pos + new Vector2(hs, hs);
+                quad.color = Vector4.White;
+                quad.texture = References.Instance.FoodIcon;
+                quads.Add(quad);
+            }
+            if (quads.Count > 0)
+            {
+                IM.Quads(quads.ToArray()); // todo(josh): hnnnggggg
+            }
+        }
+
         if (Input.GetKeyDown(Input.Keycode.KEYCODE_P))
         {
             Log.Info($"HasVIP:                {GamePasses.HasVIP}");
@@ -304,6 +356,26 @@ public partial class FatPlayer : Player
             FoodProgressLerp = AOMath.Lerp(FoodProgressLerp, foodProgressTarget, 20 * Time.DeltaTime);
             var chewProgressRect = chewRect.SubRect(0, 0, FoodProgressLerp, 1, 0, 0, 0, 0);
             UI.Image(chewProgressRect, null, Vector4.HSVLerp(Vector4.Red, Vector4.Green, FoodProgressLerp), new UI.NineSlice());
+
+            var pendingTextSettings = new UI.TextSettings()
+            {
+                font = UI.TextSettings.Font.AlphaKind,
+                size = 32,
+                color = Vector4.White,
+                horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                wordWrap = false,
+                wordWrapOffset = 0,
+                outline = true,
+                outlineThickness = 2,
+            };
+            var colorEase = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - LastFoodClickTime, 0.25f));
+            pendingTextSettings.color.Y = colorEase;
+            pendingTextSettings.color.Z = colorEase;
+            pendingTextSettings.size = AOMath.Lerp(48, 32, colorEase);
+            double progress01 = FoodBeingEaten.EatingTime / FoodBeingEaten.ConsumptionTime;
+            double pendingFoodValue = FoodBeingEaten.StomachSpace * progress01;
+            UI.Text(chewRect, $"+{Util.FormatDouble(pendingFoodValue)}", pendingTextSettings);
         }
         else
         {
@@ -321,6 +393,19 @@ public partial class FatPlayer : Player
             {
                 CallServer_GiveUpBossFight();
             }
+        }
+    }
+
+    public void SpawnFoodParticles(Vector2 position, int amount)
+    {
+        var rng = new Random();
+        for (int i = 0; i < amount; i++)
+        {
+            FoodParticle particle = new FoodParticle();
+            var dir = new Vector2((float)rng.NextDouble() * 2 - 1, (float)rng.NextDouble() * 2 - 1); // note(josh): non-uniform distribution but WHO CARES
+            particle.Position = position;
+            particle.Velocity = dir * 10;
+            ActiveFoodParticles.Add(particle);
         }
     }
 
@@ -1109,4 +1194,12 @@ public struct PlayerGamePasses
     public bool HasPetStorageCap3;
     public bool HasPetStorageCap4;
     public bool HasPetStorageCap5;
+}
+
+public struct FoodParticle
+{
+    public Vector2 Velocity;
+    public Vector2 Position;
+    public float Lifetime;
+    public float MoveTowardSpeed;
 }

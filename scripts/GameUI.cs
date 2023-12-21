@@ -177,12 +177,16 @@ public class GameUI : System<GameUI>
             textSettings.color = References.Instance.GreenText;
             UI.Text(cashRect, $"{Util.FormatDouble(localPlayer.Coins)}", textSettings);
 
+            var foodTextSettings = textSettings;
             var foodRect = topBarGrid.Next().Inset(0, 10, 0, 10);
             UI.Image(foodRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
             var foodIconRect = foodRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(6, 0);
             UI.Image(foodIconRect, References.Instance.FoodIcon, Vector4.White, new UI.NineSlice());
-            textSettings.color = References.Instance.RedText;
-            UI.Text(foodRect, $"{Util.FormatDouble(localPlayer.AmountOfFoodInStomach)}/{Util.FormatDouble(localPlayer.ModifiedStomachSize)}", textSettings);
+            foodTextSettings.color = References.Instance.RedText;
+            var ease = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - localPlayer.LastParticleArriveTime, 0.25f));
+            foodTextSettings.size = AOMath.Lerp(foodTextSettings.size * 1.5f, foodTextSettings.size, ease);
+            var foodAmount = localPlayer.AmountOfFoodInStomach - localPlayer.ActiveFoodParticles.Count;
+            UI.Text(foodRect, $"{Util.FormatDouble(foodAmount)}/{Util.FormatDouble(localPlayer.ModifiedStomachSize)}", foodTextSettings);
         }
 
         // top-left stats

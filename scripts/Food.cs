@@ -194,17 +194,24 @@ public partial class Food : Component
     [ClientRpc]
     public void FinishEating(bool success)
     {
-        if (Network.IsServer && success)
+        if (success)
         {
-            OnEat?.Invoke(this);
-            CurrentEater.AmountOfFoodInStomach += StomachSpace;
-            CurrentEater.ValueOfFoodInStomach += SellValue;
-            if (CurrentEater.CurrentQuest != null)
+            if (Network.IsServer)
             {
-                CurrentEater.CurrentQuest.OnFoodEatenServer(this);
+                OnEat?.Invoke(this);
+                CurrentEater.AmountOfFoodInStomach += StomachSpace;
+                CurrentEater.ValueOfFoodInStomach += SellValue;
+                if (CurrentEater.CurrentQuest != null)
+                {
+                    CurrentEater.CurrentQuest.OnFoodEatenServer(this);
+                }
+                Network.Despawn(this.Entity);
+                this.Entity.Destroy();
             }
-            Network.Despawn(this.Entity);
-            this.Entity.Destroy();
+            else
+            {
+                CurrentEater.SpawnFoodParticles(Entity.Position, (int)Math.Round(StomachSpace));
+            }
         }
         
         CurrentEater.RemoveFreezeReason(EatingFreezeReason);
