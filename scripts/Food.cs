@@ -210,7 +210,7 @@ public partial class Food : Component
             }
             else
             {
-                CurrentEater.SpawnParticles(Entity.Position, (int)Math.Round(StomachSpace), true);
+                CurrentEater.SpawnParticles(Entity.Position, (int)Math.Round(StomachSpace), ResourceParticleKind.Food, CurrentEater.Entity);
             }
         }
         

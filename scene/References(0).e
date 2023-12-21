@@ -21,7 +21,6 @@
   "component_type": "Mono_Component",
   "mono_component_type": "References",
   "data": {
-    "TrophyIcon": "ui/icons/Trophy Outline 64.png",
     "CoinIcon": "icons/Coin Outline 256.png",
     "TrophyIcon": "ui/icons/Trophy Outline 64.png",
     "FoodIcon": "icons/Burger Outline 256.png",

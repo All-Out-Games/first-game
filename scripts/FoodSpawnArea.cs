@@ -89,6 +89,7 @@ public class FoodSpawnArea : Component
             Log.Error("Density was 0 which is invalid. Setting to 0.5.");
             Density = 0.5f;
         }
+
         var step = new Vector2(1.0f, 1.0f);
         HalfCellSize = step * 0.5f;
         float totalWeight = 0;

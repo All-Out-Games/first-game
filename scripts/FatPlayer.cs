@@ -108,7 +108,7 @@ public partial class FatPlayer : Player
             Trophies += CurrentBoss.Reward;
             if (Network.IsClient)
             {
-                SpawnParticles(CurrentBoss.Entity.Position, (int)CurrentBoss.Reward, false);
+                SpawnParticles(CurrentBoss.Entity.Position, (int)CurrentBoss.Reward, ResourceParticleKind.Trophy, Entity);
             }
 
             if (GamePasses.Has2xTrophies)
@@ -198,6 +198,26 @@ public partial class FatPlayer : Player
 
     public override void Update()
     {
+        if (AmountOfFoodInStomach != 0)
+        {
+            foreach (var sellArea in Scene.Components<SellArea>())
+            {
+                var distanceSqr = (sellArea.Entity.Position - Entity.Position).LengthSquared;
+                if (distanceSqr <= SellArea.RadiusSquared)
+                {
+                    SpawnParticles(Entity.Position + new Vector2(0, 0.5f), (int)AmountOfFoodInStomach, ResourceParticleKind.SellFood, sellArea.Entity);
+                    Coins += ValueOfFoodInStomach * ModifiedCashMultiplier;
+                    ValueOfFoodInStomach = 0;
+                    AmountOfFoodInStomach = 0;
+                    if (CurrentQuest != null)
+                    {
+                        CurrentQuest.OnSoldItemsServer();
+                    }
+                    break;
+                }
+            }
+        }
+
         // food
         var foodLerpTarget = AmountOfFoodInStomach - ActiveFoodParticles;
         _lerpedFoodInStomach = _lerpedFoodInStomach + (foodLerpTarget - _lerpedFoodInStomach) * 0.15f;
@@ -233,21 +253,34 @@ public partial class FatPlayer : Player
                 if (particle.Lifetime >= 0.75f)
                 {
                     particle.Velocity = default;
-                    var playerCenter = Entity.Position + new Vector2(0, 0.5f);
-                    var dirToPlayer = (playerCenter - particle.Position).Normalized;
+                    var targetPosition = particle.Target.Position;
+                    if (particle.Target == Entity)
+                    {
+                        targetPosition += new Vector2(0, 0.5f);
+                    }
                     particle.MoveTowardSpeed += Time.DeltaTime * 4;
-                    particle.Position = particle.Position.MoveTo(playerCenter, 20 * Time.DeltaTime * particle.MoveTowardSpeed, out var arrived);
+                    particle.Position = particle.Position.MoveTo(targetPosition, 20 * Time.DeltaTime * particle.MoveTowardSpeed, out var arrived);
                     if (arrived)
                     {
-                        if (particle.FoodOrTrophy)
+                        switch (particle.Kind)
                         {
-                            ActiveFoodParticles -= 1;
-                            LastFoodParticleArriveTime = Time.TimeSinceStartup;
-                        }
-                        else
-                        {
-                            ActiveTrophyParticles -= 1;
-                            LastTrophyParticleArriveTime = Time.TimeSinceStartup;
+                            case ResourceParticleKind.Food: {
+                                ActiveFoodParticles -= 1;
+                                LastFoodParticleArriveTime = Time.TimeSinceStartup;
+                                break;
+                            }
+                            case ResourceParticleKind.Trophy: {
+                                ActiveTrophyParticles -= 1;
+                                LastTrophyParticleArriveTime = Time.TimeSinceStartup;
+                                break;
+                            }
+                            case ResourceParticleKind.SellFood: {
+                                break;
+                            }
+                            default: {
+                                Log.Error("Unknown kind: " + particle.Kind);
+                                return;
+                            }
                         }
 
                         ActiveParticles[i] = ActiveParticles[ActiveParticles.Count-1];
@@ -440,18 +473,29 @@ public partial class FatPlayer : Player
         }
     }
 
-    public void SpawnParticles(Vector2 position, int amount, bool foodOrTrophies)
+    public void SpawnParticles(Vector2 position, int amount, ResourceParticleKind kind, Entity target)
     {
         Texture tex = null;
-        if (foodOrTrophies)
+        switch (kind)
         {
-            tex = References.Instance.FoodIcon;
-            ActiveFoodParticles += amount;
-        }
-        else
-        {
-            tex = References.Instance.TrophyIcon;
-            ActiveTrophyParticles += amount;
+            case ResourceParticleKind.Food: {
+                tex = References.Instance.FoodIcon;
+                ActiveFoodParticles += amount;
+                break;
+            }
+            case ResourceParticleKind.Trophy: {
+                tex = References.Instance.TrophyIcon;
+                ActiveTrophyParticles += amount;
+                break;
+            }
+            case ResourceParticleKind.SellFood: {
+                tex = References.Instance.FoodIcon;
+                break;
+            }
+            default: {
+                Log.Error("Unknown kind: " + kind);
+                return;
+            }
         }
 
         var rng = new Random();
@@ -462,7 +506,8 @@ public partial class FatPlayer : Player
             particle.Position = position;
             particle.Velocity = dir * 10;
             particle.Texture = tex;
-            particle.FoodOrTrophy = foodOrTrophies;
+            particle.Kind = kind;
+            particle.Target = target;
             ActiveParticles.Add(particle);
         }
     }
@@ -1254,6 +1299,14 @@ public struct PlayerGamePasses
     public bool HasPetStorageCap5;
 }
 
+public enum ResourceParticleKind
+{
+    Food,
+    Trophy,
+    SellFood,
+    Coins,
+}
+
 public struct ResourceParticle
 {
     public Vector2 Velocity;
@@ -1261,5 +1314,6 @@ public struct ResourceParticle
     public float Lifetime;
     public float MoveTowardSpeed;
     public Texture Texture;
-    public bool FoodOrTrophy;
+    public Entity Target;
+    public ResourceParticleKind Kind;
 }
