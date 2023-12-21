@@ -19,15 +19,16 @@ public class FoodSpawnArea : Component
     public static List<FoodAreaDefinition> AreaDefinitions = new()
     {
         new FoodAreaDefinition(){Id = "Zone1", Name = "Zone1", FoodsToSpawn = new string[]{
-            "Apple1",
-            "broccoli1",
-            "HotDog1",
-            "Underwear1",
-            "Burger1",
-            "Pizza1",
-            "Popcorn1",
-            "Watermelon1",
-            "fire_hydrant_normal1",
+            "apple",
+            "feastable_bar",
+            "PB&J_Sandwich",
+            "popcorn",
+            "grimace_shake_small",
+            "milk_jug",
+            "doggy_poop_bin",
+            "fire_hydrant",
+            "trash_bag",
+            "infinity_gauntlet",
         }},
         new FoodAreaDefinition(){Id = "Zone2", Name = "Zone2", FoodsToSpawn = new string[]{
             "Underwear2",

@@ -314,6 +314,16 @@ public class Shop : System<Shop>
         return success;
     }
 
+    public long THOUSAND(long n)
+    {
+        return n * 1000;
+    }
+
+    public long MILLION(long n)
+    {
+        return n * 1000 * 1000;
+    }
+
     public (bool, string) GrantItem(Player p, ShopData.Item item, bool allowOpeningEggs = true)
     {
         FatPlayer player = (FatPlayer)p;
@@ -388,8 +398,76 @@ public class Shop : System<Shop>
 
         if (item.Kind == ShopData.ItemKind.Trophies)
         {
-            player.Trophies += item.IntData;
-            return (true, "");
+            switch (item.Id)
+            {
+                case "small_trophy": {
+                         if (player.Rebirth < 10)  player.Trophies += 5;
+                    else if (player.Rebirth < 20)  player.Trophies += THOUSAND(11);
+                    else                           player.Trophies += MILLION(21);
+                    return (true, "");
+                }
+                case "medium_trophy": {
+                         if (player.Rebirth < 10)  player.Trophies += 10;
+                    else if (player.Rebirth < 20)  player.Trophies += THOUSAND(23);
+                    else                           player.Trophies += MILLION(43);
+                    return (true, "");
+                }
+                case "large_trophy": {
+                         if (player.Rebirth < 10)  player.Trophies += 21;
+                    else if (player.Rebirth < 20)  player.Trophies += THOUSAND(26);
+                    else                           player.Trophies += MILLION(85);
+                    return (true, "");
+                }
+                case "huge_trophy_pack": {
+                         if (player.Rebirth < 10)  player.Trophies += 42;
+                    else if (player.Rebirth < 20)  player.Trophies += THOUSAND(92);
+                    else                           player.Trophies += MILLION(190);
+                    return (true, "");
+                }
+                case "gigantic_trophy_pack": {
+                         if (player.Rebirth < 10)  player.Trophies += 85;
+                    else if (player.Rebirth < 20)  player.Trophies += THOUSAND(185);
+                    else                           player.Trophies += MILLION(390);
+                    return (true, "");
+                }
+            }
+        }
+
+        if (item.Kind == ShopData.ItemKind.Coins)
+        {
+            switch (item.Id)
+            {
+                case "small_coin_pack": {
+                         if (player.PlayerLevel <= 57)      player.Coins += 5;
+                    else if (player.PlayerLevel <= 147)     player.Coins += THOUSAND(1);
+                    else                                    player.Coins += MILLION(20);
+                    return (true, "");
+                }
+                case "medium_coin_pack": {
+                         if (player.PlayerLevel <= 57)      player.Coins += 11;
+                    else if (player.PlayerLevel <= 147)     player.Coins += THOUSAND(2);
+                    else                                    player.Coins += MILLION(50);
+                    return (true, "");
+                }
+                case "large_coin_pack": {
+                         if (player.PlayerLevel <= 57)      player.Coins += 22;
+                    else if (player.PlayerLevel <= 147)     player.Coins += THOUSAND(5);
+                    else                                    player.Coins += MILLION(110);
+                    return (true, "");
+                }
+                case "huge_coin_pack": {
+                         if (player.PlayerLevel <= 57)      player.Coins += 46;
+                    else if (player.PlayerLevel <= 147)     player.Coins += THOUSAND(12);
+                    else                                    player.Coins += MILLION(230);
+                    return (true, "");
+                }
+                case "gigantic_coin_pack": {
+                         if (player.PlayerLevel <= 57)      player.Coins += 95;
+                    else if (player.PlayerLevel <= 147)     player.Coins += THOUSAND(25);
+                    else                                    player.Coins += MILLION(500);
+                    return (true, "");
+                }
+            }
         }
 
         if (item.Kind == ShopData.ItemKind.Egg) 
@@ -430,7 +508,7 @@ public class Shop : System<Shop>
             return (true, selectedPet.Id);
         }
 
-        Log.Error($"Unhandled item kind: {item.Kind}");
+        Log.Error($"Unhandled item kind: {item.Kind}. Id: {item.Id}");
         return (false, "");
     }
 }
@@ -496,9 +574,9 @@ public static class ShopData
                 new () { ItemId = "gigantic_coin_pack", Background = "coin_giant", Icons = new () { "" }, DisplaySize = ItemDisplaySize.SingleBigEntry },
                 new () { ItemId = "huge_coin_pack",     Background = "coin_giant", Icons = new () { "" }, DisplaySize = ItemDisplaySize.SingleBigEntry },
 
-                new () { ItemId = "small_coin",  Background = "coin_background", Icons = new() { "coin_small" },  DisplaySize = ItemDisplaySize.TripleEntry },
-                new () { ItemId = "medium_coin", Background = "coin_background", Icons = new() { "coin_medium" }, DisplaySize = ItemDisplaySize.TripleEntry },
-                new () { ItemId = "large_coin",  Background = "coin_background", Icons = new() { "coin_large" },  DisplaySize = ItemDisplaySize.TripleEntry },
+                new () { ItemId = "small_coin_pack",  Background = "coin_background", Icons = new() { "coin_small" },  DisplaySize = ItemDisplaySize.TripleEntry },
+                new () { ItemId = "medium_coin_pack", Background = "coin_background", Icons = new() { "coin_medium" }, DisplaySize = ItemDisplaySize.TripleEntry },
+                new () { ItemId = "large_coin_pack",  Background = "coin_background", Icons = new() { "coin_large" },  DisplaySize = ItemDisplaySize.TripleEntry },
             }
         },
     };
@@ -528,40 +606,40 @@ public static class ShopData
         new () { Id = "egg3b", ProductId = "1234", Name = "Egg 3D", Description = "A fun egg", Currency = Currency.Trophies, Cost = 15000000000, Kind = ItemKind.Egg },
         new () { Id = "egg4a", ProductId = "1234", Name = "Egg 4A", Description = "A fun egg", Currency = Currency.Trophies, Cost = 50000000000, Kind = ItemKind.Egg },
 
-        new () { Id = "starter_pack1",        ProductId = "6580a7d41d3ed3881220a6b0", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pack, },
-        new () { Id = "starter_pack2",        ProductId = "6580a7e01b8adea4b7fe6bea", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pack, },
-        new () { Id = "starter_pack3",        ProductId = "6580a7ea1b8adea4b7fe6beb", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pack, },
+        new () { Id = "starter_pack1",        ProductId = "6580a7d41d3ed3881220a6b0", Currency = Currency.Sparks, Kind = ItemKind.Pack, },
+        new () { Id = "starter_pack2",        ProductId = "6580a7e01b8adea4b7fe6bea", Currency = Currency.Sparks, Kind = ItemKind.Pack, },
+        new () { Id = "starter_pack3",        ProductId = "6580a7ea1b8adea4b7fe6beb", Currency = Currency.Sparks, Kind = ItemKind.Pack, },
 
-        new () { Id = "vip",                  ProductId = "6580ad4e1d3ed3881220a6b1", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
-        new () { Id = "2x_trophies",          ProductId = "6580ad5d1efc21b35e8169d0", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
-        new () { Id = "2x_money",             ProductId = "6581fbd81abd39db1febe7ec", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
+        new () { Id = "vip",                  ProductId = "6580ad4e1d3ed3881220a6b1", Currency = Currency.Sparks, Kind = ItemKind.Pass, },
+        new () { Id = "2x_trophies",          ProductId = "6580ad5d1efc21b35e8169d0", Currency = Currency.Sparks, Kind = ItemKind.Pass, },
+        new () { Id = "2x_money",             ProductId = "6581fbd81abd39db1febe7ec", Currency = Currency.Sparks, Kind = ItemKind.Pass, },
 
-        new () { Id = "teleporter",           ProductId = "6580ade01d3ed3881220a6b5", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
-        new () { Id = "boss_autoclicker",     ProductId = "6581fbb69b6ec694b390e7fa", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
+        new () { Id = "teleporter",           ProductId = "6580ade01d3ed3881220a6b5", Currency = Currency.Sparks, Kind = ItemKind.Pass, },
+        new () { Id = "boss_autoclicker",     ProductId = "6581fbb69b6ec694b390e7fa", Currency = Currency.Sparks, Kind = ItemKind.Pass, },
 
-        new () { Id = "pet_equip_cap_1",      ProductId = "6580ae111d3ed3881220a6b6", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
-        new () { Id = "pet_equip_cap_2",      ProductId = "6580ae1b91be5316340384f0", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
-        new () { Id = "pet_equip_cap_3",      ProductId = "6580ae24da4e2d44cf18cb4e", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
+        new () { Id = "pet_equip_cap_1",      ProductId = "6580ae111d3ed3881220a6b6", Currency = Currency.Sparks, Kind = ItemKind.Pass, },
+        new () { Id = "pet_equip_cap_2",      ProductId = "6580ae1b91be5316340384f0", Currency = Currency.Sparks, Kind = ItemKind.Pass, },
+        new () { Id = "pet_equip_cap_3",      ProductId = "6580ae24da4e2d44cf18cb4e", Currency = Currency.Sparks, Kind = ItemKind.Pass, },
 
-        new () { Id = "pet_storage_cap_1",    ProductId = "6580ae2e1b8adea4b7fe6bed", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
-        new () { Id = "pet_storage_cap_2",    ProductId = "6580ae377ddd3448b68bf876", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
-        new () { Id = "pet_storage_cap_3",    ProductId = "6580ae4091be5316340384f1", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
-        new () { Id = "pet_storage_cap_4",    ProductId = "6581fa26d9a1a6f408b4f2c9", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
-        new () { Id = "pet_storage_cap_5",    ProductId = "6581fa319b6ec694b390e7f8", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Pass, },
+        new () { Id = "pet_storage_cap_1",    ProductId = "6580ae2e1b8adea4b7fe6bed", Currency = Currency.Sparks, Kind = ItemKind.Pass, },
+        new () { Id = "pet_storage_cap_2",    ProductId = "6580ae377ddd3448b68bf876", Currency = Currency.Sparks, Kind = ItemKind.Pass, },
+        new () { Id = "pet_storage_cap_3",    ProductId = "6580ae4091be5316340384f1", Currency = Currency.Sparks, Kind = ItemKind.Pass, },
+        new () { Id = "pet_storage_cap_4",    ProductId = "6581fa26d9a1a6f408b4f2c9", Currency = Currency.Sparks, Kind = ItemKind.Pass, },
+        new () { Id = "pet_storage_cap_5",    ProductId = "6581fa319b6ec694b390e7f8", Currency = Currency.Sparks, Kind = ItemKind.Pass, },
 
-        new () { Id = "skip_rebirth",         ProductId = "6580ae5091be5316340384f2", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.SkipRebirth, },
+        new () { Id = "skip_rebirth",         ProductId = "6580ae5091be5316340384f2", Currency = Currency.Sparks, Kind = ItemKind.SkipRebirth, },
 
-        new () { Id = "small_coin_pack",      ProductId = "6580ad9b1d3ed3881220a6b3", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Coins, IntData = 1000, },
-        new () { Id = "medium_coin_pack",     ProductId = "6580adac1b8adea4b7fe6bec", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Coins, IntData = 10000, },
-        new () { Id = "large_coin_pack",      ProductId = "6580adb91d3ed3881220a6b4", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Coins, IntData = 100000, },
-        new () { Id = "huge_coin_pack",       ProductId = "6581fb29d9a1a6f408b4f2ca", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Coins, IntData = 100000, },
-        new () { Id = "gigantic_coin_pack",   ProductId = "6581fb331abd39db1febe7eb", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Coins, IntData = 100000, },
+        new () { Id = "small_coin_pack",      ProductId = "6580ad9b1d3ed3881220a6b3", Currency = Currency.Sparks, Kind = ItemKind.Coins, },
+        new () { Id = "medium_coin_pack",     ProductId = "6580adac1b8adea4b7fe6bec", Currency = Currency.Sparks, Kind = ItemKind.Coins, },
+        new () { Id = "large_coin_pack",      ProductId = "6580adb91d3ed3881220a6b4", Currency = Currency.Sparks, Kind = ItemKind.Coins, },
+        new () { Id = "huge_coin_pack",       ProductId = "6581fb29d9a1a6f408b4f2ca", Currency = Currency.Sparks, Kind = ItemKind.Coins, },
+        new () { Id = "gigantic_coin_pack",   ProductId = "6581fb331abd39db1febe7eb", Currency = Currency.Sparks, Kind = ItemKind.Coins, },
 
-        new () { Id = "small_trophy",         ProductId = "6580af2c1b8adea4b7fe6bee", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Trophies, IntData = 1000, },
-        new () { Id = "medium_trophy",        ProductId = "6580af351d3ed3881220a6b7", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Trophies, IntData = 10000, },
-        new () { Id = "large_trophy",         ProductId = "6580af3f7ddd3448b68bf877", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Trophies, IntData = 100000, },
-        new () { Id = "huge_trophy_pack",     ProductId = "6580af5491be5316340384f3", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Trophies, IntData = 1000000, },
-        new () { Id = "gigantic_trophy_pack", ProductId = "6581fb529b6ec694b390e7f9", Name = "", Description = "", Currency = Currency.Sparks, Cost = 0, Kind = ItemKind.Trophies, IntData = 1000000, },
+        new () { Id = "small_trophy",         ProductId = "6580af2c1b8adea4b7fe6bee", Currency = Currency.Sparks, Kind = ItemKind.Trophies, },
+        new () { Id = "medium_trophy",        ProductId = "6580af351d3ed3881220a6b7", Currency = Currency.Sparks, Kind = ItemKind.Trophies, },
+        new () { Id = "large_trophy",         ProductId = "6580af3f7ddd3448b68bf877", Currency = Currency.Sparks, Kind = ItemKind.Trophies, },
+        new () { Id = "huge_trophy_pack",     ProductId = "6580af5491be5316340384f3", Currency = Currency.Sparks, Kind = ItemKind.Trophies, },
+        new () { Id = "gigantic_trophy_pack", ProductId = "6581fb529b6ec694b390e7f9", Currency = Currency.Sparks, Kind = ItemKind.Trophies, },
     };
 
     public class Pack
