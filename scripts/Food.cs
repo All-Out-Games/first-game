@@ -67,6 +67,8 @@ public partial class Food : Component
 
     public event Action<Food> OnEat;
 
+    public Vector2 EatUIPosition => Entity.Position + new Vector2(0, 1);
+
     public bool PlayerCanEatThis(FatPlayer player, out string reason, bool giveReason = false) // giveReason is for perf reasons when we dont need the reason
     {
         reason = string.Empty;
@@ -178,6 +180,20 @@ public partial class Food : Component
         }
     }
 
+    public void OnClick(FatPlayer player)
+    {
+        if (CurrentHealth <= 0)
+        {
+            return;
+        }
+        CurrentHealth -= 1;
+        player.LastFoodClickTime = Time.TimeSinceStartup;
+        if (player.IsLocal)
+        {
+            FoodClickParticleSystem.Instance.SpawnParticle(EatUIPosition);
+        }
+    }
+
     [ClientRpc]
     public void StartEating(ulong playerNetworkId, long clicksRequired)
     {
@@ -189,6 +205,7 @@ public partial class Food : Component
         player.FoodBeingEaten = this;
         CurrentHealth  = clicksRequired;
         ClicksRequired = clicksRequired;
+        OnClick(player);
     }
 
     [ClientRpc]

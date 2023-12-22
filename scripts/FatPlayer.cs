@@ -6,8 +6,6 @@ using System.Collections.Generic;
 
 public partial class FatPlayer : Player 
 {
-    public const int MinStomachSize = 10;
-
     private double _trophies;
     private double _coins;
     private double _amountOfFoodInStomach;
@@ -35,10 +33,12 @@ public partial class FatPlayer : Player
     {
         get
         {
-            int result = 10;
+            int result = 20;
             if (GamePasses.HasPetStorageCap1) { result += 10; }
             if (GamePasses.HasPetStorageCap2) { result += 25; }
             if (GamePasses.HasPetStorageCap3) { result += 50; }
+            if (GamePasses.HasPetStorageCap3) { result += 100; }
+            if (GamePasses.HasPetStorageCap4) { result += 250; }
             return result;
         }
     }
@@ -471,21 +471,20 @@ public partial class FatPlayer : Player
         {
             if (this.IsInputUp(Input.UnifiedInput.MOUSE_LEFT) || this.IsInputUp(Input.UnifiedInput.KEYCODE_E))
             {
-                FoodBeingEaten.CurrentHealth -= 1;
-                if (FoodBeingEaten.CurrentHealth < 0) FoodBeingEaten.CurrentHealth = 0;
-                LastFoodClickTime = Time.TimeSinceStartup;
+                FoodBeingEaten.OnClick(this);
             }
 
-            var clickPowerRect = UI.GetPlayerRect(this);
-            clickPowerRect = clickPowerRect.Grow(50, 50, 0, 50).Offset(0, 10);
+            var foodScreenPos = Camera.WorldToScreen(FoodBeingEaten.EatUIPosition);
+            var clickRect = new Rect(foodScreenPos);
+            clickRect = clickRect.Grow(20, 50, 20, 50).Offset(0, 10);
             float scale01 = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - LastFoodClickTime, 0.25f));
             float scale = AOMath.Lerp(1.5f, 1.0f, scale01);
-            clickPowerRect = clickPowerRect.Scale(scale, scale);
-            UI.Image(clickPowerRect, null, Vector4.White, new UI.NineSlice());
+            clickRect = clickRect.Scale(scale, scale);
+            UI.Image(clickRect, null, Vector4.White, new UI.NineSlice());
 
             float foodHealth01 = 1.0f - (float)Math.Clamp((float)FoodBeingEaten.CurrentHealth / (float)FoodBeingEaten.ClicksRequired, 0, 1);
             FoodProgressLerp = AOMath.Lerp(FoodProgressLerp, foodHealth01, 20 * Time.DeltaTime);
-            var chewProgressRect = clickPowerRect.SubRect(0, 0, FoodProgressLerp, 1, 0, 0, 0, 0);
+            var chewProgressRect = clickRect.SubRect(0, 0, FoodProgressLerp, 1, 0, 0, 0, 0);
             UI.Image(chewProgressRect, null, Vector4.HSVLerp(Vector4.Red, Vector4.Green, FoodProgressLerp), new UI.NineSlice());
 
             var pendingTextSettings = new UI.TextSettings()
@@ -504,7 +503,7 @@ public partial class FatPlayer : Player
             pendingTextSettings.color.Y = colorEase;
             pendingTextSettings.color.Z = colorEase;
             pendingTextSettings.size = AOMath.Lerp(48, 32, colorEase);
-            UI.Text(clickPowerRect, $"{FoodBeingEaten.CurrentHealth}", pendingTextSettings);
+            UI.Text(clickRect, $"{FoodBeingEaten.CurrentHealth}", pendingTextSettings);
         }
         else
         {
@@ -555,10 +554,9 @@ public partial class FatPlayer : Player
         {
             ResourceParticle particle = new ResourceParticle();
             var radians = rng.NextDouble() * 2 * Math.PI;
-            // var dir = new Vector2((float)rng.NextDouble() * 2 - 1, (float)rng.NextDouble() * 2 - 1); // note(josh): non-uniform distribution but WHO CARES
             var dir = new Vector2((float)Math.Cos(radians), (float)Math.Sin(radians));
             particle.Position = position;
-            particle.Velocity = dir * 10 * (float)rng.NextDouble();
+            particle.Velocity = dir * 10 * rng.NextFloat();
             particle.Texture = tex;
             particle.Kind = kind;
             particle.Target = target;

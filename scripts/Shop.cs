@@ -4,6 +4,8 @@ public class Shop : System<Shop>
 {
     public Random Random;
 
+    public string ScrollToIAP;
+
     public override void Start()
     {
         Purchasing.SetPurchaseHandler(OnPurchase);
@@ -97,127 +99,148 @@ public class Shop : System<Shop>
                     UI.PushId($"{entry.ItemId}_{idx++}");
                     using var __ = AllOut.Defer(UI.PopId);
 
-                    if (entry.DisplaySize == ShopData.ItemDisplaySize.SingleBigEntry)
+                    var show = true;
+                    if (entry.ShowIfOwned.Has())
                     {
-                        var show = true;
-                        if (entry.ShowIfOwned.Has())
-                        {
-                            show = Purchasing.OwnsGamePassLocal(entry.ShowIfOwned);
-                        }
-                        if (show)
-                        {
-                            var entryRect = scrollView.contentRect.CutTop(325);
-                            UI.Image(entryRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
-
-                            var titleTextRect = entryRect.TopRect().GrowBottom(75);
-                            UI.Text(titleTextRect, product.Name, new UI.TextSettings() { size = 60, color = Vector4.White, outline = true, outlineThickness = 2, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom, wordWrap = true });
-
-                            var descriptionTextRect = entryRect.BottomRect().GrowTop(75).Offset(0, 10);
-                            UI.Text(descriptionTextRect, product.Description, new UI.TextSettings() { size = 48, color = Vector4.White, outline = true, outlineThickness = 2, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom });
-
-                            var iconSize = 125;
-                            var widthDiff = entryRect.Width - (entry.Icons.Count * iconSize);
-                            var iconsRect = entryRect.SubRect(0, 0.5f, 0, 0.5f, 0, 0, 0, 0).Grow(iconSize/2, 0, iconSize/2, 0).Offset(widthDiff / 2, 0);
-                            var iconGrid = UI.GridLayout.Make(iconsRect, iconSize, iconSize, UI.GridLayout.SizeSource.ELEMENT_SIZE);
-
-
-                            var pack = ShopData.Packs.FirstOrDefault(p => p.Id == item.Id);
-                            if (pack != null)
-                            {
-                                foreach (var packItemId in pack.Items)
-                                {
-                                    var packItem = ShopData.Items.FirstOrDefault(i => i.Id == packItemId);
-                                    if (packItem == null) continue;
-
-                                    var packProduct = Purchasing.GetProduct(packItem.ProductId);
-                                    if (!packProduct.IsValid()) continue;
-
-                                    var iconRect = iconGrid.Next();
-                                    UI.Image(iconRect, packProduct.Icon, Vector4.White, References.Instance.FrameSlice);
-                                }
-                            }
-                            else 
-                            {
-                                foreach (var icon in entry.Icons)
-                                {
-                                    var iconRect = iconGrid.Next();
-                                    UI.Image(iconRect, References.Instance.FrameDark, Vector4.White, References.Instance.FrameSlice);
-                                }
-                            }
-
-                            var buttonRect = entryRect.BottomRightRect().Grow(100, 0, 0, 200).Offset(-15, 15);
-                            var buyButtonTextSettings = new UI.TextSettings()
-                            {
-                                size = 48,
-                                color = Vector4.White,
-                                horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
-                                verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
-                                outline = true,
-                                outlineThickness = 2,
-                            };
-                            if (UI.Button(buttonRect, $"{product.Price}", buttonSettings, buyButtonTextSettings).clicked) 
-                            {
-                                Purchasing.PromptPurchase(item.ProductId);
-                            }
-                            multiEntryColumnIdx = 0;
-                        }
+                        show = Purchasing.OwnsGamePassLocal(entry.ShowIfOwned);
                     }
-
-                    if (entry.DisplaySize == ShopData.ItemDisplaySize.TripleEntry)
+                    if (show)
                     {
-                        var entryWidth = scrollView.contentRect.Width / 3;
-
-                        if (multiEntryColumnIdx == 0)
+                        Rect entryRect = new Rect();
+                        bool displaySizeWasValid = true;
+                        switch (entry.DisplaySize)
                         {
-                            multiEntryPreviousRect = scrollView.contentRect.CutTop(400).LeftRect().CutLeftUnscaled(entryWidth);
+                            case ShopData.ItemDisplaySize.SingleBigEntry:
+                            {
+                                entryRect = scrollView.contentRect.CutTop(325);
+                                UI.Image(entryRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+
+                                var titleTextRect = entryRect.TopRect().GrowBottom(75);
+                                UI.Text(titleTextRect, product.Name, new UI.TextSettings() { size = 60, color = Vector4.White, outline = true, outlineThickness = 2, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom, wordWrap = true });
+
+                                var descriptionTextRect = entryRect.BottomRect().GrowTop(75).Offset(0, 10);
+                                UI.Text(descriptionTextRect, product.Description, new UI.TextSettings() { size = 48, color = Vector4.White, outline = true, outlineThickness = 2, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom });
+
+                                var iconSize = 125;
+                                var widthDiff = entryRect.Width - (entry.Icons.Count * iconSize);
+                                var iconsRect = entryRect.SubRect(0, 0.5f, 0, 0.5f, 0, 0, 0, 0).Grow(iconSize/2, 0, iconSize/2, 0).Offset(widthDiff / 2, 0);
+                                var iconGrid = UI.GridLayout.Make(iconsRect, iconSize, iconSize, UI.GridLayout.SizeSource.ELEMENT_SIZE);
+
+                                var pack = ShopData.Packs.FirstOrDefault(p => p.Id == item.Id);
+                                if (pack != null)
+                                {
+                                    foreach (var packItemId in pack.Items)
+                                    {
+                                        var packItem = ShopData.Items.FirstOrDefault(i => i.Id == packItemId);
+                                        if (packItem == null) continue;
+
+                                        var packProduct = Purchasing.GetProduct(packItem.ProductId);
+                                        if (!packProduct.IsValid()) continue;
+
+                                        var iconRect = iconGrid.Next();
+                                        UI.Image(iconRect, packProduct.Icon, Vector4.White, References.Instance.FrameSlice);
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (var icon in entry.Icons)
+                                    {
+                                        var iconRect = iconGrid.Next();
+                                        UI.Image(iconRect, References.Instance.FrameDark, Vector4.White, References.Instance.FrameSlice);
+                                    }
+                                }
+
+                                var buttonRect = entryRect.BottomRightRect().Grow(100, 0, 0, 200).Offset(-15, 15);
+                                var buyButtonTextSettings = new UI.TextSettings()
+                                {
+                                    size = 48,
+                                    color = Vector4.White,
+                                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                                    verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                                    outline = true,
+                                    outlineThickness = 2,
+                                };
+                                if (UI.Button(buttonRect, $"{product.Price}", buttonSettings, buyButtonTextSettings).clicked)
+                                {
+                                    Purchasing.PromptPurchase(item.ProductId);
+                                }
+                                multiEntryColumnIdx = 0;
+                                break;
+                            }
+                            case ShopData.ItemDisplaySize.TripleEntry:
+                            {
+                                var entryWidth = scrollView.contentRect.Width / 3;
+
+                                if (multiEntryColumnIdx == 0)
+                                {
+                                    multiEntryPreviousRect = scrollView.contentRect.CutTop(400).LeftRect().CutLeftUnscaled(entryWidth);
+                                }
+                                else
+                                {
+                                    multiEntryPreviousRect = multiEntryPreviousRect.Slide(1, 0);
+                                }
+
+                                entryRect = multiEntryPreviousRect.Inset(5);
+
+                                var buyResult = UI.Button(entryRect, "BUY_BUTTON", new UI.ButtonSettings(), References.Instance.NoTextSettings);
+                                if (buyResult.clicked)
+                                {
+                                    Purchasing.PromptPurchase(item.ProductId);
+                                }
+
+                                var entryCutRect = entryRect;
+                                     if (buyResult.pressed)  entryRect = entryRect.Inset(3);
+                                else if (buyResult.hovering) entryRect = entryRect.Grow(3);
+
+                                UI.Image(entryRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+
+                                var titleTextRect = entryCutRect.CutTop(100);
+                                UI.Text(titleTextRect, product.Name, new UI.TextSettings() { size = 72, color = Vector4.White, outline = true, outlineThickness = 2, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom, wordWrap = true });
+
+                                var descriptionAndIconRect = entryCutRect.CutTop(150).Offset(0, -25);
+                                var iconRect = descriptionAndIconRect.CutLeft(descriptionAndIconRect.Width * 0.4f).FitAspect(1.0f, Rect.FitAspectKind.KEEP_WIDTH).Offset(20, 0);
+                                var descriptionRect = descriptionAndIconRect.Inset(0, 10, 0, 10);
+                                UI.Image(iconRect, product.Icon, Vector4.White);
+                                UI.Text(descriptionRect, product.Description, new UI.TextSettings() { size = 42, color = Vector4.White, outline = true, outlineThickness = 2, wordWrap = true, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom });
+
+                                var priceRect = entryCutRect.CutBottom(100).Offset(0, 10);
+                                UI.Text(priceRect, $"{product.Price}", new UI.TextSettings() { size = 72, color = Vector4.White, outline = true, outlineThickness = 2, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom });
+
+                                if (Purchasing.OwnsGamePassLocal(item.ProductId))
+                                {
+                                    var checkmarkRect = entryCutRect.TopLeftRect().Grow(0, 50, 50, 0).Offset(10, -10);
+                                    UI.Image(checkmarkRect, References.Instance.CheckMark, Vector4.White);
+                                }
+
+                                multiEntryColumnIdx += 1;
+                                if (multiEntryColumnIdx >= 3)
+                                {
+                                    multiEntryColumnIdx = 0;
+                                }
+                                break;
+                            }
+                            default: {
+                                displaySizeWasValid = false;
+                                Log.Error($"Unknown IAP display size: {entry.DisplaySize}");
+                                break;
+                            }
                         }
-                        else
+
+                        if (ScrollToIAP.Has() && ScrollToIAP == entry.ItemId)
                         {
-                            multiEntryPreviousRect = multiEntryPreviousRect.Slide(1, 0);
-                        }
-
-                        var entryRect = multiEntryPreviousRect.Inset(5);
-
-                        var buyResult = UI.Button(entryRect, "BUY_BUTTON", new UI.ButtonSettings(), References.Instance.NoTextSettings);
-                        if (buyResult.clicked)
-                        {
-                            Purchasing.PromptPurchase(item.ProductId);
-                        }
-
-                        var entryCutRect = entryRect;
-                             if (buyResult.pressed)  entryRect = entryRect.Inset(3);
-                        else if (buyResult.hovering) entryRect = entryRect.Grow(3);
-                        
-                        UI.Image(entryRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
-
-                        var titleTextRect = entryCutRect.CutTop(100);
-                        UI.Text(titleTextRect, product.Name, new UI.TextSettings() { size = 72, color = Vector4.White, outline = true, outlineThickness = 2, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom, wordWrap = true });
-
-                        var descriptionAndIconRect = entryCutRect.CutTop(150).Offset(0, -25);
-                        var iconRect = descriptionAndIconRect.CutLeft(descriptionAndIconRect.Width * 0.4f).FitAspect(1.0f, Rect.FitAspectKind.KEEP_WIDTH).Offset(20, 0);
-                        var descriptionRect = descriptionAndIconRect.Inset(0, 10, 0, 10);
-                        UI.Image(iconRect, product.Icon, Vector4.White);
-                        UI.Text(descriptionRect, product.Description, new UI.TextSettings() { size = 42, color = Vector4.White, outline = true, outlineThickness = 2, wordWrap = true, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom });
-
-                        var priceRect = entryCutRect.CutBottom(100).Offset(0, 10);
-                        UI.Text(priceRect, $"{product.Price}", new UI.TextSettings() { size = 72, color = Vector4.White, outline = true, outlineThickness = 2, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom });
-
-                        if (Purchasing.OwnsGamePassLocal(item.ProductId))
-                        {
-                            var checkmarkRect = entryCutRect.TopLeftRect().Grow(0, 50, 50, 0).Offset(10, -10);
-                            UI.Image(checkmarkRect, References.Instance.CheckMark, Vector4.White);
-                        }
-
-                        multiEntryColumnIdx += 1;
-                        if (multiEntryColumnIdx >= 3)
-                        {
-                            multiEntryColumnIdx = 0;
+                            ScrollToIAP = string.Empty;
+                            if (displaySizeWasValid)
+                            {
+                                scrollView.ScrollTo(entryRect);
+                            }
                         }
                     }
                 }
             }
             UI.ExpandCurrentScrollView(scrollView.contentRect.CutTop(75));
         }
+
+        ScrollToIAP = string.Empty;
 
         // Window Title
         {
