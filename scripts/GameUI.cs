@@ -9,6 +9,8 @@ public class GameUI : System<GameUI>
     public bool IsShowingPetsWindow;
     public bool IsShowingRebirthWindow;
 
+    public string ScrollToIAP;
+
     public override void Start()
     {
         IsShowingUpgradesWindow = false;
@@ -480,7 +482,12 @@ public class GameUI : System<GameUI>
             });
             var increaseEquippedCapacityRect = equippedCapacityRect.RightRect().Grow(0, equippedCapacityRectHeight/2, 0, equippedCapacityRectHeight/2);
             increaseEquippedCapacityRect = increaseEquippedCapacityRect.Offset(-equippedCapacityRectHeight/2, 0).Inset(5, 10, 5, 0);
-            UI.Button(increaseEquippedCapacityRect, "increase_equipped_capacity", new UI.ButtonSettings(){ sprite = References.Instance.Plus }, new UI.TextSettings(){size = 0, color = Vector4.Zero});
+            if (UI.Button(increaseEquippedCapacityRect, "increase_equipped_capacity", new UI.ButtonSettings(){ sprite = References.Instance.Plus }, new UI.TextSettings(){size = 0, color = Vector4.Zero}).clicked)
+            {
+                IsShowingPetsWindow = false;
+                IsShowingShopWindow = true;
+                ScrollToIAP = "pet_equip_cap_3";
+            }
 
             if (SelectedPet != null)
             {
@@ -728,7 +735,7 @@ public class GameUI : System<GameUI>
                 var rectSize = HoveredPet.GetDefinition().StatModifiers.Count * 40 + (50 * 2) + 10;
 
                 var pos = Input.GetMouseScreenPosition();
-                Rect tooltipRect = new Rect().Grow(0, 200, rectSize, 0).Offset(pos.X, pos.Y).Offset(20, -20);
+                Rect tooltipRect = new Rect(pos).Grow(0, 200, rectSize, 0).Offset(20, -20);
                 UI.Image(tooltipRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
 
                 var nameRect = tooltipRect.CutTop(50);
