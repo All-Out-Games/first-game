@@ -9,8 +9,6 @@ public class GameUI : System<GameUI>
     public bool IsShowingPetsWindow;
     public bool IsShowingRebirthWindow;
 
-    public string ScrollToIAP;
-
     public override void Start()
     {
         IsShowingUpgradesWindow = false;
@@ -486,7 +484,7 @@ public class GameUI : System<GameUI>
             {
                 IsShowingPetsWindow = false;
                 IsShowingShopWindow = true;
-                ScrollToIAP = "pet_equip_cap_3";
+                Shop.Instance.ScrollToIAP = "pet_equip_cap_3";
             }
 
             if (SelectedPet != null)
@@ -664,7 +662,9 @@ public class GameUI : System<GameUI>
                     var petButtonResult = UI.Button(petRect, $"+{petsInColdStorage} in storage", buttonSettings, coldStorageTextSettings);
                     if (petButtonResult.clicked)
                     {
-                        // todo(josh): open shop and scroll to the storage increase IAPs
+                        IsShowingPetsWindow = false;
+                        IsShowingShopWindow = true;
+                        Shop.Instance.ScrollToIAP = "pet_storage_cap_1";
                     }
                 }
 

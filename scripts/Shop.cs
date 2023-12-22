@@ -4,6 +4,8 @@ public class Shop : System<Shop>
 {
     public Random Random;
 
+    public string ScrollToIAP;
+
     public override void Start()
     {
         Purchasing.SetPurchaseHandler(OnPurchase);
@@ -224,11 +226,9 @@ public class Shop : System<Shop>
                             }
                         }
 
-                        var scrollTo = GameUI.Instance.ScrollToIAP;
-                        if (scrollTo.Has() && scrollTo == entry.ItemId)
+                        if (ScrollToIAP.Has() && ScrollToIAP == entry.ItemId)
                         {
-                            Log.Info($"Matched: {scrollTo} == {entry.ItemId}");
-                            GameUI.Instance.ScrollToIAP = string.Empty;
+                            ScrollToIAP = string.Empty;
                             if (displaySizeWasValid)
                             {
                                 scrollView.ScrollTo(entryRect);
@@ -239,6 +239,8 @@ public class Shop : System<Shop>
             }
             UI.ExpandCurrentScrollView(scrollView.contentRect.CutTop(75));
         }
+
+        ScrollToIAP = string.Empty;
 
         // Window Title
         {
