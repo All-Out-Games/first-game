@@ -127,6 +127,7 @@ public partial class FatPlayer : Player
             yield return null;
         }
 
+        DoingBossIntro = false;
         var rng = new Random();
         timer = 0;
         while (Coroutine.WaitForSeconds(ref timer, 2))
@@ -136,7 +137,6 @@ public partial class FatPlayer : Player
             var offset = new Vector2((float)rng.NextDouble() * 2 - 1, (float)rng.NextDouble() * 2 - 1) * 8;
             var rect = textRect.Offset(offset.X, offset.Y);
             UI.Text(rect, "EAT!!!", ts);
-            DoingBossIntro = false;
             yield return null;
         }
     }
