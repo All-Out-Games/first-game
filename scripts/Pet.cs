@@ -9,6 +9,8 @@ public class Pet : Component
     [Serialized] public string Name;
     [Serialized] public string PetId;
 
+    public Spine_Animator SpineAnimator;
+
     public Vector2 Velocity;
 
     public bool Arrived;
@@ -20,7 +22,11 @@ public class Pet : Component
         // TODO spawn spine stuff, apply skins and what not
         AllPets.Add(this);
 
-        Entity.GetComponent<Sprite_Renderer>().Sprite = Assets.GetAsset<Texture>(Definition.Sprite);
+        SpineAnimator = Entity.GetComponent<Spine_Animator>();
+        SpineAnimator.Skeleton = Definition.Spine;
+        SpineAnimator.SetSkin(Definition.Skin);
+        SpineAnimator.SetAnimation("idle", true);
+
     }
 
     public override void Update()
@@ -92,7 +98,20 @@ public class Pet : Component
         Velocity += totalForce * Time.DeltaTime * 15.0f;
         Velocity *= 0.85f;
         Entity.Position += Velocity * Time.DeltaTime;
+        
+        if (Velocity.Length > 0.1f && !isRunning)
+        {
+            isRunning = true;
+            SpineAnimator.SetAnimation("run", true);
+        }
+        else if (Velocity.Length < 0.1f && isRunning)
+        {
+            isRunning = false;
+            SpineAnimator.SetAnimation("idle", true);
+        }
     }
+
+    bool isRunning = false;
 
     public override void OnDestroy()
     {

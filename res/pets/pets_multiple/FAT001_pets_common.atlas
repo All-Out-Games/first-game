@@ -1,0 +1,35 @@
+FAT001_pets_common.png
+	size: 480, 480
+	filter: Linear, Linear
+	scale: 0.5
+eyes_2
+	bounds: 250, 361, 58, 42
+pet_burger
+	bounds: 2, 2, 123, 157
+pet_carrot
+	bounds: 250, 405, 73, 160
+	rotate: 90
+pet_chicken_drumstick
+	bounds: 329, 118, 72, 116
+pet_diamond
+	bounds: 236, 236, 115, 104
+	rotate: 90
+pet_food_face
+	bounds: 2, 161, 138, 145
+pet_fries
+	bounds: 127, 33, 113, 126
+pet_ice_cream
+	bounds: 342, 293, 72, 110
+pet_pingu
+	bounds: 2, 308, 123, 170
+pet_pizza_slice
+	bounds: 127, 353, 121, 125
+pet_sausage
+	bounds: 142, 214, 92, 137
+pet_squeezy_sauce
+	bounds: 242, 8, 84, 140
+	rotate: 90
+pet_subway
+	bounds: 242, 94, 140, 85
+	offsets: 1, 1, 142, 87
+	rotate: 90

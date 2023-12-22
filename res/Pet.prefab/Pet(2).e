@@ -28,19 +28,19 @@
   }
 },
 {
-  "cid": 2,
-  "aoid": "20599064700786:1702507111277392500",
+  "cid": 3,
+  "aoid": "321238186261273:1703221024020701500",
   "component_type": "Internal_Component",
-  "internal_component_type": "Sprite_Renderer",
+  "internal_component_type": "Spine_Animator",
   "data": {
-    "texture": "",
+    "skeleton_data_asset": "",
+    "ordered_skins": [
+
+    ],
     "depth_offset": 0,
-    "tint": {
-      "X": 1,
-      "Y": 1,
-      "Z": 1,
-      "W": 1
-    },
-    "layer": 0
+    "skeleton_scale": {
+      "X": 0.3300000131130219,
+      "Y": 0.3300000131130219
+    }
   }
 }

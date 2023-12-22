@@ -1,0 +1,39 @@
+FAT001_pet_donut_goat.png
+	size: 340, 456
+	filter: Linear, Linear
+	scale: 0.5
+body
+	bounds: 3, 19, 242, 150
+	rotate: 90
+eyes_closed
+	bounds: 293, 4, 34, 31
+eyes_open
+	bounds: 295, 38, 33, 31
+head
+	bounds: 3, 264, 184, 186
+jaw
+	bounds: 190, 357, 67, 75
+legL_back_lower
+	bounds: 260, 375, 54, 75
+legL_back_upper
+	bounds: 225, 9, 67, 87
+legL_front_lower
+	bounds: 140, 3, 57, 82
+	rotate: 90
+legL_front_upper
+	bounds: 260, 295, 51, 77
+legR_back_lower
+	bounds: 264, 221, 53, 71
+legR_back_upper
+	bounds: 190, 264, 67, 90
+legR_front_lower
+	bounds: 264, 154, 48, 72
+	rotate: 90
+legR_front_upper
+	bounds: 230, 99, 52, 78
+	rotate: 90
+neck
+	bounds: 155, 154, 107, 106
+	rotate: 90
+tail
+	bounds: 156, 63, 71, 88

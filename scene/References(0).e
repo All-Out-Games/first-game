@@ -54,6 +54,26 @@
     "Cash": "ui2/Icons/Cash Outline 256.png",
     "Burger": "ui2/Icons/Burger Outline 256.png",
     "CarePackagePrefab": "CarePackage.prefab",
-    "PetPrefab": "Pet.prefab"
+    "PetPrefab": "Pet.prefab",
+    "IceCreamConePet": "pets/pets_multiple/FAT001_pets_common.spine",
+    "BurgerPet": "pets/pets_multiple/FAT001_pets_common.spine",
+    "DrumstickPet": "pets/pets_multiple/FAT001_pets_common.spine",
+    "CarrotPet": "pets/pets_multiple/FAT001_pets_common.spine",
+    "PenguinPet": "pets/pets_multiple/FAT001_pets_common.spine",
+    "DiamondPet": "pets/pets_multiple/FAT001_pets_common.spine",
+    "FriesPet": "pets/pets_multiple/FAT001_pets_common.spine",
+    "SubwayPet": "pets/pets_multiple/FAT001_pets_common.spine",
+    "StackedBurgerPet": "pets/pets_multiple/FAT001_pets_common.spine",
+    "HotDogPet": "pets/pets_multiple/FAT001_pets_common.spine",
+    "PizzaPet": "pets/pets_multiple/FAT001_pets_common.spine",
+    "FoodFacePet": "pets/pets_multiple/FAT001_pets_common.spine",
+    "DogPet": "pets/pet_golden_dog/FAT001_golden_dog.spine",
+    "LizardPet": "pets/pet_green_lizard/FAT001_pet_lizard.spine",
+    "MolePet": "pets/pet_brown_mole/FAT001_pet_mole.spine",
+    "SpiderPet": "pets/pet_widow_spider/FAT001_pet_spider.spine",
+    "FruitJellySlimePet": "pets/pet_slime/FAT001_slime.spine",
+    "PizzaMonsterPet": "pets/pet_pizza_monster/FAT001_pizza_monster.spine",
+    "DonutGoatPet": "pets/pet_donut_goat/FAT001_pet_donut_goat.spine",
+    "SherbertLumpPet": "pets/pet_sherbert_lump/FAT001_sherbert_lump.spine"
   }
 }

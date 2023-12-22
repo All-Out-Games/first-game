@@ -1,0 +1,29 @@
+FAT001_pizza_monster.png
+	size: 1072, 1072
+	filter: Linear, Linear
+	scale: 0.5
+ArmL
+	bounds: 575, 825, 186, 244
+	rotate: 180
+ArmR
+	bounds: 707, 893, 176, 224
+	rotate: 270
+HandLA
+	bounds: 934, 913, 156, 135
+	offsets: 0, 1, 156, 136
+	rotate: 90
+HandR
+	bounds: 928, 781, 141, 129
+Head
+	bounds: 248, 798, 271, 165
+	rotate: 90
+Jaw
+	bounds: 413, 874, 195, 169
+	rotate: 90
+LegL
+	bounds: 413, 783, 100, 129
+LegR
+	bounds: 562, 805, 87, 110
+	offsets: 0, 1, 87, 111
+Torso
+	bounds: 3, 797, 243, 272

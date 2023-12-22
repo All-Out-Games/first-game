@@ -1,0 +1,22 @@
+FAT001_pet_lizard.png
+	size: 224, 224
+	filter: Linear, Linear
+	scale: 0.5
+back_leg_L
+	bounds: 164, 2, 51, 53
+	offsets: 0, 0, 53, 58
+	rotate: 90
+back_leg_R
+	bounds: 57, 11, 47, 41
+body
+	bounds: 2, 48, 215, 71
+	offsets: 0, 3, 215, 77
+eyes
+	bounds: 132, 171, 72, 51
+front_leg_L
+	bounds: 132, 123, 46, 52
+	rotate: 90
+front_leg_R
+	bounds: 2, 3, 53, 51
+head
+	bounds: 2, 121, 128, 101

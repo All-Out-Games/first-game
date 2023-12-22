@@ -42,6 +42,27 @@ public class References : Component
     [Serialized] public Prefab CarePackagePrefab;
     [Serialized] public Prefab PetPrefab;
 
+    [Serialized] public SpineSkeleton IceCreamConePet;
+    [Serialized] public SpineSkeleton BurgerPet;
+    [Serialized] public SpineSkeleton DrumstickPet;
+    [Serialized] public SpineSkeleton CarrotPet;
+    [Serialized] public SpineSkeleton PenguinPet;
+    [Serialized] public SpineSkeleton DiamondPet;
+    [Serialized] public SpineSkeleton FriesPet;
+    [Serialized] public SpineSkeleton SubwayPet;
+    [Serialized] public SpineSkeleton StackedBurgerPet;
+    [Serialized] public SpineSkeleton HotDogPet;
+    [Serialized] public SpineSkeleton PizzaPet;
+    [Serialized] public SpineSkeleton FoodFacePet;
+    [Serialized] public SpineSkeleton DogPet;
+    [Serialized] public SpineSkeleton LizardPet;
+    [Serialized] public SpineSkeleton MolePet;
+    [Serialized] public SpineSkeleton SpiderPet;
+    [Serialized] public SpineSkeleton FruitJellySlimePet;
+    [Serialized] public SpineSkeleton PizzaMonsterPet;
+    [Serialized] public SpineSkeleton DonutGoatPet;
+    [Serialized] public SpineSkeleton SherbertLumpPet;
+
     public UI.NineSlice FrameSlice = new UI.NineSlice() { slice = new Vector4(100, 100, 100, 100), sliceScale = 1f };
     public UI.NineSlice ButtonSlice = new UI.NineSlice() { slice = new Vector4(30, 30, 30, 30), sliceScale = 1f };
     public UI.NineSlice TopBarSlice = new UI.NineSlice() { slice = new Vector4(40, 40, 40, 40), sliceScale = 1f };

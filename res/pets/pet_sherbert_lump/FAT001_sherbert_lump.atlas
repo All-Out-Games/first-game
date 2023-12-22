@@ -1,0 +1,23 @@
+FAT001_sherbert_lump.png
+	size: 476, 476
+	filter: Linear, Linear
+	scale: 0.5
+arm_L
+	bounds: 225, 254, 106, 71
+	rotate: 90
+arm_R
+	bounds: 121, 15, 118, 77
+body
+	bounds: 2, 204, 235, 270
+leg_L
+	bounds: 211, 134, 75, 110
+leg_R
+	bounds: 238, 48, 69, 90
+	rotate: 180
+shadow
+	bounds: 2, 473, 1, 1
+sludge_tail
+	bounds: 2, 82, 223, 138
+	rotate: 180
+visor
+	bounds: 2, 2, 117, 78

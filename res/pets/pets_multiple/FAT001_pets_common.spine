@@ -1,0 +1,256 @@
+{
+"skeleton": { "hash": "GBuLbA9lFOI", "spine": "4.0.64", "x": -127.99, "y": -45.73, "width": 246, "height": 339 },
+"bones": [
+	{ "name": "root" },
+	{ "name": "body", "parent": "root" }
+],
+"slots": [
+	{ "name": "pet_body", "bone": "body", "attachment": "pet_body" },
+	{ "name": "eyes", "bone": "body", "attachment": "eyes" }
+],
+"skins": [
+	{
+		"name": "burger",
+		"attachments": {
+			"eyes": {
+				"eyes": { "name": "eyes_2", "x": 22.45, "y": 101.93, "width": 116, "height": 84 }
+			},
+			"pet_body": {
+				"pet_body": { "name": "pet_burger", "x": -2.98, "y": 111.61, "width": 246, "height": 313 }
+			}
+		}
+	},
+	{
+		"name": "carrot",
+		"attachments": {
+			"eyes": {
+				"eyes": { "name": "eyes_2", "x": 7.38, "y": 111.65, "width": 116, "height": 84 }
+			},
+			"pet_body": {
+				"pet_body": { "name": "pet_carrot", "x": -22.63, "y": 115.84, "width": 146, "height": 320 }
+			}
+		}
+	},
+	{
+		"name": "diamond",
+		"attachments": {
+			"eyes": {
+				"eyes": { "name": "eyes_2", "x": 5.93, "y": 143.95, "width": 116, "height": 84 }
+			},
+			"pet_body": {
+				"pet_body": { "name": "pet_diamond", "x": -1.9, "y": 58.92, "width": 230, "height": 207 }
+			}
+		}
+	},
+	{
+		"name": "drumstick",
+		"attachments": {
+			"eyes": {
+				"eyes": { "name": "eyes_2", "x": 10.92, "y": 116.85, "width": 116, "height": 84 }
+			},
+			"pet_body": {
+				"pet_body": { "name": "pet_chicken_drumstick", "x": -21.56, "y": 70.45, "width": 143, "height": 231 }
+			}
+		}
+	},
+	{
+		"name": "food_face",
+		"attachments": {
+			"eyes": {
+				"eyes": { "name": "eyes_2", "x": 17.92, "y": 76.76, "width": 116, "height": 84 }
+			},
+			"pet_body": {
+				"pet_body": { "name": "pet_food_face", "x": -19.02, "y": 108.85, "width": 275, "height": 290 }
+			}
+		}
+	},
+	{
+		"name": "fries",
+		"attachments": {
+			"eyes": {
+				"eyes": { "name": "eyes_2", "x": 13.21, "y": 78.11, "width": 116, "height": 84 }
+			},
+			"pet_body": {
+				"pet_body": { "name": "pet_fries", "x": -23.73, "y": 96.74, "width": 226, "height": 251 }
+			}
+		}
+	},
+	{
+		"name": "hotdog",
+		"attachments": {
+			"eyes": {
+				"eyes": { "name": "eyes_2", "x": 12.9, "y": 82.93, "width": 116, "height": 84 }
+			},
+			"pet_body": {
+				"pet_body": { "name": "pet_sausage", "x": -10.84, "y": 96.99, "width": 184, "height": 273 }
+			}
+		}
+	},
+	{
+		"name": "ice_cream",
+		"attachments": {
+			"eyes": {
+				"eyes": { "name": "eyes_2", "x": 1.78, "y": 160.83, "width": 116, "height": 84 }
+			},
+			"pet_body": {
+				"pet_body": { "name": "pet_ice_cream", "x": -14.99, "y": 62.45, "width": 143, "height": 220 }
+			}
+		}
+	},
+	{
+		"name": "penguin",
+		"attachments": {
+			"eyes": {
+				"eyes": { "name": "eyes_2", "x": 24.44, "y": 122.99, "width": 116, "height": 84 }
+			},
+			"pet_body": {
+				"pet_body": { "name": "pet_pingu", "x": -4.99, "y": 123.77, "width": 246, "height": 339 }
+			}
+		}
+	},
+	{
+		"name": "pizza",
+		"attachments": {
+			"eyes": {
+				"eyes": { "name": "eyes_2", "x": 21.92, "y": 57.51, "width": 116, "height": 84 }
+			},
+			"pet_body": {
+				"pet_body": { "name": "pet_pizza_slice", "x": -7.59, "y": 84.64, "width": 242, "height": 249 }
+			}
+		}
+	},
+	{
+		"name": "sandwich",
+		"attachments": {
+			"eyes": {
+				"eyes": { "name": "eyes_2", "x": -1.86, "y": 119.01, "width": 116, "height": 84 }
+			},
+			"pet_body": {
+				"pet_body": { "name": "pet_subway", "x": 5.53, "y": 42.81, "width": 283, "height": 174 }
+			}
+		}
+	},
+	{
+		"name": "sauce_bottle",
+		"attachments": {
+			"eyes": {
+				"eyes": { "name": "eyes_2", "x": 21.92, "y": 57.51, "width": 116, "height": 84 }
+			},
+			"pet_body": {
+				"pet_body": { "name": "pet_squeezy_sauce", "x": -10.87, "y": 98.58, "width": 168, "height": 280 }
+			}
+		}
+	}
+],
+"animations": {
+	"idle": {
+		"bones": {
+			"body": {
+				"translate": [
+					{ "time": 0.0333 }
+				]
+			}
+		}
+	},
+	"idle_2": {
+		"bones": {
+			"body": {
+				"rotate": [
+					{
+						"value": 2.16,
+						"curve": [ 0.097, 2.16, 0.203, -4.39 ]
+					},
+					{
+						"time": 0.3,
+						"value": -5.34,
+						"curve": [ 0.349, -5.81, 0.365, -5.36 ]
+					},
+					{
+						"time": 0.5167,
+						"value": -5.36,
+						"curve": [ 0.626, -5.36, 0.674, 2.16 ]
+					},
+					{ "time": 0.7833, "value": 2.16, "curve": "stepped" },
+					{ "time": 0.9833, "value": 2.16 }
+				],
+				"translate": [
+					{ "x": 2.16, "y": 2.16 }
+				]
+			}
+		}
+	},
+	"run": {
+		"bones": {
+			"body": {
+				"rotate": [
+					{
+						"value": -2.98,
+						"curve": [ 0.023, -5.06, 0.044, -10.04 ]
+					},
+					{
+						"time": 0.0667,
+						"value": -10.04,
+						"curve": [ 0.122, -10.04, 0.178, 6.63 ]
+					},
+					{
+						"time": 0.2333,
+						"value": 6.63,
+						"curve": [ 0.266, 6.63, 0.301, -0.06 ]
+					},
+					{ "time": 0.3333, "value": -2.98 }
+				],
+				"translate": [
+					{
+						"curve": [ 0.093, 0, 0.074, 0, 0.081, 35.2, 0.074, 82.91 ]
+					},
+					{
+						"time": 0.1667,
+						"y": 82.91,
+						"curve": [ 0.259, 0, 0.241, 0, 0.259, 82.91, 0.283, 22.88 ]
+					},
+					{ "time": 0.3333 }
+				]
+			}
+		}
+	},
+	"run_2": {
+		"bones": {
+			"body": {
+				"rotate": [
+					{
+						"value": -9.74,
+						"curve": [ 0.017, -9.74, 0.033, -17.13 ]
+					},
+					{
+						"time": 0.05,
+						"value": -17.89,
+						"curve": [ 0.095, -19.94, 0.106, -16.83 ]
+					},
+					{
+						"time": 0.15,
+						"value": -16.83,
+						"curve": [ 0.172, -16.83, 0.261, -2.53 ]
+					},
+					{
+						"time": 0.2833,
+						"value": -2.53,
+						"curve": [ 0.311, -2.53, 0.306, -5.44 ]
+					},
+					{ "time": 0.3333, "value": -9.05 }
+				],
+				"translate": [
+					{
+						"curve": [ 0.093, 0, 0.074, 0, 0.064, 41.26, 0.074, 82.91 ]
+					},
+					{
+						"time": 0.1667,
+						"y": 82.91,
+						"curve": [ 0.259, 0, 0.241, 0, 0.259, 82.91, 0.296, 36.62 ]
+					},
+					{ "time": 0.3333 }
+				]
+			}
+		}
+	}
+}
+}

@@ -1,0 +1,24 @@
+FAT001_pet_mole.png
+	size: 256, 256
+	filter: Linear, Linear
+	scale: 0.5
+back_leg_L
+	bounds: 124, 102, 61, 68
+	rotate: 90
+back_leg_R
+	bounds: 2, 102, 55, 72
+	rotate: 90
+body
+	bounds: 124, 165, 107, 80
+eyes
+	bounds: 194, 94, 72, 51
+	rotate: 90
+front_leg_L
+	bounds: 66, 47, 59, 53
+front_leg_R
+	bounds: 2, 46, 54, 62
+	rotate: 90
+head
+	bounds: 2, 159, 120, 86
+tail
+	bounds: 127, 70, 48, 30

@@ -1,0 +1,27 @@
+FAT001_slime.png
+	size: 504, 504
+	filter: Linear, Linear
+	scale: 0.5
+images/slime/back_arrow_a
+	bounds: 410, 140, 80, 85
+	offsets: 1, 1, 82, 86
+images/slime/back_dagger
+	bounds: 426, 309, 65, 62
+	offsets: 1, 1, 66, 63
+images/slime/bone_a
+	bounds: 325, 387, 92, 83
+	offsets: 0, 1, 92, 84
+images/slime/default
+	bounds: 426, 227, 80, 52
+	rotate: 90
+images/slime/default_cube
+	bounds: 2, 227, 321, 272
+images/slime/eyes
+	bounds: 325, 227, 158, 99
+	rotate: 90
+images/slime/skull
+	bounds: 419, 387, 81, 80
+	offsets: 0, 1, 81, 81
+	rotate: 90
+images/slime/slime_trail
+	bounds: 2, 115, 406, 110

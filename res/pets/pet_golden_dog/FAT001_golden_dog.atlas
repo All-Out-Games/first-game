@@ -1,0 +1,31 @@
+FAT001_golden_dog.png
+	size: 256, 256
+	filter: Linear, Linear
+	scale: 0.5
+body
+	bounds: 109, 148, 102, 64
+	rotate: 90
+ear 1
+	bounds: 109, 104, 51, 41
+ear 2
+	bounds: 163, 100, 38, 42
+	rotate: 90
+eyes
+	bounds: 175, 178, 72, 51
+	rotate: 90
+foot 1
+	bounds: 3, 101, 41, 63
+	rotate: 90
+foot 2
+	bounds: 208, 93, 34, 42
+	rotate: 90
+head
+	bounds: 3, 145, 103, 105
+paw 1
+	bounds: 68, 95, 37, 47
+paw 2
+	bounds: 93, 66, 35, 45
+	rotate: 90
+tail
+	bounds: 171, 129, 46, 73
+	rotate: 90
