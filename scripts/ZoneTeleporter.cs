@@ -49,7 +49,7 @@ public class ZoneTeleporter : Component
             else
             {
                 localPlayer.ZoneCosts.TryGetValue(ZoneName, out var cost);
-                UI.Image(rect.LeftRect().Grow(0, 0.1f, 0, 0.1f), References.Instance.CoinIcon, Vector4.White, new UI.NineSlice());
+                UI.Image(rect.LeftRect().Grow(0, 0.1f, 0, 0.1f), References.Instance.CoinIcon, Vector4.White);
                 UI.Text(rect, $"{cost}", textSettings);
             }
         }

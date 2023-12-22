@@ -394,12 +394,12 @@ public partial class FatPlayer : Player
             float scale01 = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - LastFoodClickTime, 0.25f));
             float scale = AOMath.Lerp(1.5f, 1.0f, scale01);
             chewRect = chewRect.Scale(scale, scale);
-            UI.Image(chewRect, null, Vector4.White, new UI.NineSlice());
+            UI.Image(chewRect, null, Vector4.White);
 
             float foodProgressTarget = (float)Math.Min(1.0, FoodBeingEaten.EatingTime / FoodBeingEaten.ConsumptionTime);
             FoodProgressLerp = AOMath.Lerp(FoodProgressLerp, foodProgressTarget, 20 * Time.DeltaTime);
             var chewProgressRect = chewRect.SubRect(0, 0, FoodProgressLerp, 1, 0, 0, 0, 0);
-            UI.Image(chewProgressRect, null, Vector4.HSVLerp(Vector4.Red, Vector4.Green, FoodProgressLerp), new UI.NineSlice());
+            UI.Image(chewProgressRect, null, Vector4.HSVLerp(Vector4.Red, Vector4.Green, FoodProgressLerp));
 
             var pendingTextSettings = new UI.TextSettings()
             {

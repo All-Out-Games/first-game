@@ -166,7 +166,7 @@ public class GameUI : System<GameUI>
             var trophiesRect = topBarGrid.Next().Inset(0, 10, 0, 10);
             UI.Image(trophiesRect, References.Instance.TopBarBg, Vector4.White, References.Instance.TopBarSlice);
             var trophiesIconRect = trophiesRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(9, 0);
-            UI.Image(trophiesIconRect, References.Instance.TrophyIcon, Vector4.White, new UI.NineSlice());
+            UI.Image(trophiesIconRect, References.Instance.TrophyIcon, Vector4.White);
             textSettings.color = References.Instance.YellowText;
             var trophyTextSettings = textSettings;
             var trophyEase = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - localPlayer.LastTrophyParticleArriveTime, 0.25f));
@@ -176,7 +176,7 @@ public class GameUI : System<GameUI>
             var cashRect = topBarGrid.Next().Inset(0, 10, 0, 10);
             UI.Image(cashRect, References.Instance.TopBarBg, Vector4.White, References.Instance.TopBarSlice);
             var cashIconRect = cashRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(9, 0);
-            UI.Image(cashIconRect, References.Instance.CoinIcon, Vector4.White, new UI.NineSlice());
+            UI.Image(cashIconRect, References.Instance.CoinIcon, Vector4.White);
             textSettings.color = References.Instance.GreenText;
             UI.Text(cashRect, $"{Util.FormatDouble(localPlayer.CoinsVisual)}", textSettings);
 
@@ -184,7 +184,7 @@ public class GameUI : System<GameUI>
             var foodRect = topBarGrid.Next().Inset(0, 10, 0, 10);
             UI.Image(foodRect, References.Instance.TopBarBg, Vector4.White, References.Instance.TopBarSlice);
             var foodIconRect = foodRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(9, 0);
-            UI.Image(foodIconRect, References.Instance.FoodIcon, Vector4.White, new UI.NineSlice());
+            UI.Image(foodIconRect, References.Instance.FoodIcon, Vector4.White);
             foodTextSettings.color = References.Instance.RedText;
             var foodEase = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - localPlayer.LastFoodParticleArriveTime, 0.25f));
             foodTextSettings.size = AOMath.Lerp(foodTextSettings.size * 1.5f, foodTextSettings.size, foodEase);
@@ -214,7 +214,7 @@ public class GameUI : System<GameUI>
         buttonSettings.hoverColor   = new Vector4(0.9f, 0.9f, 0.9f, 1.0f);
         buttonSettings.pressedColor = new Vector4(0.5f, 0.5f, 0.5f, 1.0f);
         buttonSettings.sprite = References.Instance.GreenButton;
-        buttonSettings.slice = new UI.NineSlice() { slice = new Vector4(12, 15, 48, 48), sliceScale = 1f };
+        buttonSettings.slice = References.Instance.ButtonSlice;
 
         var buttonTextSettings = new UI.TextSettings() 
         {
@@ -254,7 +254,6 @@ public class GameUI : System<GameUI>
                 clickedColor = new Vector4(0.7f, 0.7f, 0.7f, 1.0f),
                 hoverColor   = new Vector4(0.9f, 0.9f, 0.9f, 1.0f),
                 pressedColor = new Vector4(0.5f, 0.5f, 0.5f, 1.0f),
-                slice = new UI.NineSlice() { slice = new Vector4(12, 15, 48, 48), sliceScale = 1f },
             };
 
             using var _1 = UI.PUSH_ID(text);
@@ -263,8 +262,8 @@ public class GameUI : System<GameUI>
             using var _ = UI.PUSH_COLOR(buttonResult.ColorMultiplier);
             UI.PushLayerRelative(-1);
             using var _2 = AllOut.Defer(UI.PopLayer);
-            UI.Image(buttonRect, References.Instance.MenuIcon, Vector4.White, new UI.NineSlice());
-            UI.Image(buttonRect.Inset(10), icon, Vector4.White, new UI.NineSlice());
+            UI.Image(buttonRect, References.Instance.MenuIcon, Vector4.White);
+            UI.Image(buttonRect.Inset(10), icon, Vector4.White);
             return buttonResult.clicked;
         }
 
@@ -306,42 +305,142 @@ public class GameUI : System<GameUI>
             }
 
             var windowRect = UI.SafeRect.CenterRect();
-            windowRect = windowRect.Grow(200, 300, 200, 300);
+            windowRect = windowRect.Grow(350, 550, 350, 550);
             UI.Blocker(windowRect, "upgrades");
-            UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, new UI.NineSlice(){ slice = new Vector4(20, 20, 50, 50), sliceScale = 1f});
+            UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
 
-            if (localPlayer.StomachSizeLevel < FatPlayer.StomachSizeByLevel.Length)
+            var iconRect = windowRect.TopLeftRect().Grow(40, 40, 40, 40).Offset(0, -5);
+            UI.Image(iconRect, References.Instance.Upgrade, Vector4.White);
+            var textRect = iconRect.CenterRect().Grow(25, 0, 25, 0).Offset(25, 0);
+            UI.Text(textRect, "Upgrades", new UI.TextSettings(){
+                color = References.Instance.YellowText,
+                outline = true,
+                outlineThickness = 2,
+                horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
+                verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                size = 60,
+            });
+
+            var exitRect = windowRect.TopRightRect().Grow(20, 20, 20, 20).Offset(-35, -35);
+            var exitResult = UI.Button(exitRect, "EXIT_BUTTON", new UI.ButtonSettings(){ sprite = References.Instance.X }, new UI.TextSettings(){size = 0, color = Vector4.Zero});
+            if (exitResult.clicked) 
             {
-                var upgradeStomachRect = windowRect.CutTop(100).Inset(10, 10, 10, 10);
-                var nextStomachCost = FatPlayer.StomachSizeByLevel[localPlayer.StomachSizeLevel].Cost;
-                var upgradeStomachResult = UI.Button(upgradeStomachRect, $"Stomach Lv. {localPlayer.StomachSizeLevel+1} - Cost: {nextStomachCost}", buttonSettings, buttonTextSettings);
-                if (upgradeStomachResult.clicked)
-                {
-                    localPlayer.CallServer_RequestPurchaseStomachSize();
-                }
+                IsShowingUpgradesWindow = false;
             }
 
+            var gridRect = windowRect.Inset(100, 75, 100, 75);
+            var grid = UI.GridLayout.Make(gridRect, 1, 3, UI.GridLayout.SizeSource.GRID_SIZE);
+            
+            bool drawStatUpgrade(string title, string description, double cost, Texture icon)
+            {
+                using var _ = UI.PUSH_ID(title);
+
+                var upgradeRect = grid.Next().Inset(10);
+                UI.Image(upgradeRect, References.Instance.FrameWhite, new Vector4(233.0f/255.0f, 233.0f/255.0f, 233.0f/255.0f, 1.0f), References.Instance.FrameSlice);
+                
+                var iconRect = upgradeRect.LeftRect().GrowRightUnscaled(upgradeRect.Height).Inset(10);
+                UI.Image(iconRect, icon, Vector4.White);
+
+                var titleRect = iconRect.TopRightRect().Offset(10, -5);
+                var realTitleRect = UI.Text(titleRect, title, new UI.TextSettings(){
+                    color = Vector4.Black,
+                    font = UI.TextSettings.Font.AlphaKind,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Top,
+                    size = 42,
+                });
+
+                var descriptionRect = realTitleRect.BottomLeftRect().GrowRight(350).Offset(0, -3);
+                UI.Text(descriptionRect, description, new UI.TextSettings(){
+                    color = Vector4.Black,
+                    font = UI.TextSettings.Font.AlphaKind,
+                    wordWrap = true,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Top,
+                    size = 26,
+                });
+
+                var buttonRect = upgradeRect.RightRect().GrowLeftUnscaled(250).Inset(13);
+                var bts = new UI.TextSettings()
+                {
+                    color = Vector4.White,
+                    outline = true,
+                    outlineThickness = 2,
+                    font = UI.TextSettings.Font.AlphaKind,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                    offset = new Vector2(0, 18),
+                    size = 42,
+                };
+                var upgradeStomachResult = UI.Button(buttonRect, $"Upgrade!", buttonSettings, bts);
+
+                {
+                    using var _1 = UI.PUSH_COLOR(upgradeStomachResult.ColorMultiplier);
+
+                    var costTextRect = buttonRect.BottomRect().Offset(0, 15).Offset(15, 0);
+                    var realCostTextRect = UI.Text(costTextRect, $"{cost}", new UI.TextSettings(){
+                        color = References.Instance.YellowText,
+                        font = UI.TextSettings.Font.AlphaKind,
+                        outline = true,
+                        outlineThickness = 2,
+                        horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                        verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom,
+                        size = 30,
+                    });
+                    UI.Image(realCostTextRect.LeftRect().GrowLeftUnscaled(realCostTextRect.Height).Offset(-2, 0), References.Instance.CoinIcon, Vector4.White);
+                }
+
+                return upgradeStomachResult.clicked;
+            }
+            
+
+            
+            double nextMouthSizeCost = -1;
             if (localPlayer.MouthSizeLevel < FatPlayer.MouthSizeByLevel.Length)
+                nextMouthSizeCost = FatPlayer.MouthSizeByLevel[localPlayer.MouthSizeLevel].Cost;
+            if (drawStatUpgrade("Mouth Size", "Fit larger items in your mouth", nextMouthSizeCost, References.Instance.MouthSizeIcon)) 
             {
-                var upgradeMouthSizeRect = windowRect.CutTop(100).Inset(10, 10, 10, 10);
-                var nextMouthSizeCost = FatPlayer.MouthSizeByLevel[localPlayer.MouthSizeLevel].Cost;
-                var upgradeMouthSizeResult = UI.Button(upgradeMouthSizeRect, $"Mouth Size Lv. {localPlayer.MouthSizeLevel+1} - Cost: {nextMouthSizeCost}", buttonSettings, buttonTextSettings);
-                if (upgradeMouthSizeResult.clicked)
-                {
-                    localPlayer.CallServer_RequestPurchaseMouthSize();
-                }
+                localPlayer.CallServer_RequestPurchaseMouthSize();
             }
 
-            if (localPlayer.ChewSpeedLevel < FatPlayer.ChewSpeedByLevel.Length)
+            double nextStomachSizeCost = -1;
+            if (localPlayer.StomachSizeLevel < FatPlayer.StomachSizeByLevel.Length)
+                nextStomachSizeCost = FatPlayer.StomachSizeByLevel[localPlayer.StomachSizeLevel].Cost;
+            if (drawStatUpgrade("Stomach Size", "Carry larger amounts of food inside your stomach", nextStomachSizeCost, References.Instance.FoodIcon))
             {
-                var upgradeChewSpeedRect = windowRect.CutTop(100).Inset(10, 10, 10, 10);
-                var nextChewSpeedCost = FatPlayer.ChewSpeedByLevel[localPlayer.ChewSpeedLevel].Cost;
-                var upgradeChewSpeedResult = UI.Button(upgradeChewSpeedRect, $"Chew Speed Lv. {localPlayer.ChewSpeedLevel+1} - Cost: {nextChewSpeedCost}", buttonSettings, buttonTextSettings);
-                if (upgradeChewSpeedResult.clicked)
-                {
-                    localPlayer.CallServer_RequestPurchaseChewSpeed();
-                }
+                localPlayer.CallServer_RequestPurchaseStomachSize();
             }
+
+            double nextChewSpeedCost = -1;
+            if (localPlayer.ChewSpeedLevel < FatPlayer.ChewSpeedByLevel.Length)
+                nextChewSpeedCost = FatPlayer.ChewSpeedByLevel[localPlayer.ChewSpeedLevel].Cost;
+            if (drawStatUpgrade("Chew Speed", "Eat items quicker!", nextChewSpeedCost, References.Instance.ChewSpeedIcon))
+            {
+                localPlayer.CallServer_RequestPurchaseChewSpeed();
+            }
+            
+
+            // if (localPlayer.MouthSizeLevel < FatPlayer.MouthSizeByLevel.Length)
+            // {
+            //     var upgradeMouthSizeRect = windowRect.CutTop(100).Inset(10, 10, 10, 10);
+            //     var nextMouthSizeCost = FatPlayer.MouthSizeByLevel[localPlayer.MouthSizeLevel].Cost;
+            //     var upgradeMouthSizeResult = UI.Button(upgradeMouthSizeRect, $"Mouth Size Lv. {localPlayer.MouthSizeLevel+1} - Cost: {nextMouthSizeCost}", buttonSettings, buttonTextSettings);
+            //     if (upgradeMouthSizeResult.clicked)
+            //     {
+            //         localPlayer.CallServer_RequestPurchaseMouthSize();
+            //     }
+            // }
+
+            // if (localPlayer.ChewSpeedLevel < FatPlayer.ChewSpeedByLevel.Length)
+            // {
+            //     var upgradeChewSpeedRect = windowRect.CutTop(100).Inset(10, 10, 10, 10);
+            //     var nextChewSpeedCost = FatPlayer.ChewSpeedByLevel[localPlayer.ChewSpeedLevel].Cost;
+            //     var upgradeChewSpeedResult = UI.Button(upgradeChewSpeedRect, $"Chew Speed Lv. {localPlayer.ChewSpeedLevel+1} - Cost: {nextChewSpeedCost}", buttonSettings, buttonTextSettings);
+            //     if (upgradeChewSpeedResult.clicked)
+            //     {
+            //         localPlayer.CallServer_RequestPurchaseChewSpeed();
+            //     }
+            // }
         }
 
         if (IsShowingShopWindow) 
@@ -369,7 +468,7 @@ public class GameUI : System<GameUI>
             UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
 
             var iconRect = windowRect.TopLeftRect().Grow(40, 40, 40, 40).Offset(0, -5);
-            UI.Image(iconRect, References.Instance.PetBrown, Vector4.White, new UI.NineSlice());
+            UI.Image(iconRect, References.Instance.PetBrown, Vector4.White);
             var textRect = iconRect.CenterRect().Grow(25, 0, 25, 0).Offset(25, 0);
             UI.Text(textRect, "Pets", new UI.TextSettings(){
                 color = References.Instance.BlueText,
@@ -392,7 +491,7 @@ public class GameUI : System<GameUI>
             var equippedCapacityRectHeight = equippedCapacityRect.Height;
             UI.Image(equippedCapacityRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
             var equippedCapacityIconRect = equippedCapacityRect.LeftRect().Grow(0, equippedCapacityRectHeight/2, 0, equippedCapacityRectHeight/2).Grow(10, 10, 10, 10);
-            UI.Image(equippedCapacityIconRect, References.Instance.Backpack, Vector4.White, new UI.NineSlice());
+            UI.Image(equippedCapacityIconRect, References.Instance.Backpack, Vector4.White);
             var equippedCapacityTextRect = equippedCapacityRect.LeftRect().Offset(85, 0);
             UI.Text(equippedCapacityTextRect, $"{equippedPetsCount}/{localPlayer.MaxEquippedPets}", new UI.TextSettings(){
                 color = References.Instance.YellowText,
@@ -410,7 +509,7 @@ public class GameUI : System<GameUI>
             {
                 var selectedPetRect = windowRect.CutRight(500).Inset(75, 0, 75, 0);
                 var dividerRect = selectedPetRect.CutLeft(2);
-                UI.Image(dividerRect, null, Vector4.Black * 0.25f, new UI.NineSlice());
+                UI.Image(dividerRect, null, Vector4.Black * 0.25f);
                 
                 var nameRect = selectedPetRect.CutTop(50);
                 UI.Text(nameRect, SelectedPet.Name, new UI.TextSettings(){
@@ -425,7 +524,7 @@ public class GameUI : System<GameUI>
                 var infoRect = selectedPetRect.CutTop(225);
                 var petIconRect = infoRect.CutLeft(infoRect.Width*0.33f);
                 petIconRect = petIconRect.CenterRect().Grow(petIconRect.Width/2, petIconRect.Width/2, petIconRect.Width/2, petIconRect.Width/2).Inset(10, 10, 10, 10).Offset(10, 0);
-                UI.Image(petIconRect, References.Instance.PetBrown, Vector4.White, new UI.NineSlice());
+                UI.Image(petIconRect, References.Instance.PetBrown, Vector4.White);
 
                 var rarityColor = SelectedPet.GetDefinition().Rarity switch
                 {
@@ -546,12 +645,12 @@ public class GameUI : System<GameUI>
                     }
 
                     var petIconRect = petRect.Inset(5);
-                    UI.Image(petIconRect, References.Instance.PetBrown, Vector4.White, new UI.NineSlice());
+                    UI.Image(petIconRect, References.Instance.PetBrown, Vector4.White);
 
                     if (pet.Equipped)
                     {
                         var checkmarkRect = petRect.BottomLeftRect().Grow(15).Offset(25, 25);
-                        UI.Image(checkmarkRect, References.Instance.CheckMark, Vector4.White, new UI.NineSlice());
+                        UI.Image(checkmarkRect, References.Instance.CheckMark, Vector4.White);
                     }
                 }
 
@@ -598,7 +697,7 @@ public class GameUI : System<GameUI>
                 UI.PushId("DELETE_PET_WINDOW");
                 using var _4 = AllOut.Defer(UI.PopId);
 
-                UI.Image(UI.ScreenRect, null, Vector4.Black * 0.5f, new UI.NineSlice());
+                UI.Image(UI.ScreenRect, null, Vector4.Black * 0.5f);
                 if (UI.Button(UI.ScreenRect, "CLOSE_DELETE_PET_WINDOW", new UI.ButtonSettings(), new UI.TextSettings()).clicked) 
                 {
                     PetToDelete = null;
@@ -685,7 +784,7 @@ public class GameUI : System<GameUI>
                 
                 tooltipRect.CutTop(3);
                 var dividerRect = tooltipRect.CutTop(2).Inset(0, 10, 0, 10);
-                UI.Image(dividerRect, null, Vector4.Black * 0.25f, new UI.NineSlice());
+                UI.Image(dividerRect, null, Vector4.Black * 0.25f);
 
                 foreach(var modifier in HoveredPet.GetDefinition().StatModifiers)
                 {
@@ -733,7 +832,7 @@ public class GameUI : System<GameUI>
             // Current
             {
                 var beforeRect = windowRect.LeftRect().GrowRightUnscaled(halfWidth).Inset(50, 200, 225, 50);
-                UI.Image(beforeRect, References.Instance.FrameDark, Vector4.White, References.Instance.FrameSlice);
+                UI.Image(beforeRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
                 
                 beforeRect = beforeRect.SubRect(0, 0, 1, 1, 0, 0, 10, 0);
                 var h = beforeRect.Height / 5;
@@ -810,7 +909,7 @@ public class GameUI : System<GameUI>
 
                 var rebirthProgress = Math.Clamp(has / needs, 0, 1);
                 var rebirthProgressRect = sliderRect.Inset(5).SubRect(0, 0, (float)rebirthProgress, 1, 0, 0, 0, 0);
-                UI.Image(rebirthProgressRect, References.Instance.BlueFill, Vector4.White, new UI.NineSlice());
+                UI.Image(rebirthProgressRect, References.Instance.BlueFill, Vector4.White);
                 UI.Text(sliderRect, $"{Util.FormatDouble(localPlayer.Trophies)} / {Util.FormatDouble(nextRebirthData.TrophiesCost)}", upgradeItemTextSettings);
 
                 var confirmRebirthButtonRect = bottomRect.CutLeftUnscaled(bottomRect.Width * 0.6f).Inset(0, 25, 0, 15);
@@ -843,10 +942,10 @@ public class GameUI : System<GameUI>
             var bossProgressRect = bossRect.Inset(5).SubRect(0, 0, 1, (float)bossProgress, 0, 0, 0, 0);
 
             UI.Image(myRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
-            UI.Image(myProgressRect, References.Instance.GreenFill, Vector4.White, new UI.NineSlice());
+            UI.Image(myProgressRect, References.Instance.GreenFill, Vector4.White);
 
             UI.Image(bossRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
-            UI.Image(bossProgressRect, References.Instance.RedFill, Vector4.White, new UI.NineSlice());
+            UI.Image(bossProgressRect, References.Instance.RedFill, Vector4.White);
 
             var myTextRect = myRect.SubRect(0, 0, 1, 0, 0, 0, 0, 0).GrowBottom(50);
             var bossTextRect = bossRect.SubRect(0, 0, 1, 0, 0, 0, 0, 0).GrowBottom(50);

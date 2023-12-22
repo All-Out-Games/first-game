@@ -30,7 +30,7 @@ public class Shop : System<Shop>
             hoverColor = Vector4.White * 0.9f,
             pressedColor = Vector4.White * 0.5f,
             sprite = References.Instance.GreenButton,
-            slice = new UI.NineSlice() { slice = new Vector4(12, 15, 48, 48), sliceScale = 1f },
+            slice = References.Instance.ButtonSlice,
         };
 
         var buttonTextSettings = new UI.TextSettings() 
@@ -59,7 +59,7 @@ public class Shop : System<Shop>
         var windowRect = UI.SafeRect.CenterRect();
         windowRect = windowRect.Grow(350, 600, 350, 600);
         UI.Blocker(windowRect, "shop");
-        UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, new UI.NineSlice(){ slice = new Vector4(20, 20, 50, 50), sliceScale = 1f});
+        UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
 
         {
             var scrollRect = windowRect.Inset(5, 20, 5, 20);
@@ -196,7 +196,7 @@ public class Shop : System<Shop>
                         var descriptionAndIconRect = entryCutRect.CutTop(150).Offset(0, -25);
                         var iconRect = descriptionAndIconRect.CutLeft(descriptionAndIconRect.Width * 0.4f).FitAspect(1.0f, Rect.FitAspectKind.KEEP_WIDTH).Offset(20, 0);
                         var descriptionRect = descriptionAndIconRect.Inset(0, 10, 0, 10);
-                        UI.Image(iconRect, product.Icon, Vector4.White, new UI.NineSlice());
+                        UI.Image(iconRect, product.Icon, Vector4.White);
                         UI.Text(descriptionRect, product.Description, new UI.TextSettings() { size = 42, color = Vector4.White, outline = true, outlineThickness = 2, wordWrap = true, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom });
 
                         var priceRect = entryCutRect.CutBottom(100).Offset(0, 10);
@@ -205,7 +205,7 @@ public class Shop : System<Shop>
                         if (Purchasing.OwnsGamePassLocal(item.ProductId))
                         {
                             var checkmarkRect = entryCutRect.TopLeftRect().Grow(0, 50, 50, 0).Offset(10, -10);
-                            UI.Image(checkmarkRect, References.Instance.CheckMark, Vector4.White, new UI.NineSlice());
+                            UI.Image(checkmarkRect, References.Instance.CheckMark, Vector4.White);
                         }
 
                         multiEntryColumnIdx += 1;
@@ -222,7 +222,7 @@ public class Shop : System<Shop>
         // Window Title
         {
             var iconRect = windowRect.TopLeftRect().Grow(40, 40, 40, 40).Offset(0, -5);
-            UI.Image(iconRect, References.Instance.Shop, Vector4.White, new UI.NineSlice());
+            UI.Image(iconRect, References.Instance.Shop, Vector4.White);
             var textRect = iconRect.CenterRect().Grow(25, 0, 25, 0).Offset(25, 0);
             UI.Text(textRect, "Shop", new UI.TextSettings(){
                 color = References.Instance.BlueText,
