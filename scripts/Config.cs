@@ -72,16 +72,24 @@ public partial class Config : System<Config>
     public static void LoadUpgrades(string csv)
     {
         UpgradeConfig.Load(csv);
-        FatPlayer.MouthSizeByLevel = UpgradeConfig.Instance.MouthSizeLevels.ToArray();
-        FatPlayer.ClickPowerByLevel = UpgradeConfig.Instance.ClickPowerLevels.ToArray();
-        FatPlayer.StomachSizeByLevel = UpgradeConfig.Instance.StomachSizeLevels.ToArray();
+
+        if (UpgradeConfig.Instance.MouthSizeLevels.Count > 0)
+            FatPlayer.MouthSizeByLevel = UpgradeConfig.Instance.MouthSizeLevels.ToArray();
+
+        if (UpgradeConfig.Instance.ClickPowerLevels.Count > 0)
+            FatPlayer.ClickPowerByLevel = UpgradeConfig.Instance.ClickPowerLevels.ToArray();
+
+        if (UpgradeConfig.Instance.StomachSizeLevels.Count > 0)
+            FatPlayer.StomachSizeByLevel = UpgradeConfig.Instance.StomachSizeLevels.ToArray();
     }
 
     [ClientRpc]
     public static void LoadRebirth(string csv)
     {
         RebirthConfig.Load(csv);
-        Rebirth.RebirthData = RebirthConfig.Instance.Ranks;
+
+        if (RebirthConfig.Instance.Ranks.Count > 0)
+            Rebirth.RebirthData = RebirthConfig.Instance.Ranks;
     }
 
     [ClientRpc]
@@ -257,6 +265,8 @@ public struct FoodConfig
                 columns[i] = columns[i].Trim('"');
             }
 
+            if (columns.Length < 2) continue;
+
             if (columns[1].StartsWith("World"))
             {
                 if (currentWorld != null)
@@ -270,6 +280,7 @@ public struct FoodConfig
 
             if (currentWorld == null) continue; // No world yet (header
             if (columns[1] == "Item Name") continue; // Header
+            if (columns.Length < 7) continue;
 
             currentWorld.Value.FoodItems.Add(new World.FoodItem()
             {

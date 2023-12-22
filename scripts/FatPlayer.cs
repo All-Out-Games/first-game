@@ -441,7 +441,7 @@ public partial class FatPlayer : Player
                     }
                 }
 
-                if (this.IsMouseUpLeft())
+                if (this.IsInputUp(Input.UnifiedInput.MOUSE_LEFT) || this.IsInputUp(Input.UnifiedInput.KEYCODE_E))
                 {
                     MyProgress += progressPerClick;
                 }
@@ -469,7 +469,7 @@ public partial class FatPlayer : Player
 
         if (FoodBeingEaten != null)
         {
-            if (this.IsMouseUpLeft())
+            if (this.IsInputUp(Input.UnifiedInput.MOUSE_LEFT) || this.IsInputUp(Input.UnifiedInput.KEYCODE_E))
             {
                 FoodBeingEaten.CurrentHealth -= 1;
                 if (FoodBeingEaten.CurrentHealth < 0) FoodBeingEaten.CurrentHealth = 0;
