@@ -1,5 +1,8 @@
 using AO;
 using TinyJson;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 
 public partial class FatPlayer : Player 
 {
@@ -60,6 +63,7 @@ public partial class FatPlayer : Player
     public Quest CurrentQuest;
 
     public Boss CurrentBoss;
+    public bool DoingBossIntro;
     public double BossProgress;
     public double MyProgress;
     public double BossAccumulator;
@@ -89,6 +93,53 @@ public partial class FatPlayer : Player
 
     public double _lerpedTrophies;
     public double TrophiesVisual => _lerpedTrophies;
+
+    public IEnumerator BossIntroCoroutine()
+    {
+        var ts = new UI.TextSettings()
+        {
+            font = UI.TextSettings.Font.AlphaKind,
+            size = 86,
+            color = Vector4.White,
+            horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+            verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+            wordWrap = false,
+            wordWrapOffset = 0,
+            outline = true,
+            outlineThickness = 2,
+        };
+
+        var textRect = UI.ScreenRect.CenterRect().Offset(0, 200);
+
+        float timer = 0;
+        while (Coroutine.WaitForSeconds(ref timer, 1))
+        {
+            ts.color = Vector4.White * Ease.OutQuart(1.0f - timer);
+            UI.Text(textRect, "Ready..", ts);
+            yield return null;
+        }
+
+        timer = 0;
+        while (Coroutine.WaitForSeconds(ref timer, 1))
+        {
+            ts.color = Vector4.White * Ease.OutQuart(1.0f - timer);
+            UI.Text(textRect, "Set..", ts);
+            yield return null;
+        }
+
+        var rng = new Random();
+        timer = 0;
+        while (Coroutine.WaitForSeconds(ref timer, 2))
+        {
+            ts.color = Vector4.White;
+            ts.size = 128;
+            var offset = new Vector2((float)rng.NextDouble() * 2 - 1, (float)rng.NextDouble() * 2 - 1) * 8;
+            var rect = textRect.Offset(offset.X, offset.Y);
+            UI.Text(rect, "EAT!!!", ts);
+            DoingBossIntro = false;
+            yield return null;
+        }
+    }
 
     public override void Start()
     {
@@ -374,42 +425,46 @@ public partial class FatPlayer : Player
 
         if (CurrentBoss != null)
         {
-            var progressPerClick = StomachSizeLevel;
-            progressPerClick = Math.Min(progressPerClick, ClickPowerLevel);
-            progressPerClick = Math.Min(progressPerClick, MouthSizeLevel);
-            progressPerClick = Math.Max(progressPerClick, 1);
-
-            if (GamePasses.HasBossAutoclicker)
+            if (!DoingBossIntro)
             {
-                BossAutoclickerAccumulator += Time.DeltaTime;
-                while (Util.Timer(ref BossAutoclickerAccumulator, 1.0f / 15.0f)) // arjan says 15 clicks per second
+                var progressPerClick = StomachSizeLevel;
+                progressPerClick = Math.Min(progressPerClick, ClickPowerLevel);
+                progressPerClick = Math.Min(progressPerClick, MouthSizeLevel);
+                progressPerClick = Math.Max(progressPerClick, 1);
+
+                if (GamePasses.HasBossAutoclicker)
+                {
+                    BossAutoclickerAccumulator += Time.DeltaTime;
+                    while (Util.Timer(ref BossAutoclickerAccumulator, 1.0f / 15.0f)) // arjan says 15 clicks per second
+                    {
+                        MyProgress += progressPerClick;
+                    }
+                }
+
+                if (this.IsMouseUpLeft())
                 {
                     MyProgress += progressPerClick;
                 }
-            }
 
-            if (this.IsMouseUpLeft()) 
-            {
-                MyProgress += progressPerClick;
-            }
-
-            BossAccumulator += Time.DeltaTime;
-            while (Util.Timer(ref BossAccumulator, CurrentBoss.Definition.TimeBetweenClicks))
-            {
-                BossProgress += CurrentBoss.Definition.AmountPerClick;
-            }
-
-            if (Network.IsServer)
-            {
-                if (MyProgress >= CurrentBoss.AmountToWin || BossProgress >= CurrentBoss.AmountToWin) 
+                BossAccumulator += Time.DeltaTime;
+                while (Util.Timer(ref BossAccumulator, CurrentBoss.Definition.TimeBetweenClicks))
                 {
-                    CallClient_BossFightOver(MyProgress > BossProgress);
+                    BossProgress += CurrentBoss.Definition.AmountPerClick;
+                }
+
+                if (Network.IsServer)
+                {
+                    if (MyProgress >= CurrentBoss.AmountToWin || BossProgress >= CurrentBoss.AmountToWin)
+                    {
+                        CallClient_BossFightOver(MyProgress > BossProgress);
+                    }
                 }
             }
         }
         else
         {
             BossAutoclickerAccumulator = 0;
+            DoingBossIntro = false;
         }
 
         if (FoodBeingEaten != null)
@@ -499,9 +554,11 @@ public partial class FatPlayer : Player
         for (int i = 0; i < amount; i++)
         {
             ResourceParticle particle = new ResourceParticle();
-            var dir = new Vector2((float)rng.NextDouble() * 2 - 1, (float)rng.NextDouble() * 2 - 1); // note(josh): non-uniform distribution but WHO CARES
+            var radians = rng.NextDouble() * 2 * Math.PI;
+            // var dir = new Vector2((float)rng.NextDouble() * 2 - 1, (float)rng.NextDouble() * 2 - 1); // note(josh): non-uniform distribution but WHO CARES
+            var dir = new Vector2((float)Math.Cos(radians), (float)Math.Sin(radians));
             particle.Position = position;
-            particle.Velocity = dir * 10;
+            particle.Velocity = dir * 10 * (float)rng.NextDouble();
             particle.Texture = tex;
             particle.Kind = kind;
             particle.Target = target;
@@ -709,13 +766,16 @@ public partial class FatPlayer : Player
         if (entity == null) return;
 
         Log.Info("Found boss entity and actually starting the fight this time for real");
-        CurrentBoss = entity.GetComponent<Boss>();
         this.AddFreezeReason("BossFight");
         
         MyProgress = 0;
         BossProgress = 0;
         BossAccumulator = 0;
         BossAutoclickerAccumulator = 0;
+        CurrentBoss = entity.GetComponent<Boss>();
+        DoingBossIntro = true;
+        Util.Assert(CurrentBoss != null);
+        Coroutine.Start(BossIntroCoroutine());
     }
 
     public double Trophies

@@ -110,7 +110,6 @@ public partial class Food : Component
             return;
         }
 
-        Log.Info($"FoodId: {FoodId}");
         SpriteRenderer.Sprite = Definition.Sprite;
         var interactable = Entity.GetComponent<Interactable>();
         interactable.OnInteract = (Player p) =>
