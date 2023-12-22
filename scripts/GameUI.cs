@@ -103,10 +103,10 @@ public class GameUI : System<GameUI>
                 text = $"{modifier.MultiplyValue:0.#}x Stomach Size";
                 break;
             }
-            case StatModifierKind.ChewSpeed:
+            case StatModifierKind.ClickPower:
             {
                 col = References.Instance.GreenText;
-                text = $"{modifier.MultiplyValue:0.#}x Chew Speed";
+                text = $"{modifier.MultiplyValue:0.#}x Click Power";
                 break;
             }
             case StatModifierKind.MouthSize:
@@ -198,14 +198,14 @@ public class GameUI : System<GameUI>
             statsTextSettings.verticalAlignment = UI.TextSettings.VerticalAlignment.Top;
             statsTextSettings.size = 28;
             statsTextSettings.wordWrap = true;
-            var statsRect = UI.SafeRect.TopLeftRect().GrowRight(200);
+            var statsRect = UI.SafeRect.TopLeftRect().GrowRight(250);
             StringBuilder sb = new StringBuilder();
 
             DoSingleStatUI(ref statsRect, "player",  statsTextSettings, $"Player Level: {localPlayer.PlayerLevel}");
-            DoSingleStatUI(ref statsRect, "stomach", statsTextSettings, $"Stomach Level: {localPlayer.StomachSizeLevel}", $"Stomach Size: {localPlayer.ModifiedStomachSize.ToString("F2")}",        $"Base: {localPlayer.BaseStomachSizeValue.ToString("F2")}",    $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.StomachSize).ToString("F2")}x",    $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.StomachSize).ToString("F2")}x");
-            DoSingleStatUI(ref statsRect, "mouth",   statsTextSettings, $"Mouth Level: {localPlayer.MouthSizeLevel}",     $"Mouth Size: {localPlayer.ModifiedMouthSize.ToString("F2")}",            $"Base: {localPlayer.BaseMouthSizeValue.ToString("F2")}",      $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.MouthSize).ToString("F2")}x",      $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.MouthSize).ToString("F2")}x");
-            DoSingleStatUI(ref statsRect, "chew",    statsTextSettings, $"Chew Level: {localPlayer.ChewSpeedLevel}",      $"Chew Speed: {localPlayer.ModifiedChewSpeed.ToString("F2")}x",           $"Base: {localPlayer.BaseChewSpeedValue.ToString("F2")}",      $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.ChewSpeed).ToString("F2")}x",      $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.ChewSpeed).ToString("F2")}x");
-            DoSingleStatUI(ref statsRect, "rebirth", statsTextSettings, $"Rebirth Level: {localPlayer.Rebirth}",          $"Cash Multiplier: {localPlayer.ModifiedCashMultiplier.ToString("F2")}x", $"Base: {localPlayer.BaseCashMultiplierValue.ToString("F2")}", $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.CashMultiplier).ToString("F2")}x", $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.CashMultiplier).ToString("F2")}x");
+            DoSingleStatUI(ref statsRect, "stomach", statsTextSettings, $"Stomach Level: {localPlayer.StomachSizeLevel}",    $"Stomach Size: {localPlayer.ModifiedStomachSize.ToString("F2")}",        $"Base: {localPlayer.BaseStomachSizeValue.ToString("F2")}",    $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.StomachSize).ToString("F2")}x",    $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.StomachSize).ToString("F2")}x");
+            DoSingleStatUI(ref statsRect, "mouth",   statsTextSettings, $"Mouth Level: {localPlayer.MouthSizeLevel}",        $"Mouth Size: {localPlayer.ModifiedMouthSize.ToString("F2")}",            $"Base: {localPlayer.BaseMouthSizeValue.ToString("F2")}",      $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.MouthSize).ToString("F2")}x",      $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.MouthSize).ToString("F2")}x");
+            DoSingleStatUI(ref statsRect, "click",   statsTextSettings, $"Click Power Level: {localPlayer.ClickPowerLevel}", $"Click Power: {localPlayer.ModifiedClickPower.ToString("F2")}x",         $"Base: {localPlayer.BaseClickPowerValue.ToString("F2")}",     $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.ClickPower).ToString("F2")}x",     $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.ClickPower).ToString("F2")}x");
+            DoSingleStatUI(ref statsRect, "rebirth", statsTextSettings, $"Rebirth Level: {localPlayer.Rebirth}",             $"Cash Multiplier: {localPlayer.ModifiedCashMultiplier.ToString("F2")}x", $"Base: {localPlayer.BaseCashMultiplierValue.ToString("F2")}", $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.CashMultiplier).ToString("F2")}x", $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.CashMultiplier).ToString("F2")}x");
         }
 
         var buttonSettings = new UI.ButtonSettings();
@@ -403,44 +403,16 @@ public class GameUI : System<GameUI>
                 localPlayer.CallServer_RequestPurchaseMouthSize();
             }
 
-            double nextStomachSizeCost = -1;
-            if (localPlayer.StomachSizeLevel < FatPlayer.StomachSizeByLevel.Length)
-                nextStomachSizeCost = FatPlayer.StomachSizeByLevel[localPlayer.StomachSizeLevel].Cost;
-            if (drawStatUpgrade("Stomach Size", "Carry larger amounts of food inside your stomach", nextStomachSizeCost, References.Instance.FoodIcon))
+            if (localPlayer.ClickPowerLevel < FatPlayer.ClickPowerByLevel.Length)
             {
-                localPlayer.CallServer_RequestPurchaseStomachSize();
+                var upgradeClickPowerRect = windowRect.CutTop(100).Inset(10, 10, 10, 10);
+                var nextClickPowerCost = FatPlayer.ClickPowerByLevel[localPlayer.ClickPowerLevel].Cost;
+                var upgradeClickPowerResult = UI.Button(upgradeClickPowerRect, $"Click Power Lv. {localPlayer.ClickPowerLevel+1} - Cost: {nextClickPowerCost}", buttonSettings, buttonTextSettings);
+                if (upgradeClickPowerResult.clicked)
+                {
+                    localPlayer.CallServer_RequestPurchaseClickPower();
+                }
             }
-
-            double nextChewSpeedCost = -1;
-            if (localPlayer.ChewSpeedLevel < FatPlayer.ChewSpeedByLevel.Length)
-                nextChewSpeedCost = FatPlayer.ChewSpeedByLevel[localPlayer.ChewSpeedLevel].Cost;
-            if (drawStatUpgrade("Chew Speed", "Eat items quicker!", nextChewSpeedCost, References.Instance.ChewSpeedIcon))
-            {
-                localPlayer.CallServer_RequestPurchaseChewSpeed();
-            }
-            
-
-            // if (localPlayer.MouthSizeLevel < FatPlayer.MouthSizeByLevel.Length)
-            // {
-            //     var upgradeMouthSizeRect = windowRect.CutTop(100).Inset(10, 10, 10, 10);
-            //     var nextMouthSizeCost = FatPlayer.MouthSizeByLevel[localPlayer.MouthSizeLevel].Cost;
-            //     var upgradeMouthSizeResult = UI.Button(upgradeMouthSizeRect, $"Mouth Size Lv. {localPlayer.MouthSizeLevel+1} - Cost: {nextMouthSizeCost}", buttonSettings, buttonTextSettings);
-            //     if (upgradeMouthSizeResult.clicked)
-            //     {
-            //         localPlayer.CallServer_RequestPurchaseMouthSize();
-            //     }
-            // }
-
-            // if (localPlayer.ChewSpeedLevel < FatPlayer.ChewSpeedByLevel.Length)
-            // {
-            //     var upgradeChewSpeedRect = windowRect.CutTop(100).Inset(10, 10, 10, 10);
-            //     var nextChewSpeedCost = FatPlayer.ChewSpeedByLevel[localPlayer.ChewSpeedLevel].Cost;
-            //     var upgradeChewSpeedResult = UI.Button(upgradeChewSpeedRect, $"Chew Speed Lv. {localPlayer.ChewSpeedLevel+1} - Cost: {nextChewSpeedCost}", buttonSettings, buttonTextSettings);
-            //     if (upgradeChewSpeedResult.clicked)
-            //     {
-            //         localPlayer.CallServer_RequestPurchaseChewSpeed();
-            //     }
-            // }
         }
 
         if (IsShowingShopWindow) 
@@ -929,11 +901,11 @@ public class GameUI : System<GameUI>
 
         if (localPlayer.CurrentBoss != null)
         {
-            var chewRect = UI.GetPlayerRect(localPlayer);
-            chewRect = chewRect.Grow(100, 50, 0, 50).Offset(0, 10);
+            var clickPowerRect = UI.GetPlayerRect(localPlayer);
+            clickPowerRect = clickPowerRect.Grow(100, 50, 0, 50).Offset(0, 10);
 
-            var myRect = chewRect.CutLeftUnscaled(chewRect.Width * 0.5f).Inset(0, 10, 0, 0);
-            var bossRect = chewRect.Inset(0, 0, 0, 10);
+            var myRect = clickPowerRect.CutLeftUnscaled(clickPowerRect.Width * 0.5f).Inset(0, 10, 0, 0);
+            var bossRect = clickPowerRect.Inset(0, 0, 0, 10);
 
             double myProgress   = Math.Min(1.0, (double)localPlayer.MyProgress   / (double)localPlayer.CurrentBoss.AmountToWin);
             double bossProgress = Math.Min(1.0, (double)localPlayer.BossProgress / (double)localPlayer.CurrentBoss.AmountToWin);

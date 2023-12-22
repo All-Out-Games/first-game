@@ -27,15 +27,6 @@
   }
 },
 {
-  "cid": 2,
-  "aoid": "1260119471834970:1702012638537894500",
-  "component_type": "Internal_Component",
-  "internal_component_type": "Interactable",
-  "data": {
-
-  }
-},
-{
   "cid": 3,
   "aoid": "1260119471923700:1702012638537917800",
   "component_type": "Internal_Component",
