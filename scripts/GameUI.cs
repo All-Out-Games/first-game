@@ -403,15 +403,20 @@ public class GameUI : System<GameUI>
                 localPlayer.CallServer_RequestPurchaseMouthSize();
             }
 
-            if (localPlayer.ClickPowerLevel < FatPlayer.ClickPowerByLevel.Length)
+            double nextStomachSizeCost = -1;
+            if (localPlayer.StomachSizeLevel < FatPlayer.StomachSizeByLevel.Length)
+                nextStomachSizeCost = FatPlayer.StomachSizeByLevel[localPlayer.StomachSizeLevel].Cost;
+            if (drawStatUpgrade("Stomach Size", "Fit more food in your stomach", nextStomachSizeCost, References.Instance.StomachSizeIcon))
             {
-                var upgradeClickPowerRect = windowRect.CutTop(100).Inset(10, 10, 10, 10);
-                var nextClickPowerCost = FatPlayer.ClickPowerByLevel[localPlayer.ClickPowerLevel].Cost;
-                var upgradeClickPowerResult = UI.Button(upgradeClickPowerRect, $"Click Power Lv. {localPlayer.ClickPowerLevel+1} - Cost: {nextClickPowerCost}", buttonSettings, buttonTextSettings);
-                if (upgradeClickPowerResult.clicked)
-                {
-                    localPlayer.CallServer_RequestPurchaseClickPower();
-                }
+                localPlayer.CallServer_RequestPurchaseStomachSize();
+            }
+
+            double nextClickPowerCost = -1;
+            if (localPlayer.ClickPowerLevel < FatPlayer.ClickPowerByLevel.Length)
+                nextClickPowerCost = FatPlayer.ClickPowerByLevel[localPlayer.ClickPowerLevel].Cost;
+            if (drawStatUpgrade("Click Power", "Eat more food with each click", nextClickPowerCost, References.Instance.ChewSpeedIcon))
+            {
+                localPlayer.CallServer_RequestPurchaseClickPower();
             }
         }
 
