@@ -505,14 +505,15 @@ public class Shop : System<Shop>
             var rnd = Random.Next(0, totalWeight);
 
             PetData.WeightedPet selectedPet = null;
+            int cursor = 0;
             foreach(var pet in eggDefinition.PossiblePets) 
             {
-                if (rnd < pet.Weight) 
+                if (rnd >= cursor && rnd < (cursor + pet.Weight))
                 {
                     selectedPet = pet;
                     break;
                 }
-                rnd -= pet.Weight;
+                cursor += pet.Weight;
             }
 
             if (selectedPet == null) 
@@ -522,11 +523,11 @@ public class Shop : System<Shop>
             }
 
             Guid guid = Guid.NewGuid();
-            player.CallClient_AddPet(guid.ToString(), selectedPet.Id, eggDefinition.Id);
+            player.CallClient_AddPet(guid.ToString(), selectedPet.Id, item.Id);
 
             if (allowOpeningEggs) 
             {
-                player.CallClient_OpenEgg(eggDefinition.Id, selectedPet.Id);
+                player.CallClient_OpenEgg(item.Id, selectedPet.Id);
             }
             return (true, selectedPet.Id);
         }
@@ -606,28 +607,27 @@ public static class ShopData
 
     public static List<Pack> Packs = new List<Pack>()
     {
-        new () { Id = "starter_pack1", Items = new List<string>() { "egg1a", "egg1a", "egg1a" } },
-        new () { Id = "starter_pack2", Items = new List<string>() { "egg1b" } },
-        new () { Id = "starter_pack3", Items = new List<string>() { "egg1c" } },
+        new () { Id = "starter_pack1", Items = new List<string>() { "Fruit Egg" } },
+        new () { Id = "starter_pack2", Items = new List<string>() { "Fruit Egg", "Salad Egg" } },
+        new () { Id = "starter_pack3", Items = new List<string>() { "Fruit Egg", "Salad Egg", "Sundae Egg", "Mac and Cheese Egg" } },
     };
 
     public static List<Item> Items = new List<Item>()
     {
-        new () { Id = "egg1a", ProductId = "1234", Name = "Egg 1A", Description = "A fun egg", Currency = Currency.Trophies, Cost = 5,   Kind = ItemKind.Egg },
-        new () { Id = "egg1b", ProductId = "1234", Name = "Egg 1B", Description = "A fun egg", Currency = Currency.Trophies, Cost = 25,  Kind = ItemKind.Egg },
-        new () { Id = "egg1c", ProductId = "1234", Name = "Egg 1C", Description = "A fun egg", Currency = Currency.Trophies, Cost = 150, Kind = ItemKind.Egg },
-        new () { Id = "egg1b", ProductId = "1234", Name = "Egg 1D", Description = "A fun egg", Currency = Currency.Trophies, Cost = 800, Kind = ItemKind.Egg },
+        new () { Id = "Fruit Egg",               Name = "Fruit Egg",               Description = "A fun egg", Currency = Currency.Trophies, Cost = 5,           Kind = ItemKind.Egg },
+        new () { Id = "Salad Egg",               Name = "Salad Egg",               Description = "A fun egg", Currency = Currency.Trophies, Cost = 25,          Kind = ItemKind.Egg },
+        new () { Id = "Sundae Egg",              Name = "Sundae Egg",              Description = "A fun egg", Currency = Currency.Trophies, Cost = 150,         Kind = ItemKind.Egg },
+        new () { Id = "Mac and Cheese Egg",      Name = "Mac and Cheese Egg",      Description = "A fun egg", Currency = Currency.Trophies, Cost = 800,         Kind = ItemKind.Egg },
 
-        new () { Id = "egg2a", ProductId = "1234", Name = "Egg 2A", Description = "A fun egg", Currency = Currency.Trophies, Cost = 4500,    Kind = ItemKind.Egg },
-        new () { Id = "egg2b", ProductId = "1234", Name = "Egg 2B", Description = "A fun egg", Currency = Currency.Trophies, Cost = 45000,   Kind = ItemKind.Egg },
-        new () { Id = "egg2c", ProductId = "1234", Name = "Egg 2C", Description = "A fun egg", Currency = Currency.Trophies, Cost = 275000,  Kind = ItemKind.Egg },
-        new () { Id = "egg2b", ProductId = "1234", Name = "Egg 2D", Description = "A fun egg", Currency = Currency.Trophies, Cost = 2800000, Kind = ItemKind.Egg },
+        new () { Id = "Sushi Egg",               Name = "Sushi Egg",               Description = "A fun egg", Currency = Currency.Trophies, Cost = 500,         Kind = ItemKind.Egg },
+        new () { Id = "Pepperoni Pizza Egg",     Name = "Pepperoni Pizza Egg",     Description = "A fun egg", Currency = Currency.Trophies, Cost = 45000,       Kind = ItemKind.Egg },
+        new () { Id = "Lasagna Egg",             Name = "Lasagna Egg",             Description = "A fun egg", Currency = Currency.Trophies, Cost = 275000,      Kind = ItemKind.Egg },
+        new () { Id = "Burger Egg",              Name = "Burger Egg",              Description = "A fun egg", Currency = Currency.Trophies, Cost = 2800000,     Kind = ItemKind.Egg },
 
-        new () { Id = "egg3a", ProductId = "1234", Name = "Egg 3A", Description = "A fun egg", Currency = Currency.Trophies, Cost = 5000000,     Kind = ItemKind.Egg },
-        new () { Id = "egg3b", ProductId = "1234", Name = "Egg 3B", Description = "A fun egg", Currency = Currency.Trophies, Cost = 42000000,    Kind = ItemKind.Egg },
-        new () { Id = "egg3c", ProductId = "1234", Name = "Egg 3C", Description = "A fun egg", Currency = Currency.Trophies, Cost = 680000000,   Kind = ItemKind.Egg },
-        new () { Id = "egg3b", ProductId = "1234", Name = "Egg 3D", Description = "A fun egg", Currency = Currency.Trophies, Cost = 15000000000, Kind = ItemKind.Egg },
-        new () { Id = "egg4a", ProductId = "1234", Name = "Egg 4A", Description = "A fun egg", Currency = Currency.Trophies, Cost = 50000000000, Kind = ItemKind.Egg },
+        new () { Id = "Mint Chocolate Chip Egg", Name = "Mint Chocolate Chip Egg", Description = "A fun egg", Currency = Currency.Trophies, Cost = 5000000,     Kind = ItemKind.Egg },
+        new () { Id = "Dripping Honeycomb Egg",  Name = "Dripping Honeycomb Egg",  Description = "A fun egg", Currency = Currency.Trophies, Cost = 42000000,    Kind = ItemKind.Egg },
+        new () { Id = "Chocolate Cookies Egg",   Name = "Chocolate Cookies Egg",   Description = "A fun egg", Currency = Currency.Trophies, Cost = 680000000,   Kind = ItemKind.Egg },
+        new () { Id = "Rainbow Mega Swirl Egg",  Name = "Rainbow Mega Swirl Egg",  Description = "A fun egg", Currency = Currency.Trophies, Cost = 15000000000, Kind = ItemKind.Egg },
 
         new () { Id = "starter_pack1",        ProductId = "6580a7d41d3ed3881220a6b0", Currency = Currency.Sparks, Kind = ItemKind.Pack, },
         new () { Id = "starter_pack2",        ProductId = "6580a7e01b8adea4b7fe6bea", Currency = Currency.Sparks, Kind = ItemKind.Pack, },

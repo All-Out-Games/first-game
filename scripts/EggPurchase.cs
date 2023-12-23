@@ -2,22 +2,22 @@ using AO;
 
 public class EggPurchase : Component
 {
-    [Serialized] public string EggItemId;
+    [Serialized] public string EggId;
+    [Serialized] public Interactable Interactable;
 
     public override void Start()
     {
-        var interactable = Entity.GetComponent<Interactable>();
-        interactable.OnInteract += OnInteract;
+        Interactable.OnInteract += OnInteract;
     }
 
     public void OnInteract(Player p)
     {
         var player = (FatPlayer) p;
 
-        var item = ShopData.Items.FirstOrDefault(x => x.Id == EggItemId);
+        var item = ShopData.Items.FirstOrDefault(x => x.Id == EggId);
         if (item == null)
         {
-            Log.Error($"Player tried to purchase {EggItemId} but it doesn't exist.");
+            Log.Error($"Player tried to purchase {EggId} but it doesn't exist.");
             return;
         }
 
@@ -30,8 +30,8 @@ public class EggPurchase : Component
             return;
         }
 
-        // Purchase can run on the client and server. Running on the client just allows it 
+        // Purchase can run on the client and server. Running on the client just allows it
         // to show notifications if the user cannot afford something
-        Shop.Instance.Purchase(player, EggItemId);
+        Shop.Instance.Purchase(player, EggId);
     }
 }

@@ -185,13 +185,13 @@ public class UniqueFoodsQuest : Quest
 {
     public override string QuestName => "Unique Foods";
     public override string Objective => "Eat 7 unique things in under 1 minute!";
-    public override string RewardDescription => "2x Cash Multiplier for 60 seconds.";
+    public override string RewardDescription => "2x Money for 60 seconds.";
     public override float QuestTime => 1 * 60;
     public override int ProgressRequired => 7;
 
     public override void GiveRewards()
     {
-        Player.ServerGiveTemporaryBuff(StatModifierKind.CashMultiplier, 2.0f, 60);
+        Player.ServerGiveTemporaryBuff(StatModifierKind.Money, 2.0f, 60);
     }
 
     public HashSet<FoodDefinition> FoodsEaten = new();

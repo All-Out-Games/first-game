@@ -181,127 +181,130 @@ public static class PetData
 {
     public static Dictionary<string, PetDefinition> Pets = new Dictionary<string, PetDefinition>()
     {
-        { "pet0",  new () { Id = "pet0",  Name = "Jimbo",     Rarity = Rarity.Common,    Description = "A very cool pet.", Spine = References.Instance.IceCreamConePet,    Skin = "ice_cream", StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.ClickPower,     MultiplyValue =  1.03f } } } },
-        { "pet1",  new () { Id = "pet1",  Name = "Jimbo +1",  Rarity = Rarity.Common,    Description = "A very cool pet.", Spine = References.Instance.BurgerPet,          Skin = "burger",    StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.StomachSize,    MultiplyValue =  1.08f } } } },
-        { "pet2",  new () { Id = "pet2",  Name = "Jimbo +2",  Rarity = Rarity.Common,    Description = "A very cool pet.", Spine = References.Instance.DrumstickPet,       Skin = "drumstick", StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.MouthSize,      MultiplyValue =  1.10f } } } },
-        { "pet3",  new () { Id = "pet3",  Name = "Jimbo +3",  Rarity = Rarity.Common,    Description = "A very cool pet.", Spine = References.Instance.CarrotPet,          Skin = "carrot",    StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.CashMultiplier, MultiplyValue =  1.30f } } } },
-
-        { "pet4",  new () { Id = "pet4",  Name = "Jimbo +4",  Rarity = Rarity.Uncommon,  Description = "A very cool pet.", Spine = References.Instance.PenguinPet,         Skin = "penguin",   StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.ClickPower,     MultiplyValue =  1.07f } } } },
-        { "pet5",  new () { Id = "pet5",  Name = "Jimbo +5",  Rarity = Rarity.Uncommon,  Description = "A very cool pet.", Spine = References.Instance.DiamondPet,         Skin = "diamond",   StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.StomachSize,    MultiplyValue =  1.14f } } } },
-        { "pet6",  new () { Id = "pet6",  Name = "Jimbo +6",  Rarity = Rarity.Uncommon,  Description = "A very cool pet.", Spine = References.Instance.FriesPet,           Skin = "fries",     StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.MouthSize,      MultiplyValue =  1.20f } } } },
-        { "pet7",  new () { Id = "pet7",  Name = "Jimbo +7",  Rarity = Rarity.Uncommon,  Description = "A very cool pet.", Spine = References.Instance.SubwayPet,          Skin = "sandwich",  StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.CashMultiplier, MultiplyValue =  1.40f } } } },
-
-        { "pet8",  new () { Id = "pet8",  Name = "Jimbo +8",  Rarity = Rarity.Rare,      Description = "A very cool pet.", Spine = References.Instance.StackedBurgerPet,   Skin = "burger",    StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.ClickPower,     MultiplyValue =  1.18f } } } },
-        { "pet9",  new () { Id = "pet9",  Name = "Jimbo +9",  Rarity = Rarity.Rare,      Description = "A very cool pet.", Spine = References.Instance.HotDogPet,          Skin = "hotdog",    StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.StomachSize,    MultiplyValue =  1.24f } } } },
-        { "pet10", new () { Id = "pet10", Name = "Jimbo +10", Rarity = Rarity.Rare,      Description = "A very cool pet.", Spine = References.Instance.PizzaPet,           Skin = "pizza",     StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.MouthSize,      MultiplyValue =  1.44f } } } },
-        { "pet11", new () { Id = "pet11", Name = "Jimbo +11", Rarity = Rarity.Rare,      Description = "A very cool pet.", Spine = References.Instance.FoodFacePet,        Skin = "food_face", StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.CashMultiplier, MultiplyValue =  1.89f } } } },
-
-        { "pet12", new () { Id = "pet12", Name = "Jimbo +12", Rarity = Rarity.Epic,      Description = "A very cool pet.", Spine = References.Instance.DogPet,             Skin = "default",   StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.ClickPower,     MultiplyValue =  1.26f } } } },
-        { "pet13", new () { Id = "pet13", Name = "Jimbo +13", Rarity = Rarity.Epic,      Description = "A very cool pet.", Spine = References.Instance.LizardPet,          Skin = "default",   StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.StomachSize,    MultiplyValue =  1.60f } } } },
-        { "pet14", new () { Id = "pet14", Name = "Jimbo +14", Rarity = Rarity.Epic,      Description = "A very cool pet.", Spine = References.Instance.MolePet,            Skin = "default",   StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.MouthSize,      MultiplyValue =  1.96f } } } },
-        { "pet15", new () { Id = "pet15", Name = "Jimbo +15", Rarity = Rarity.Epic,      Description = "A very cool pet.", Spine = References.Instance.SpiderPet,          Skin = "default",   StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.CashMultiplier, MultiplyValue =  2.50f } } } },
-
-        { "pet16", new () { Id = "pet16", Name = "Jimbo +16", Rarity = Rarity.Legendary, Description = "A very cool pet.", Spine = References.Instance.FruitJellySlimePet, Skin = "default",   StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.ClickPower,     MultiplyValue =  1.35f } } } },
-        { "pet17", new () { Id = "pet17", Name = "Jimbo +17", Rarity = Rarity.Legendary, Description = "A very cool pet.", Spine = References.Instance.PizzaMonsterPet,    Skin = "default",   StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.StomachSize,    MultiplyValue =  1.38f } } } },
-        { "pet18", new () { Id = "pet18", Name = "Jimbo +18", Rarity = Rarity.Legendary, Description = "A very cool pet.", Spine = References.Instance.DonutGoatPet,       Skin = "default",   StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.MouthSize,      MultiplyValue =  1.67f } } } },
-        { "pet19", new () { Id = "pet19", Name = "Jimbo +19", Rarity = Rarity.Legendary, Description = "A very cool pet.", Spine = References.Instance.SherbertLumpPet,    Skin = "default",   StatModifiers = new() { new StatModifier() { Kind = StatModifierKind.CashMultiplier, MultiplyValue =  2.10f } } } },
+        { "Carrot",                 new () { Id = "Carrot",                Name = "Carrot",               Rarity = Rarity.Common,          Description = "A very cool pet.", Spine = References.Instance.CarrotPet,             Skin = "carrot",         StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.StomachSize, MultiplyValue = 1.03f } } } },
+        { "Chicken Drumstick",      new () { Id = "Chicken Drumstick",     Name = "Chicken Drumstick",    Rarity = Rarity.Common,          Description = "A very cool pet.", Spine = References.Instance.DrumstickPet,          Skin = "drumstick",      StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.MouthSize,   MultiplyValue = 1.03f } } } },
+        { "Fries",                  new () { Id = "Fries",                 Name = "Fries",                Rarity = Rarity.Common,          Description = "A very cool pet.", Spine = References.Instance.FriesPet,              Skin = "fries",          StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.Money,       MultiplyValue = 1.03f } } } },
+        { "Ice Cream",              new () { Id = "Ice Cream",             Name = "Ice Cream",            Rarity = Rarity.Common,          Description = "A very cool pet.", Spine = References.Instance.IceCreamConePet,       Skin = "ice_cream",      StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.ClickPower,  MultiplyValue = 1.08f } } } },
+        { "Subway",                 new () { Id = "Subway",                Name = "Subway",               Rarity = Rarity.Uncommon,        Description = "A very cool pet.", Spine = References.Instance.SubwayPet,             Skin = "sandwich",       StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.MouthSize,   MultiplyValue = 1.10f } } } },
+        { "Squeezy Sauce",          new () { Id = "Squeezy Sauce",         Name = "Squeezy Sauce",        Rarity = Rarity.Uncommon,        Description = "A very cool pet.", Spine = References.Instance.StackedBurgerPet,      Skin = "default",        StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.StomachSize, MultiplyValue = 1.14f } } } },
+        { "Pingu",                  new () { Id = "Pingu",                 Name = "Pingu",                Rarity = Rarity.Uncommon,        Description = "A very cool pet.", Spine = References.Instance.PenguinPet,            Skin = "penguin",        StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.ClickPower,  MultiplyValue = 1.20f } } } },
+        { "Diamond",                new () { Id = "Diamond",               Name = "Diamond",              Rarity = Rarity.Uncommon,        Description = "A very cool pet.", Spine = References.Instance.DiamondPet,            Skin = "diamond",        StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.Money,       MultiplyValue = 1.20f } } } },
+        { "Food Face",              new () { Id = "Food Face",             Name = "Food Face",            Rarity = Rarity.Rare,            Description = "A very cool pet.", Spine = References.Instance.FoodFacePet,           Skin = "food_face",      StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.MouthSize,   MultiplyValue = 1.25f } } } },
+        { "Sausage",                new () { Id = "Sausage",               Name = "Sausage",              Rarity = Rarity.Rare,            Description = "A very cool pet.", Spine = References.Instance.HotDogPet,             Skin = "hotdog",         StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.StomachSize, MultiplyValue = 1.35f } } } },
+        { "Burger",                 new () { Id = "Burger",                Name = "Burger",               Rarity = Rarity.Rare,            Description = "A very cool pet.", Spine = References.Instance.BurgerPet,             Skin = "burger",         StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.Money,       MultiplyValue = 1.60f } } } },
+        { "Pizza Slice",            new () { Id = "Pizza Slice",           Name = "Pizza Slice",          Rarity = Rarity.Rare,            Description = "A very cool pet.", Spine = References.Instance.PizzaPet,              Skin = "pizza",          StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.ClickPower,  MultiplyValue = 1.60f } } } },
+        { "Golden Dog",             new () { Id = "Golden Dog",            Name = "Golden Dog",           Rarity = Rarity.Epic,            Description = "A very cool pet.", Spine = References.Instance.DogPet,                Skin = "default",        StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.StomachSize, MultiplyValue = 1.25f } } } },
+        { "Brown Mole",             new () { Id = "Brown Mole",            Name = "Brown Mole",           Rarity = Rarity.Epic,            Description = "A very cool pet.", Spine = References.Instance.MolePet,               Skin = "default",        StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.ClickPower,  MultiplyValue = 1.50f } } } },
+        { "Green Lizard",           new () { Id = "Green Lizard",          Name = "Green Lizard",         Rarity = Rarity.Epic,            Description = "A very cool pet.", Spine = References.Instance.LizardPet,             Skin = "default",        StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.Money,       MultiplyValue = 1.75f } } } },
+        { "Black Widow Spider",     new () { Id = "Black Widow Spider",    Name = "Black Widow Spider",   Rarity = Rarity.Epic,            Description = "A very cool pet.", Spine = References.Instance.SpiderPet,             Skin = "default",        StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.MouthSize,   MultiplyValue = 1.90f } } } },
+        { "Donut Goat",             new () { Id = "Donut Goat",            Name = "Donut Goat",           Rarity = Rarity.Legendary,       Description = "A very cool pet.", Spine = References.Instance.DonutGoatPet,          Skin = "default",        StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.ClickPower,  MultiplyValue = 1.60f } } } },
+        { "Sherbert Lump",          new () { Id = "Sherbert Lump",         Name = "Sherbert Lump",        Rarity = Rarity.Legendary,       Description = "A very cool pet.", Spine = References.Instance.SherbertLumpPet,       Skin = "default",        StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.StomachSize, MultiplyValue = 2.15f } } } },
+        { "Slime",                  new () { Id = "Slime",                 Name = "Slime",                Rarity = Rarity.Legendary,       Description = "A very cool pet.", Spine = References.Instance.FruitJellySlimePet,    Skin = "default",        StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.MouthSize,   MultiplyValue = 2.35f } } } },
+        { "Pizza Monster",          new () { Id = "Pizza Monster",         Name = "Pizza Monster",        Rarity = Rarity.Legendary,       Description = "A very cool pet.", Spine = References.Instance.PizzaMonsterPet,       Skin = "default",        StatModifiers = new () { new StatModifier() { Kind = StatModifierKind.Money,       MultiplyValue = 2.50f } } } },
     };
 
     public static Dictionary<string, EggDefinition> Eggs = new Dictionary<string, EggDefinition>()
     {
-        // world 1
-        { "egg1a", new () { Id = "egg1a", Name = "Egg 1A", PossiblePets = new List<WeightedPet>() {
-            new () { Id = "pet0", Weight = 65 },
-            new () { Id = "pet1", Weight = 25 },
-            new () { Id = "pet2", Weight = 14 },
-            new () { Id = "pet3", Weight = 1 },
+        { "Fruit Egg", new () { PossiblePets = new List<WeightedPet>() {
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Chicken",       Weight = 20 },
+            new () { Id = "Fries",         Weight = 20 },
+            new () { Id = "Subway",        Weight = 15 },
+            new () { Id = "Golden Dog",    Weight = 1 },
         } } },
 
-        { "egg1b", new () { Id = "egg1b", Name = "Egg 1B", PossiblePets = new List<WeightedPet>() {
-            new () { Id = "pet4", Weight = 35 },
-            new () { Id = "pet5", Weight = 40 },
-            new () { Id = "pet6", Weight = 20 },
-            new () { Id = "pet7", Weight = 5 },
+        { "Salad Egg", new () { PossiblePets = new List<WeightedPet>() {
+            new () { Id = "Ice Cream",     Weight = 15 },
+            new () { Id = "Squeezy Sauce", Weight = 20 },
+            new () { Id = "Food Face",     Weight = 12 },
+            new () { Id = "Brown Mole",    Weight = 8 },
+            new () { Id = "Donut Goat",    Weight = 1 },
         } } },
 
-        { "egg1c", new () { Id = "egg1c", Name = "Egg 1C", PossiblePets = new List<WeightedPet>() {
-            new () { Id = "pet8", Weight = 50 },
-            new () { Id = "pet9", Weight = 35 },
-            new () { Id = "pet10", Weight = 12 },
-            new () { Id = "pet11", Weight = 3 },
+        { "Sundae Egg", new () { PossiblePets = new List<WeightedPet>() {
+            new () { Id = "Pingu",         Weight = 15 },
+            new () { Id = "Diamond",       Weight = 15 },
+            new () { Id = "Sausage",       Weight = 12 },
+            new () { Id = "Green Lizard",  Weight = 10 },
+            new () { Id = "Sherbert Lump", Weight = 5 },
         } } },
 
-        { "egg1d", new () { Id = "egg1d", Name = "Egg 1D", PossiblePets = new List<WeightedPet>() {
-            new () { Id = "pet12", Weight = 58 },
-            new () { Id = "pet13", Weight = 25 },
-            new () { Id = "pet14", Weight = 15 },
-            new () { Id = "pet15", Weight = 2 },
+        { "Mac and Cheese Egg", new () { PossiblePets = new List<WeightedPet>() {
+            new () { Id = "Burger",        Weight = 10 },
+            new () { Id = "Pizza Slice",   Weight = 10 },
+            new () { Id = "Black Widow",   Weight = 15 },
+            new () { Id = "Slime",         Weight = 7 },
+            new () { Id = "Pizza Monster", Weight = 5 },
         } } },
 
-        // world 2
-        { "egg2a", new () { Id = "egg2a", Name = "Egg 2A", PossiblePets = new List<WeightedPet>() {
-            new () { Id = "pet16", Weight = 30 },
-            new () { Id = "pet17", Weight = 30 },
-            new () { Id = "pet18", Weight = 25 },
-            new () { Id = "pet19", Weight = 15 },
-        } } },
+        // { "Sushi Egg", new () { PossiblePets = new List<WeightedPet>() {
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        // } } },
 
-        { "egg2b", new () { Id = "egg2b", Name = "Egg 2B", PossiblePets = new List<WeightedPet>() {
-            new () { Id = "pet20", Weight = 50 },
-            new () { Id = "pet21", Weight = 25 },
-            new () { Id = "pet22", Weight = 15 },
-            new () { Id = "pet23", Weight = 10 },
-        } } },
+        // { "Pepperoni Pizza Egg", new () { PossiblePets = new List<WeightedPet>() {
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        // } } },
 
-        { "egg2c", new () { Id = "egg2c", Name = "Egg 2C", PossiblePets = new List<WeightedPet>() {
-            new () { Id = "pet24", Weight = 25 },
-            new () { Id = "pet25", Weight = 40 },
-            new () { Id = "pet26", Weight = 20 },
-            new () { Id = "pet27", Weight = 15 },
-        } } },
+        // { "Lasagna Egg", new () { PossiblePets = new List<WeightedPet>() {
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        // } } },
 
-        { "egg2d", new () { Id = "egg2d", Name = "Egg 2D", PossiblePets = new List<WeightedPet>() {
-            new () { Id = "pet28", Weight = 55 },
-            new () { Id = "pet29", Weight = 25 },
-            new () { Id = "pet30", Weight = 17 },
-            new () { Id = "pet31", Weight = 3 },
-        } } },
+        // { "Burger Egg", new () { PossiblePets = new List<WeightedPet>() {
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        // } } },
 
-        // world 2
-        { "egg3a", new () { Id = "egg3a", Name = "Egg 3A", PossiblePets = new List<WeightedPet>() {
-            new () { Id = "pet32", Weight = 50 },
-            new () { Id = "pet33", Weight = 30 },
-            new () { Id = "pet34", Weight = 15 },
-            new () { Id = "pet35", Weight = 5 },
-        } } },
+        // { "Mint Chocolate Chip Egg", new () { PossiblePets = new List<WeightedPet>() {
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        // } } },
 
-        { "egg3b", new () { Id = "egg3b", Name = "Egg 3B", PossiblePets = new List<WeightedPet>() {
-            new () { Id = "pet36", Weight = 40 },
-            new () { Id = "pet37", Weight = 40 },
-            new () { Id = "pet38", Weight = 12 },
-            new () { Id = "pet39", Weight = 8 },
-        } } },
+        // { "Dripping Honeycomb Egg", new () { PossiblePets = new List<WeightedPet>() {
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        // } } },
 
-        { "egg3c", new () { Id = "egg3c", Name = "Egg 3C", PossiblePets = new List<WeightedPet>() {
-            new () { Id = "pet40", Weight = 45 },
-            new () { Id = "pet41", Weight = 35 },
-            new () { Id = "pet42", Weight = 16 },
-            new () { Id = "pet43", Weight = 4 },
-        } } },
+        // { "Chocolate Cookies Egg", new () { PossiblePets = new List<WeightedPet>() {
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        // } } },
 
-        { "egg3d", new () { Id = "egg3d", Name = "Egg 3D", PossiblePets = new List<WeightedPet>() {
-            new () { Id = "pet44", Weight = 55 },
-            new () { Id = "pet45", Weight = 30 },
-            new () { Id = "pet46", Weight = 14 },
-            new () { Id = "pet47", Weight = 1 },
-        } } },
+        // { "Rainbow Mega Swirl Egg", new () { PossiblePets = new List<WeightedPet>() {
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        //     new () { Id = "", Weight = 10 },
+        // } } },
+
     };
 
     public class EggDefinition
     {
-        public string Id;
-        public string Name;
-        
         public List<WeightedPet> PossiblePets;
     }
 

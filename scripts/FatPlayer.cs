@@ -907,7 +907,7 @@ public partial class FatPlayer : Player
     public double ModifiedClickPower     => BaseClickPowerValue     * CalculateTotalMultiplierFromPets(StatModifierKind.ClickPower)     * CalculateTotalMultiplierFromBuffs(StatModifierKind.ClickPower);
     public double ModifiedMouthSize      => BaseMouthSizeValue      * CalculateTotalMultiplierFromPets(StatModifierKind.MouthSize)      * CalculateTotalMultiplierFromBuffs(StatModifierKind.MouthSize);
     public double ModifiedStomachSize    => BaseStomachSizeValue    * CalculateTotalMultiplierFromPets(StatModifierKind.StomachSize)    * CalculateTotalMultiplierFromBuffs(StatModifierKind.StomachSize);
-    public double ModifiedCashMultiplier => BaseCashMultiplierValue * CalculateTotalMultiplierFromPets(StatModifierKind.CashMultiplier) * CalculateTotalMultiplierFromBuffs(StatModifierKind.CashMultiplier);
+    public double ModifiedCashMultiplier => BaseCashMultiplierValue * CalculateTotalMultiplierFromPets(StatModifierKind.Money)          * CalculateTotalMultiplierFromBuffs(StatModifierKind.Money);
     public double ModifiedMoveSpeed      =>                           CalculateTotalMultiplierFromPets(StatModifierKind.MoveSpeed)      * CalculateTotalMultiplierFromBuffs(StatModifierKind.MoveSpeed);
 
     public double CalculateTotalMultiplierFromPets(StatModifierKind kind)
