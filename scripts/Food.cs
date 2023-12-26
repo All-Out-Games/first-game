@@ -205,7 +205,7 @@ public partial class Food : Component
         player.FoodBeingEaten = this;
         CurrentHealth  = clicksRequired;
         ClicksRequired = clicksRequired;
-        // OnClick(player);
+        OnClick(player);
     }
 
     [ClientRpc]
