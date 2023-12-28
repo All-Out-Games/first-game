@@ -178,7 +178,10 @@ public class GameUI : System<GameUI>
             var cashIconRect = cashRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(9, 0);
             UI.Image(cashIconRect, References.Instance.CoinIcon, Vector4.White);
             textSettings.color = References.Instance.GreenText;
-            UI.Text(cashRect, $"{Util.FormatDouble(localPlayer.CoinsVisual)}", textSettings);
+            var coinTextSettings = textSettings;
+            var coinEase = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - localPlayer.LastCoinParticleArriveTime, 0.25f));
+            coinTextSettings.size = AOMath.Lerp(coinTextSettings.size * 1.5f, coinTextSettings.size, coinEase);
+            UI.Text(cashRect, $"{Util.FormatDouble(localPlayer.CoinsVisual)}", coinTextSettings);
 
             var foodTextSettings = textSettings;
             var foodRect = topBarGrid.Next().Inset(0, 10, 0, 10);
@@ -202,8 +205,8 @@ public class GameUI : System<GameUI>
             StringBuilder sb = new StringBuilder();
 
             DoSingleStatUI(ref statsRect, "player",  statsTextSettings, $"Player Level: {localPlayer.PlayerLevel}");
-            DoSingleStatUI(ref statsRect, "stomach", statsTextSettings, $"Stomach Level: {localPlayer.StomachSizeLevel}",    $"Stomach Size: {localPlayer.ModifiedStomachSize.ToString("F2")}",        $"Base: {localPlayer.BaseStomachSizeValue.ToString("F2")}",    $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.StomachSize).ToString("F2")}x",    $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.StomachSize).ToString("F2")}x");
             DoSingleStatUI(ref statsRect, "mouth",   statsTextSettings, $"Mouth Level: {localPlayer.MouthSizeLevel}",        $"Mouth Size: {localPlayer.ModifiedMouthSize.ToString("F2")}",            $"Base: {localPlayer.BaseMouthSizeValue.ToString("F2")}",      $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.MouthSize).ToString("F2")}x",      $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.MouthSize).ToString("F2")}x");
+            DoSingleStatUI(ref statsRect, "stomach", statsTextSettings, $"Stomach Level: {localPlayer.StomachSizeLevel}",    $"Stomach Size: {localPlayer.ModifiedStomachSize.ToString("F2")}",        $"Base: {localPlayer.BaseStomachSizeValue.ToString("F2")}",    $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.StomachSize).ToString("F2")}x",    $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.StomachSize).ToString("F2")}x");
             DoSingleStatUI(ref statsRect, "click",   statsTextSettings, $"Click Power Level: {localPlayer.ClickPowerLevel}", $"Click Power: {localPlayer.ModifiedClickPower.ToString("F2")}x",         $"Base: {localPlayer.BaseClickPowerValue.ToString("F2")}",     $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.ClickPower).ToString("F2")}x",     $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.ClickPower).ToString("F2")}x");
             DoSingleStatUI(ref statsRect, "rebirth", statsTextSettings, $"Rebirth Level: {localPlayer.Rebirth}",             $"Cash Multiplier: {localPlayer.ModifiedCashMultiplier.ToString("F2")}x", $"Base: {localPlayer.BaseCashMultiplierValue.ToString("F2")}", $"From Pets: {localPlayer.CalculateTotalMultiplierFromPets(StatModifierKind.Money).ToString("F2")}x",          $"From Buffs: {localPlayer.CalculateTotalMultiplierFromBuffs(StatModifierKind.Money).ToString("F2")}x");
         }

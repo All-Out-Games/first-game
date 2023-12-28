@@ -289,7 +289,7 @@ public class BossBrawlQuest : Quest
 
     public override void GiveRewards()
     {
-        Player.Trophies += 2000;
+        Player.GiveTrophies(2000, true, Player.Entity.Position, Player.Entity);
     }
 
     public HashSet<BossDefinition> World1BossesDefeated = new();

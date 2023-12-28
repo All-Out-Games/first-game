@@ -87,7 +87,7 @@ public class FatGameManager : Component
                             }
 
                             var fatTarget = (FatPlayer)target;
-                            fatTarget.Trophies += amount;
+                            fatTarget.GiveTrophies(amount, true, fatTarget.Entity.Position, fatTarget.Entity);
                             return;
                         }
                     }

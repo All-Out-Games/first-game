@@ -213,11 +213,10 @@ public partial class Food : Component
     {
         if (success)
         {
+            CurrentEater.GiveFood(StomachSpace, SellValue, true, Entity.Position, CurrentEater.Entity);
             if (Network.IsServer)
             {
                 OnEat?.Invoke(this);
-                CurrentEater.AmountOfFoodInStomach += StomachSpace;
-                CurrentEater.ValueOfFoodInStomach += SellValue;
                 if (CurrentEater.CurrentQuest != null)
                 {
                     CurrentEater.CurrentQuest.OnFoodEatenServer(this);
@@ -227,7 +226,8 @@ public partial class Food : Component
             }
             else
             {
-                CurrentEater.SpawnParticles(Entity.Position, (int)Math.Round(StomachSpace), ResourceParticleKind.Food, CurrentEater.Entity);
+                // CurrentEater.GiveFood(StomachSpace, true);
+                // CurrentEater.SpawnParticles(Entity.Position, (int)Math.Round(StomachSpace), ResourceParticleKind.Food, CurrentEater.Entity);
             }
         }
         

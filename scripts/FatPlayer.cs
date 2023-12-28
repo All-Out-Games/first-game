@@ -79,11 +79,10 @@ public partial class FatPlayer : Player
     public PlayerGamePasses GamePasses;
     public HashSet<string>  GamePassesHashSet = new();
 
-    public long ActiveFoodParticles;
-    public long ActiveTrophyParticles;
     public List<ResourceParticle> ActiveParticles = new();
     public float LastFoodParticleArriveTime;
     public float LastTrophyParticleArriveTime;
+    public float LastCoinParticleArriveTime;
 
     public double _lerpedMoney;
     public double CoinsVisual => _lerpedMoney;
@@ -112,7 +111,7 @@ public partial class FatPlayer : Player
         var textRect = UI.ScreenRect.CenterRect().Offset(0, 200);
 
         float timer = 0;
-        while (Coroutine.WaitForSeconds(ref timer, 1))
+        while (Coroutine.Timer(ref timer, 1))
         {
             ts.color = Vector4.White * Ease.OutQuart(1.0f - timer);
             UI.Text(textRect, "Ready..", ts);
@@ -120,7 +119,7 @@ public partial class FatPlayer : Player
         }
 
         timer = 0;
-        while (Coroutine.WaitForSeconds(ref timer, 1))
+        while (Coroutine.Timer(ref timer, 1))
         {
             ts.color = Vector4.White * Ease.OutQuart(1.0f - timer);
             UI.Text(textRect, "Set..", ts);
@@ -130,7 +129,7 @@ public partial class FatPlayer : Player
         DoingBossIntro = false;
         var rng = new Random();
         timer = 0;
-        while (Coroutine.WaitForSeconds(ref timer, 2))
+        while (Coroutine.Timer(ref timer, 2))
         {
             ts.color = Vector4.White;
             ts.size = 128;
@@ -139,6 +138,40 @@ public partial class FatPlayer : Player
             UI.Text(rect, "EAT!!!", ts);
             yield return null;
         }
+    }
+
+    public void GiveFood(double foodAmount, double valueAmount, bool particles = false, Vector2 fromPos = default, Entity toEntity = null)
+    {
+        IEnumerator Go(double foodAmount, double valueAmount)
+        {
+            yield return new WaitForSeconds(0.9f);
+            AmountOfFoodInStomach += foodAmount;
+            ValueOfFoodInStomach += valueAmount;
+        }
+        if (Network.IsServer) Coroutine.Start(Go(foodAmount, valueAmount));
+        else if (particles) SpawnParticles(fromPos, (int)foodAmount, ResourceParticleKind.Food, toEntity);
+    }
+
+    public void GiveCoins(double amount, bool particles = false, Vector2 fromPos = default, Entity toEntity = null)
+    {
+        IEnumerator Go(double amount)
+        {
+            yield return new WaitForSeconds(0.9f);
+            Coins += amount;
+        }
+        if (Network.IsServer) Coroutine.Start(Go(amount));
+        else if (particles) SpawnParticles(fromPos, (int)amount, ResourceParticleKind.Coins, toEntity);
+    }
+
+    public void GiveTrophies(double amount, bool particles = false, Vector2 fromPos = default, Entity toEntity = null)
+    {
+        IEnumerator Go(double amount)
+        {
+            yield return new WaitForSeconds(0.9f);
+            Trophies += amount;
+        }
+        if (Network.IsServer) Coroutine.Start(Go(amount));
+        else if (particles) SpawnParticles(fromPos, (int)amount, ResourceParticleKind.Trophy, toEntity);
     }
 
     public override void Start()
@@ -156,7 +189,7 @@ public partial class FatPlayer : Player
 
         if (won) 
         {
-            Trophies += CurrentBoss.Reward;
+            GiveTrophies(CurrentBoss.Reward, true, CurrentBoss.Entity.Position, Entity);
             if (Network.IsClient)
             {
                 SpawnParticles(CurrentBoss.Entity.Position, (int)CurrentBoss.Reward, ResourceParticleKind.Trophy, Entity);
@@ -255,7 +288,7 @@ public partial class FatPlayer : Player
                 if (distanceSqr <= SellArea.RadiusSquared)
                 {
                     SpawnParticles(Entity.Position + new Vector2(0, 0.5f), (int)AmountOfFoodInStomach, ResourceParticleKind.SellFood, sellArea.Entity);
-                    Coins += ValueOfFoodInStomach * ModifiedCashMultiplier;
+                    GiveCoins(ValueOfFoodInStomach * ModifiedCashMultiplier, true, sellArea.Entity.Position, Entity);
                     ValueOfFoodInStomach = 0;
                     AmountOfFoodInStomach = 0;
                     if (CurrentQuest != null)
@@ -268,14 +301,14 @@ public partial class FatPlayer : Player
         }
 
         // food
-        var foodLerpTarget = AmountOfFoodInStomach - ActiveFoodParticles;
+        var foodLerpTarget = AmountOfFoodInStomach;
         _lerpedFoodInStomach = _lerpedFoodInStomach + (foodLerpTarget - _lerpedFoodInStomach) * 0.15f;
         if (Math.Abs(_lerpedFoodInStomach - foodLerpTarget) <= 1) {
             _lerpedFoodInStomach = foodLerpTarget;
         }
 
-        // food
-        var trophyLerpTarget = Trophies - ActiveTrophyParticles;
+        // trophies
+        var trophyLerpTarget = Trophies;
         _lerpedTrophies = _lerpedTrophies + (trophyLerpTarget - _lerpedTrophies) * 0.15f;
         if (Math.Abs(_lerpedTrophies - trophyLerpTarget) <= 1) {
             _lerpedTrophies = trophyLerpTarget;
@@ -314,16 +347,18 @@ public partial class FatPlayer : Player
                         switch (particle.Kind)
                         {
                             case ResourceParticleKind.Food: {
-                                ActiveFoodParticles -= 1;
                                 LastFoodParticleArriveTime = Time.TimeSinceStartup;
                                 break;
                             }
                             case ResourceParticleKind.Trophy: {
-                                ActiveTrophyParticles -= 1;
                                 LastTrophyParticleArriveTime = Time.TimeSinceStartup;
                                 break;
                             }
                             case ResourceParticleKind.SellFood: {
+                                break;
+                            }
+                            case ResourceParticleKind.Coins: {
+                                LastCoinParticleArriveTime = Time.TimeSinceStartup;
                                 break;
                             }
                             default: {
@@ -531,16 +566,18 @@ public partial class FatPlayer : Player
         {
             case ResourceParticleKind.Food: {
                 tex = References.Instance.FoodIcon;
-                ActiveFoodParticles += amount;
                 break;
             }
             case ResourceParticleKind.Trophy: {
                 tex = References.Instance.TrophyIcon;
-                ActiveTrophyParticles += amount;
                 break;
             }
             case ResourceParticleKind.SellFood: {
                 tex = References.Instance.FoodIcon;
+                break;
+            }
+            case ResourceParticleKind.Coins: {
+                tex = References.Instance.CoinIcon;
                 break;
             }
             default: {
