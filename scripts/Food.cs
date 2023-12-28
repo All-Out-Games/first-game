@@ -224,11 +224,6 @@ public partial class Food : Component
                 Network.Despawn(this.Entity);
                 this.Entity.Destroy();
             }
-            else
-            {
-                // CurrentEater.GiveFood(StomachSpace, true);
-                // CurrentEater.SpawnParticles(Entity.Position, (int)Math.Round(StomachSpace), ResourceParticleKind.Food, CurrentEater.Entity);
-            }
         }
         
         CurrentEater.RemoveFreezeReason(EatingFreezeReason);

@@ -149,7 +149,7 @@ public partial class FatPlayer : Player
             ValueOfFoodInStomach += valueAmount;
         }
         if (Network.IsServer) Coroutine.Start(Go(foodAmount, valueAmount));
-        else if (particles) SpawnParticles(fromPos, (int)foodAmount, ResourceParticleKind.Food, toEntity);
+        else if (particles) SpawnParticles(fromPos, foodAmount, ResourceParticleKind.Food, toEntity);
     }
 
     public void GiveCoins(double amount, bool particles = false, Vector2 fromPos = default, Entity toEntity = null)
@@ -160,7 +160,7 @@ public partial class FatPlayer : Player
             Coins += amount;
         }
         if (Network.IsServer) Coroutine.Start(Go(amount));
-        else if (particles) SpawnParticles(fromPos, (int)amount, ResourceParticleKind.Coins, toEntity);
+        else if (particles) SpawnParticles(fromPos, amount, ResourceParticleKind.Coins, toEntity);
     }
 
     public void GiveTrophies(double amount, bool particles = false, Vector2 fromPos = default, Entity toEntity = null)
@@ -171,7 +171,7 @@ public partial class FatPlayer : Player
             Trophies += amount;
         }
         if (Network.IsServer) Coroutine.Start(Go(amount));
-        else if (particles) SpawnParticles(fromPos, (int)amount, ResourceParticleKind.Trophy, toEntity);
+        else if (particles) SpawnParticles(fromPos, amount, ResourceParticleKind.Trophy, toEntity);
     }
 
     public override void Start()
@@ -192,7 +192,7 @@ public partial class FatPlayer : Player
             GiveTrophies(CurrentBoss.Reward, true, CurrentBoss.Entity.Position, Entity);
             if (Network.IsClient)
             {
-                SpawnParticles(CurrentBoss.Entity.Position, (int)CurrentBoss.Reward, ResourceParticleKind.Trophy, Entity);
+                SpawnParticles(CurrentBoss.Entity.Position, CurrentBoss.Reward, ResourceParticleKind.Trophy, Entity);
             }
 
             if (GamePasses.Has2xTrophies)
@@ -287,7 +287,7 @@ public partial class FatPlayer : Player
                 var distanceSqr = (sellArea.Entity.Position - Entity.Position).LengthSquared;
                 if (distanceSqr <= SellArea.RadiusSquared)
                 {
-                    SpawnParticles(Entity.Position + new Vector2(0, 0.5f), (int)AmountOfFoodInStomach, ResourceParticleKind.SellFood, sellArea.Entity);
+                    SpawnParticles(Entity.Position + new Vector2(0, 0.5f), AmountOfFoodInStomach, ResourceParticleKind.SellFood, sellArea.Entity);
                     GiveCoins(ValueOfFoodInStomach * ModifiedCashMultiplier, true, sellArea.Entity.Position, Entity);
                     ValueOfFoodInStomach = 0;
                     AmountOfFoodInStomach = 0;
@@ -559,8 +559,10 @@ public partial class FatPlayer : Player
         }
     }
 
-    public void SpawnParticles(Vector2 position, int amount, ResourceParticleKind kind, Entity target)
+    public void SpawnParticles(Vector2 position, double requestedAmount, ResourceParticleKind kind, Entity target)
     {
+        requestedAmount = Math.Sqrt(requestedAmount);
+        long amount = (long)Math.Min(30, requestedAmount);
         Texture tex = null;
         switch (kind)
         {
