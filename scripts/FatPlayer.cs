@@ -226,8 +226,14 @@ public partial class FatPlayer : Player
     }
 
     [ServerRpc]
-    public void ResetAllProgressCheat()
+    public void RunCheatCommand(string command)
     {
+        FatGameManager.Instance.RunChatCommand(this, command);
+    }
+
+    public void ResetProgressCheat()
+    {
+        Util.Assert(Network.IsServer);
         Trophies = 0;
         Coins = 0;
         AmountOfFoodInStomach = 0;
@@ -239,33 +245,33 @@ public partial class FatPlayer : Player
         CallClient_DeleteAllPets();
     }
 
-    [ServerRpc]
     public void IncreaseMoneyCheat()
     {
+        Util.Assert(Network.IsServer);
         Coins = (Coins + 5) * 2;
     }
 
-    [ServerRpc]
     public void DecreaseMoneyCheat()
     {
+        Util.Assert(Network.IsServer);
         Coins /= 2;
     }
 
-    [ServerRpc]
     public void IncreaseTrophiesCheat()
     {
+        Util.Assert(Network.IsServer);
         Trophies = (Trophies + 5) * 2;
     }
 
-    [ServerRpc]
     public void DecreaseTrophiesCheat()
     {
+        Util.Assert(Network.IsServer);
         Trophies /= 2;
     }
 
-    [ServerRpc]
     public void ForceCompleteQuestCheat()
     {
+        Util.Assert(Network.IsServer);
         if (CurrentQuest == null)
         {
             return;
@@ -409,26 +415,26 @@ public partial class FatPlayer : Player
         if (Input.GetKeyHeld(Input.Keycode.KEYCODE_LEFT_CONTROL)) {
             if (Input.GetKeyHeld(Input.Keycode.KEYCODE_LEFT_SHIFT)) {
                 if (Input.GetKeyDown(Input.Keycode.KEYCODE_R)) {
-                    CallServer_ResetAllProgressCheat();
+                    CallServer_RunCheatCommand("reset_progress");
                 }
                 if (Input.GetKeyDown(Input.Keycode.KEYCODE_EQUAL)) {
-                    CallServer_IncreaseTrophiesCheat();
+                    CallServer_RunCheatCommand("+trophies");
                 }
                 if (Input.GetKeyDown(Input.Keycode.KEYCODE_MINUS)) {
-                    CallServer_DecreaseTrophiesCheat();
+                    CallServer_RunCheatCommand("-trophies");
                 }
             }
             else {
                 if (Input.GetKeyDown(Input.Keycode.KEYCODE_EQUAL)) {
-                    CallServer_IncreaseMoneyCheat();
+                    CallServer_RunCheatCommand("+money");
                 }
                 if (Input.GetKeyDown(Input.Keycode.KEYCODE_MINUS)) {
-                    CallServer_DecreaseMoneyCheat();
+                    CallServer_RunCheatCommand("-money");
                 }
             }
 
             if (Input.GetKeyDown(Input.Keycode.KEYCODE_Q)) {
-                CallServer_ForceCompleteQuestCheat();
+                CallServer_RunCheatCommand("complete_quest");
             }
         }
 
