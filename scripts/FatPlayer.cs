@@ -148,7 +148,7 @@ public partial class FatPlayer : Player
             AmountOfFoodInStomach += foodAmount;
             ValueOfFoodInStomach += valueAmount;
         }
-        if (Network.IsServer) Coroutine.Start(Go(foodAmount, valueAmount));
+        if (Network.IsServer) Coroutine.Start(Entity, Go(foodAmount, valueAmount));
         else if (particles) SpawnParticles(fromPos, foodAmount, ResourceParticleKind.Food, toEntity);
     }
 
@@ -159,7 +159,7 @@ public partial class FatPlayer : Player
             yield return new WaitForSeconds(0.9f);
             Coins += amount;
         }
-        if (Network.IsServer) Coroutine.Start(Go(amount));
+        if (Network.IsServer) Coroutine.Start(Entity, Go(amount));
         else if (particles) SpawnParticles(fromPos, amount, ResourceParticleKind.Coins, toEntity);
     }
 
@@ -170,7 +170,7 @@ public partial class FatPlayer : Player
             yield return new WaitForSeconds(0.9f);
             Trophies += amount;
         }
-        if (Network.IsServer) Coroutine.Start(Go(amount));
+        if (Network.IsServer) Coroutine.Start(Entity, Go(amount));
         else if (particles) SpawnParticles(fromPos, amount, ResourceParticleKind.Trophy, toEntity);
     }
 
@@ -818,7 +818,7 @@ public partial class FatPlayer : Player
         CurrentBoss = entity.GetComponent<Boss>();
         DoingBossIntro = true;
         Util.Assert(CurrentBoss != null);
-        Coroutine.Start(BossIntroCoroutine());
+        Coroutine.Start(Entity, BossIntroCoroutine());
     }
 
     public double Trophies

@@ -29,6 +29,7 @@ public class Coroutine : IYield
 {
     public static List<Coroutine> ActiveCoroutines = new();
 
+    public Entity Owner;
     public IEnumerator Enumerator;
     public bool Finished;
 
@@ -37,9 +38,9 @@ public class Coroutine : IYield
         return !Finished;
     }
 
-    public static Coroutine Start(IEnumerator enumerator)
+    public static Coroutine Start(Entity owner, IEnumerator enumerator)
     {
-        var coroutine = new Coroutine() { Enumerator = enumerator };
+        var coroutine = new Coroutine() { Owner = owner, Enumerator = enumerator };
         ActiveCoroutines.Add(coroutine);
         return coroutine;
     }
@@ -58,6 +59,12 @@ public class CoroutineSystem : System<CoroutineSystem>
         for (int i = 0; i < Coroutine.ActiveCoroutines.Count; i++)
         {
             Coroutine coroutine = Coroutine.ActiveCoroutines[i];
+
+            if (!coroutine.Owner.Alive())
+            {
+                goto end_coroutine;
+            }
+
             if (coroutine.Enumerator.Current != null && coroutine.Enumerator.Current is IYield inst)
             {
                 if (inst.TickYield())
@@ -66,13 +73,16 @@ public class CoroutineSystem : System<CoroutineSystem>
                 }
             }
 
-            if (!coroutine.Enumerator.MoveNext())
+            if (coroutine.Enumerator.MoveNext())
             {
-                coroutine.Finished = true;
-                Coroutine.ActiveCoroutines[i] = Coroutine.ActiveCoroutines[Coroutine.ActiveCoroutines.Count-1];
-                Coroutine.ActiveCoroutines.RemoveAt(Coroutine.ActiveCoroutines.Count-1);
-                i -= 1;
+                continue;
             }
+
+            end_coroutine:
+            coroutine.Finished = true;
+            Coroutine.ActiveCoroutines[i] = Coroutine.ActiveCoroutines[Coroutine.ActiveCoroutines.Count-1];
+            Coroutine.ActiveCoroutines.RemoveAt(Coroutine.ActiveCoroutines.Count-1);
+            i -= 1;
         }
     }
 }
