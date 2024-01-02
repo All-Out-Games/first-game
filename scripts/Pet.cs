@@ -38,9 +38,9 @@ public class Pet : Component
 
         float agentRadius = 0.5f;
         var otherOwnerPets = AllPets.Where(p => p.OwnerId == OwnerId && p != this);
-        var targetPosition = ownerEntity.Position + new Vector2(-ownerEntity.LocalScale.X, 0.5f);
+        var targetPosition = ownerEntity.Position + new Vector2(-ownerEntity.LocalScale.X * 1.5f, 0.5f);
         var distanceToTarget = (targetPosition - Entity.Position).Length;
-        if (distanceToTarget < 0.5f)
+        if (distanceToTarget < 1.0f)
         {
             Arrived = true;
         }
@@ -49,7 +49,7 @@ public class Pet : Component
             foreach (var other in otherOwnerPets)
             {
                 // if we are near another pet that has arrived, then we have arrived too
-                if (other.Arrived && (other.Entity.Position - Entity.Position).Length < (agentRadius + agentRadius + 1.0f))
+                if (other.Arrived && (other.Entity.Position - Entity.Position).Length < (agentRadius + agentRadius + 2.0f))
                 {
                     Arrived = true;
                     break;
@@ -99,12 +99,19 @@ public class Pet : Component
         Velocity *= 0.85f;
         Entity.Position += Velocity * Time.DeltaTime;
         
-        if (Velocity.Length > 0.1f && !isRunning)
+        if (Velocity.Length > 0.25f && !isRunning)
         {
             isRunning = true;
-            SpineAnimator.SetAnimation(Definition.RunAnimName, true);
+            if (SpineAnimator.HasAnimation(Definition.RunAnimName))
+            {
+                SpineAnimator.SetAnimation(Definition.RunAnimName, true);
+            }
+            else
+            {
+                Log.Warn($"Unknown run animation for pet {Definition.Name}: {Definition.RunAnimName}");
+            }
         }
-        else if (Velocity.Length < 0.1f && isRunning)
+        else if (Velocity.Length <= 0.25f && isRunning)
         {
             isRunning = false;
             SpineAnimator.SetAnimation("idle", true);
