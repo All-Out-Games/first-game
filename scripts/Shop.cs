@@ -619,7 +619,7 @@ public static class ShopData
         new () { Id = "Sundae Egg",              Name = "Sundae Egg",              Description = "A fun egg", Currency = Currency.Trophies, Cost = 150,         Kind = ItemKind.Egg },
         new () { Id = "Mac and Cheese Egg",      Name = "Mac and Cheese Egg",      Description = "A fun egg", Currency = Currency.Trophies, Cost = 800,         Kind = ItemKind.Egg },
 
-        new () { Id = "Sushi Egg",               Name = "Sushi Egg",               Description = "A fun egg", Currency = Currency.Trophies, Cost = 500,         Kind = ItemKind.Egg },
+        new () { Id = "Sushi Egg",               Name = "Sushi Egg",               Description = "A fun egg", Currency = Currency.Trophies, Cost = 4500,        Kind = ItemKind.Egg },
         new () { Id = "Pepperoni Pizza Egg",     Name = "Pepperoni Pizza Egg",     Description = "A fun egg", Currency = Currency.Trophies, Cost = 45000,       Kind = ItemKind.Egg },
         new () { Id = "Lasagna Egg",             Name = "Lasagna Egg",             Description = "A fun egg", Currency = Currency.Trophies, Cost = 275000,      Kind = ItemKind.Egg },
         new () { Id = "Burger Egg",              Name = "Burger Egg",              Description = "A fun egg", Currency = Currency.Trophies, Cost = 2800000,     Kind = ItemKind.Egg },

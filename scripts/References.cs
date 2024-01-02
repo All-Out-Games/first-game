@@ -63,7 +63,7 @@ public class References : Component
     [Serialized] public SpineSkeleton DonutGoatPet;
     [Serialized] public SpineSkeleton SherbertLumpPet;
 
-    public UI.NineSlice FrameSlice = new UI.NineSlice() { slice = new Vector4(100, 100, 100, 100), sliceScale = 1f };
+    public UI.NineSlice FrameSlice = new UI.NineSlice() { slice = new Vector4(8, 8, 8, 8), sliceScale = 1f };
     public UI.NineSlice ButtonSlice = new UI.NineSlice() { slice = new Vector4(30, 30, 30, 30), sliceScale = 1f };
     public UI.NineSlice TopBarSlice = new UI.NineSlice() { slice = new Vector4(40, 40, 40, 40), sliceScale = 1f };
 

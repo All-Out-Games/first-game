@@ -205,6 +205,7 @@ public static class PetData
 
     public static Dictionary<string, EggDefinition> Eggs = new Dictionary<string, EggDefinition>()
     {
+        // world 1
         { "Fruit Egg", new () { PossiblePets = new List<WeightedPet>() {
             new () { Id = "Carrot",        Weight = 20 },
             new () { Id = "Chicken",       Weight = 20 },
@@ -237,70 +238,71 @@ public static class PetData
             new () { Id = "Pizza Monster", Weight = 5 },
         } } },
 
-        // { "Sushi Egg", new () { PossiblePets = new List<WeightedPet>() {
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        // } } },
+        // world 2
+        { "Sushi Egg", new () { PossiblePets = new List<WeightedPet>() {
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 15 },
+            new () { Id = "Carrot",        Weight = 1 },
+        } } },
 
-        // { "Pepperoni Pizza Egg", new () { PossiblePets = new List<WeightedPet>() {
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        // } } },
+        { "Pepperoni Pizza Egg", new () { PossiblePets = new List<WeightedPet>() {
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 15 },
+            new () { Id = "Carrot",        Weight = 1 },
+        } } },
 
-        // { "Lasagna Egg", new () { PossiblePets = new List<WeightedPet>() {
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        // } } },
+        { "Lasagna Egg", new () { PossiblePets = new List<WeightedPet>() {
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 15 },
+            new () { Id = "Carrot",        Weight = 1 },
+        } } },
 
-        // { "Burger Egg", new () { PossiblePets = new List<WeightedPet>() {
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        // } } },
+        { "Burger Egg", new () { PossiblePets = new List<WeightedPet>() {
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 15 },
+            new () { Id = "Carrot",        Weight = 1 },
+        } } },
 
-        // { "Mint Chocolate Chip Egg", new () { PossiblePets = new List<WeightedPet>() {
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        // } } },
+        // world 3
+        { "Mint Chocolate Chip Egg", new () { PossiblePets = new List<WeightedPet>() {
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 15 },
+            new () { Id = "Carrot",        Weight = 1 },
+        } } },
 
-        // { "Dripping Honeycomb Egg", new () { PossiblePets = new List<WeightedPet>() {
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        // } } },
+        { "Dripping Honeycomb Egg", new () { PossiblePets = new List<WeightedPet>() {
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 15 },
+            new () { Id = "Carrot",        Weight = 1 },
+        } } },
 
-        // { "Chocolate Cookies Egg", new () { PossiblePets = new List<WeightedPet>() {
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        // } } },
+        { "Chocolate Cookies Egg", new () { PossiblePets = new List<WeightedPet>() {
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 15 },
+            new () { Id = "Carrot",        Weight = 1 },
+        } } },
 
-        // { "Rainbow Mega Swirl Egg", new () { PossiblePets = new List<WeightedPet>() {
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        //     new () { Id = "", Weight = 10 },
-        // } } },
-
+        { "Rainbow Mega Swirl Egg", new () { PossiblePets = new List<WeightedPet>() {
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 20 },
+            new () { Id = "Carrot",        Weight = 15 },
+            new () { Id = "Carrot",        Weight = 1 },
+        } } },
     };
 
     public class EggDefinition
