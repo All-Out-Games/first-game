@@ -26,7 +26,6 @@ public class Pet : Component
         SpineAnimator.Skeleton = Definition.Spine;
         SpineAnimator.SetSkin(Definition.Skin);
         SpineAnimator.SetAnimation("idle", true);
-
     }
 
     public override void Update()
@@ -53,6 +52,7 @@ public class Pet : Component
                 if (other.Arrived && (other.Entity.Position - Entity.Position).Length < (agentRadius + agentRadius + 1.0f))
                 {
                     Arrived = true;
+                    break;
                 }
             }
         }
@@ -102,7 +102,7 @@ public class Pet : Component
         if (Velocity.Length > 0.1f && !isRunning)
         {
             isRunning = true;
-            SpineAnimator.SetAnimation("run", true);
+            SpineAnimator.SetAnimation(Definition.RunAnimName, true);
         }
         else if (Velocity.Length < 0.1f && isRunning)
         {

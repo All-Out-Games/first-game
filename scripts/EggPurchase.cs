@@ -69,7 +69,7 @@ public class EggPurchase : Component
             };
 
             // localPlayer.ZoneCosts.TryGetValue(ZoneName, out var cost);
-            UI.Image(rect.LeftRect().Grow(0, 0.1f, 0, 0.1f), References.Instance.CoinIcon, Vector4.White);
+            UI.Image(rect.LeftRect().Grow(0, 0.1f, 0, 0.1f), References.Instance.TrophyIcon, Vector4.White);
             UI.Text(rect, $"{item.Cost}", textSettings);
         }
     }
