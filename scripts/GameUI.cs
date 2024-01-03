@@ -4,6 +4,8 @@ using AO;
 
 public class GameUI : System<GameUI> 
 {
+    public const int EggUILayer = 1000;
+
     public bool IsShowingUpgradesWindow;
     public bool IsShowingShopWindow;
     public bool IsShowingPetsWindow;
@@ -31,7 +33,8 @@ public class GameUI : System<GameUI>
         public Rect MyRect;
         public bool IsNew;
     }
-    [AOIgnore] public List<EggOpeningAnimation> EggOpeningAnimations = new List<EggOpeningAnimation>();
+
+    public List<EggOpeningAnimation> EggOpeningAnimations = new List<EggOpeningAnimation>();
 
     public Vector4 RarityColorCommon    = new Vector4(0.8f, 0.8f, 0.8f, 1.0f);
     public Vector4 RarityColorUncommon  = new Vector4(0.5f, 0.8f, 0.5f, 1.0f);

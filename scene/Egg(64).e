@@ -23,6 +23,7 @@
   "mono_component_type": "EggPurchase",
   "data": {
     "EggId": "Dripping Honeycomb Egg",
-    "Interactable": "74764218756146:1704239159184722700"
+    "Interactable": "74764218756146:1704239159184722700",
+    "Sprite": "0:0"
   }
 }

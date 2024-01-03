@@ -23,6 +23,7 @@
   "mono_component_type": "EggPurchase",
   "data": {
     "EggId": "Mint Chocolate Chip Egg",
-    "Interactable": "74764218704048:1704239159184709000"
+    "Interactable": "74764218704048:1704239159184709000",
+    "Sprite": "0:0"
   }
 }

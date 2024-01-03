@@ -23,6 +23,7 @@
   "mono_component_type": "EggPurchase",
   "data": {
     "EggId": "Pepperoni Pizza Egg",
-    "Interactable": "74688793702453:1704239139336001400"
+    "Interactable": "74688793702453:1704239139336001400",
+    "Sprite": "0:0"
   }
 }

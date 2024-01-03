@@ -23,6 +23,7 @@
   "mono_component_type": "EggPurchase",
   "data": {
     "EggId": "Fruit Egg",
-    "Interactable": "1514386171148643:1703282516532769700"
+    "Interactable": "1514386171148643:1703282516532769700",
+    "Sprite": "0:0"
   }
 }

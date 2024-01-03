@@ -23,6 +23,7 @@
   "mono_component_type": "EggPurchase",
   "data": {
     "EggId": "Sundae Egg",
-    "Interactable": "1535089963328731:1703287964889680400"
+    "Interactable": "1535089963328731:1703287964889680400",
+    "Sprite": "0:0"
   }
 }

@@ -74,6 +74,7 @@
     "FruitJellySlimePet": "pets/pet_slime/FAT001_slime.spine",
     "PizzaMonsterPet": "pets/pet_pizza_monster/FAT001_pizza_monster.spine",
     "DonutGoatPet": "pets/pet_donut_goat/FAT001_pet_donut_goat.spine",
-    "SherbertLumpPet": "pets/pet_sherbert_lump/FAT001_sherbert_lump.spine"
+    "SherbertLumpPet": "pets/pet_sherbert_lump/FAT001_sherbert_lump.spine",
+    "EggOpenAnimSkeleton": "egg_spine/FAT001_eggs.spine"
   }
 }

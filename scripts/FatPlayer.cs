@@ -1081,6 +1081,8 @@ public partial class FatPlayer : Player
     {
         if (!this.IsLocal) return;
         Log.Info($"Open egg: {eggId} {petId}");
+
+        Coroutine.Start(Entity, OpenEggAnimation());
     }
 
     [ClientRpc]
@@ -1093,6 +1095,70 @@ public partial class FatPlayer : Player
         {
             Log.Info($"Open egg: {eggIds[i]} {petIds[i]}");
         }
+    }
+
+    public void UpdateAndDrawEggSkeletonUI(SpineSkeleton skeleton)
+    {
+        Rect eggRect = UI.ScreenRect.Scale(0.45f, 0.45f);
+        skeleton.Update(Time.DeltaTime);
+        UI.Image(UI.ScreenRect, null, new Vector4(0, 0, 0, 0.7f), new UI.NineSlice());
+        UI.DrawSkeleton(eggRect, skeleton, Vector4.White);
+    }
+
+    public IEnumerator OpenEggAnimation()
+    {
+        var ts = new UI.TextSettings()
+        {
+            font = UI.TextSettings.Font.AlphaKind,
+            size = 68,
+            color = Vector4.White,
+            horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+            verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom,
+            wordWrap = false,
+            wordWrapOffset = 0,
+            outline = true,
+            outlineThickness = 2,
+        };
+
+        Rect textRect = UI.ScreenRect.BottomCenterRect().Offset(0, 50);
+        var skeletonAsset = References.Instance.EggOpenAnimSkeleton;
+        var skeleton = SpineSkeleton.Make(skeletonAsset);
+        skeleton.SetSkin("eggs/burger"); // todo(josh): config
+        skeleton.SetAnimation("idle", true);
+        while (true)
+        {
+            UI.PushLayer(GameUI.EggUILayer); using var _1 = AllOut.Defer(UI.PopLayer);
+            UpdateAndDrawEggSkeletonUI(skeleton);
+            UI.Text(textRect, "Click to open!", ts);
+            yield return null;
+            if (this.IsInputDown(Input.UnifiedInput.MOUSE_LEFT))
+            {
+                break;
+            }
+        }
+
+        skeleton.SetAnimation("hatch", false);
+        float timer = 0;
+        while (Coroutine.Timer(ref timer, 4))
+        {
+            UI.PushLayer(GameUI.EggUILayer); using var _1 = AllOut.Defer(UI.PopLayer);
+            UpdateAndDrawEggSkeletonUI(skeleton);
+            yield return null;
+        }
+
+        while (true)
+        {
+            UI.PushLayer(GameUI.EggUILayer); using var _1 = AllOut.Defer(UI.PopLayer);
+            UpdateAndDrawEggSkeletonUI(skeleton);
+            UI.Text(textRect, "Click to continue", ts);
+            yield return null;
+            if (this.IsInputDown(Input.UnifiedInput.MOUSE_LEFT))
+            {
+                break;
+            }
+        }
+
+        skeleton.Destroy();
     }
 
     [ServerRpc]

@@ -23,6 +23,7 @@
   "mono_component_type": "EggPurchase",
   "data": {
     "EggId": "Mac and Cheese Egg",
-    "Interactable": "1546152309284573:1703290876028303000"
+    "Interactable": "1546152309284573:1703290876028303000",
+    "Sprite": "0:0"
   }
 }

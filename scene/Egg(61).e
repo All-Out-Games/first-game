@@ -23,6 +23,7 @@
   "mono_component_type": "EggPurchase",
   "data": {
     "EggId": "Chocolate Cookies Egg",
-    "Interactable": "74764218651380:1704239159184695100"
+    "Interactable": "74764218651380:1704239159184695100",
+    "Sprite": "0:0"
   }
 }

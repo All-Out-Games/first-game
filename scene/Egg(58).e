@@ -23,6 +23,7 @@
   "mono_component_type": "EggPurchase",
   "data": {
     "EggId": "Sushi Egg",
-    "Interactable": "74688793537761:1704239139335958100"
+    "Interactable": "74688793537761:1704239139335958100",
+    "Sprite": "0:0"
   }
 }

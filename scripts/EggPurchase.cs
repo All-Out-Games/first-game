@@ -4,6 +4,7 @@ public class EggPurchase : Component
 {
     [Serialized] public string EggId;
     [Serialized] public Interactable Interactable;
+    [Serialized] public Sprite_Renderer Sprite;
 
     public override void Start()
     {

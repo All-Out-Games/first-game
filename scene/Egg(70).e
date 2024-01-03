@@ -23,6 +23,7 @@
   "mono_component_type": "EggPurchase",
   "data": {
     "EggId": "Rainbow Mega Swirl Egg",
-    "Interactable": "74764218590124:1704239159184679000"
+    "Interactable": "74764218590124:1704239159184679000",
+    "Sprite": "0:0"
   }
 }

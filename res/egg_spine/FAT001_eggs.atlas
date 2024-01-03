@@ -1,0 +1,68 @@
+FAT001_eggs.png
+	size: 2016, 2016
+	filter: Linear, Linear
+images/burger
+	bounds: 443, 840, 351, 381
+	offsets: 1, 1, 353, 383
+images/chocolate
+	bounds: 767, 39, 345, 380
+	offsets: 1, 2, 348, 383
+images/fruit
+	bounds: 443, 1280, 315, 424
+	offsets: 1, 1, 318, 426
+	rotate: 90
+images/honey
+	bounds: 6, 780, 352, 423
+	offsets: 1, 1, 354, 426
+	rotate: 90
+images/lasagna
+	bounds: 435, 425, 341, 409
+	offsets: 2, 1, 344, 411
+images/mcheese
+	bounds: 436, 1601, 338, 406
+	offsets: 2, 2, 341, 409
+images/mint
+	bounds: 6, 1138, 372, 431
+	offsets: 1, 1, 375, 433
+	rotate: 90
+images/pizza
+	bounds: 780, 1638, 346, 369
+	offsets: 2, 1, 349, 371
+images/rainbow
+	bounds: 6, 1516, 424, 491
+	offsets: 1, 18, 427, 529
+images/salad
+	bounds: 6, 56, 363, 399
+	offsets: 1, 1, 365, 401
+	rotate: 90
+images/sparkles/sparkle_fx/sparkle_blue
+	bounds: 974, 425, 58, 59
+	offsets: 4, 4, 66, 67
+images/sparkles/sparkle_fx/sparkle_green
+	bounds: 910, 425, 58, 59
+	offsets: 4, 4, 66, 67
+images/sparkles/sparkle_fx/sparkle_pink
+	bounds: 846, 425, 58, 59
+	offsets: 4, 4, 66, 67
+images/sparkles/sparkle_fx/sparkle_small_blue
+	bounds: 557, 1241, 32, 33
+	offsets: 4, 4, 40, 40
+images/sparkles/sparkle_fx/sparkle_small_green
+	bounds: 519, 1241, 32, 33
+	offsets: 4, 4, 40, 40
+images/sparkles/sparkle_fx/sparkle_small_pink
+	bounds: 481, 1241, 32, 33
+	offsets: 4, 4, 40, 40
+images/sparkles/sparkle_fx/sparkle_small_yellow
+	bounds: 443, 1241, 32, 33
+	offsets: 4, 4, 40, 40
+images/sparkles/sparkle_fx/sparkle_yellow
+	bounds: 782, 425, 58, 59
+	offsets: 4, 4, 66, 67
+images/sundae
+	bounds: 411, 6, 350, 413
+	offsets: 1, 1, 352, 415
+images/sushi
+	bounds: 6, 425, 349, 419
+	offsets: 2, 2, 352, 422
+	rotate: 90

@@ -23,6 +23,7 @@
   "mono_component_type": "EggPurchase",
   "data": {
     "EggId": "Salad Egg",
-    "Interactable": "1534996102705983:1703287940189559600"
+    "Interactable": "1534996102705983:1703287940189559600",
+    "Sprite": "0:0"
   }
 }

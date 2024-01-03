@@ -23,6 +23,7 @@
   "mono_component_type": "EggPurchase",
   "data": {
     "EggId": "Burger Egg",
-    "Interactable": "74688793631469:1704239139335982800"
+    "Interactable": "74688793631469:1704239139335982800",
+    "Sprite": "0:0"
   }
 }

@@ -207,11 +207,11 @@ public static class PetData
     {
         // world 1
         { "Fruit Egg", new () { PossiblePets = new List<WeightedPet>() {
-            new () { Id = "Carrot",        Weight = 20 },
-            new () { Id = "Chicken",       Weight = 20 },
-            new () { Id = "Fries",         Weight = 20 },
-            new () { Id = "Subway",        Weight = 15 },
-            new () { Id = "Golden Dog",    Weight = 1 },
+            new () { Id = "Carrot",            Weight = 20 },
+            new () { Id = "Chicken Drumstick", Weight = 20 },
+            new () { Id = "Fries",             Weight = 20 },
+            new () { Id = "Subway",            Weight = 15 },
+            new () { Id = "Golden Dog",        Weight = 1 },
         } } },
 
         { "Salad Egg", new () { PossiblePets = new List<WeightedPet>() {
@@ -330,7 +330,7 @@ public static class PetData
         public string Id;
         public string Name;
         public string Description;
-        public SpineSkeleton Spine;
+        public SpineSkeletonAsset Spine;
         public string Skin;
         public Rarity Rarity;
         public string RunAnimName;

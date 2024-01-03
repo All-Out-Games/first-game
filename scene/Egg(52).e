@@ -23,6 +23,7 @@
   "mono_component_type": "EggPurchase",
   "data": {
     "EggId": "Lasagna Egg",
-    "Interactable": "74688793754855:1704239139336015200"
+    "Interactable": "74688793754855:1704239139336015200",
+    "Sprite": "0:0"
   }
 }
