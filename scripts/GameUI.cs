@@ -145,8 +145,7 @@ public class GameUI : System<GameUI>
         }
 
         Rect topBarRect = UI.SafeRect.TopCenterRect();
-        topBarRect = topBarRect.Grow(0, 500, 65, 500)
-                               .Offset(0, -5);
+        topBarRect = topBarRect.Grow(0, 500, 65, 500).Offset(0, -5);
 
         var textSettings = new UI.TextSettings() 
         {
@@ -168,7 +167,7 @@ public class GameUI : System<GameUI>
             
             var trophiesRect = topBarGrid.Next().Inset(0, 10, 0, 10);
             UI.Image(trophiesRect, References.Instance.TopBarBg, Vector4.White, References.Instance.TopBarSlice);
-            var trophiesIconRect = trophiesRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(9, 0);
+            var trophiesIconRect = trophiesRect.Copy().CutLeft(50).FitAspect(References.Instance.TrophyIcon.Aspect).Inset(3, 3, 3, 3).Offset(9, 0);
             UI.Image(trophiesIconRect, References.Instance.TrophyIcon, Vector4.White);
             textSettings.color = References.Instance.YellowText;
             var trophyTextSettings = textSettings;
@@ -178,7 +177,7 @@ public class GameUI : System<GameUI>
             
             var cashRect = topBarGrid.Next().Inset(0, 10, 0, 10);
             UI.Image(cashRect, References.Instance.TopBarBg, Vector4.White, References.Instance.TopBarSlice);
-            var cashIconRect = cashRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(9, 0);
+            var cashIconRect = cashRect.Copy().CutLeft(50).FitAspect(References.Instance.CoinIcon.Aspect).Inset(3, 3, 3, 3).Offset(9, 0);
             UI.Image(cashIconRect, References.Instance.CoinIcon, Vector4.White);
             textSettings.color = References.Instance.GreenText;
             var coinTextSettings = textSettings;
@@ -189,7 +188,7 @@ public class GameUI : System<GameUI>
             var foodTextSettings = textSettings;
             var foodRect = topBarGrid.Next().Inset(0, 10, 0, 10);
             UI.Image(foodRect, References.Instance.TopBarBg, Vector4.White, References.Instance.TopBarSlice);
-            var foodIconRect = foodRect.Copy().CutLeft(50).FitAspect(1).Inset(3, 3, 3, 3).Offset(9, 0);
+            var foodIconRect = foodRect.Copy().CutLeft(50).FitAspect(References.Instance.FoodIcon.Aspect).Inset(3, 3, 3, 3).Offset(9, 0);
             UI.Image(foodIconRect, References.Instance.FoodIcon, Vector4.White);
             foodTextSettings.color = References.Instance.RedText;
             var foodEase = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - localPlayer.LastFoodParticleArriveTime, 0.25f));
@@ -450,51 +449,59 @@ public class GameUI : System<GameUI>
             UI.Blocker(windowRect, "pets");
             UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
 
-            var iconRect = windowRect.TopLeftRect().Grow(40, 40, 40, 40).Offset(0, -5);
-            UI.Image(iconRect, References.Instance.PetBrown, Vector4.White);
-            var textRect = iconRect.CenterRect().Grow(25, 0, 25, 0).Offset(25, 0);
-            UI.Text(textRect, "Pets", new UI.TextSettings(){
-                color = References.Instance.BlueText,
-                outline = true,
-                outlineThickness = 2,
-                horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
-                verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
-                size = 60,
-            });
-
-            var exitRect = windowRect.TopRightRect().Grow(20, 20, 20, 20).Offset(-35, -35);
-            var exitResult = UI.Button(exitRect, "EXIT_BUTTON", new UI.ButtonSettings(){ sprite = References.Instance.X }, new UI.TextSettings(){size = 0, color = Vector4.Zero});
-            if (exitResult.clicked) 
-            {
-                IsShowingPetsWindow = false;
-            }
-
             var equippedPetsCount = localPlayer.PetManager.OwnedPets.Count(p => p.Equipped);
-            var equippedCapacityRect = windowRect.TopRightRect().Offset(-250, 0).Grow(20, 115, 20, 115);
-            var equippedCapacityRectHeight = equippedCapacityRect.Height;
-            UI.Image(equippedCapacityRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
-            var equippedCapacityIconRect = equippedCapacityRect.LeftRect().Grow(0, equippedCapacityRectHeight/2, 0, equippedCapacityRectHeight/2).Grow(10, 10, 10, 10);
-            UI.Image(equippedCapacityIconRect, References.Instance.Backpack, Vector4.White);
-            var equippedCapacityTextRect = equippedCapacityRect.LeftRect().Offset(85, 0);
-            UI.Text(equippedCapacityTextRect, $"{equippedPetsCount}/{localPlayer.MaxEquippedPets}", new UI.TextSettings(){
-                color = References.Instance.YellowText,
-                outline = true,
-                outlineThickness = 2,
-                horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
-                verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
-                size = 36,
-            });
-            var increaseEquippedCapacityRect = equippedCapacityRect.RightRect().Grow(0, equippedCapacityRectHeight/2, 0, equippedCapacityRectHeight/2);
-            increaseEquippedCapacityRect = increaseEquippedCapacityRect.Offset(-equippedCapacityRectHeight/2, 0).Inset(5, 10, 5, 0);
-            if (UI.Button(increaseEquippedCapacityRect, "increase_equipped_capacity", new UI.ButtonSettings(){ sprite = References.Instance.Plus }, new UI.TextSettings(){size = 0, color = Vector4.Zero}).clicked)
+            // title/top row
             {
-                IsShowingPetsWindow = false;
-                IsShowingShopWindow = true;
-                Shop.Instance.ScrollToIAP = "pet_equip_cap_3";
+                UI.PushLayerRelative(1); using var _2 = AllOut.Defer(UI.PopLayer);
+
+                var iconRect = windowRect.TopLeftRect().Grow(40, 40, 40, 40).Offset(0, -5);
+                UI.Image(iconRect, References.Instance.PetBrown, Vector4.White);
+                var textRect = iconRect.CenterRect().Grow(25, 0, 25, 0).Offset(25, 0);
+                UI.Text(textRect, "Pets", new UI.TextSettings(){
+                    color = References.Instance.BlueText,
+                    outline = true,
+                    outlineThickness = 2,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                    size = 60,
+                });
+
+                var exitRect = windowRect.TopRightRect().Grow(20, 20, 20, 20).Offset(-35, -35);
+                var exitResult = UI.Button(exitRect, "EXIT_BUTTON", new UI.ButtonSettings(){ sprite = References.Instance.X }, new UI.TextSettings(){size = 0, color = Vector4.Zero});
+                if (exitResult.clicked)
+                {
+                    IsShowingPetsWindow = false;
+                }
+
+                var equippedCapacityRect = windowRect.TopRightRect().Offset(-250, 0).Grow(20, 115, 20, 115);
+                var equippedCapacityRectHeight = equippedCapacityRect.Height;
+                UI.Image(equippedCapacityRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
+                var equippedCapacityIconRect = equippedCapacityRect.LeftRect().Grow(0, equippedCapacityRectHeight/2, 0, equippedCapacityRectHeight/2).Grow(10, 10, 10, 10);
+                UI.Image(equippedCapacityIconRect, References.Instance.Backpack, Vector4.White);
+                var equippedCapacityTextRect = equippedCapacityRect.LeftRect().Offset(85, 0);
+                UI.Text(equippedCapacityTextRect, $"{equippedPetsCount}/{localPlayer.MaxEquippedPets}", new UI.TextSettings(){
+                    color = References.Instance.YellowText,
+                    outline = true,
+                    outlineThickness = 2,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                    size = 36,
+                });
+                var increaseEquippedCapacityRect = equippedCapacityRect.RightRect().Grow(0, equippedCapacityRectHeight/2, 0, equippedCapacityRectHeight/2);
+                increaseEquippedCapacityRect = increaseEquippedCapacityRect.Offset(-equippedCapacityRectHeight/2, 0).Inset(5, 10, 5, 0);
+                if (UI.Button(increaseEquippedCapacityRect.FitAspect(References.Instance.Plus.Aspect), "increase_equipped_capacity", new UI.ButtonSettings(){ sprite = References.Instance.Plus }, new UI.TextSettings(){size = 0, color = Vector4.Zero}).clicked)
+                {
+                    IsShowingPetsWindow = false;
+                    IsShowingShopWindow = true;
+                    Shop.Instance.ScrollToIAP = "pet_equip_cap_3";
+                }
             }
+
 
             if (SelectedPet != null)
             {
+                var petDefn = SelectedPet.GetDefinition();
+
                 var selectedPetRect = windowRect.CutRight(500).Inset(75, 0, 75, 0);
                 var dividerRect = selectedPetRect.CutLeft(2);
                 UI.Image(dividerRect, null, Vector4.Black * 0.25f);
@@ -510,11 +517,11 @@ public class GameUI : System<GameUI>
                 });
 
                 var infoRect = selectedPetRect.CutTop(225);
-                var petIconRect = infoRect.CutLeft(infoRect.Width*0.33f);
-                petIconRect = petIconRect.CenterRect().Grow(petIconRect.Width/2, petIconRect.Width/2, petIconRect.Width/2, petIconRect.Width/2).Inset(10, 10, 10, 10).Offset(10, 0);
-                UI.Image(petIconRect, References.Instance.PetBrown, Vector4.White);
+                var petIconRect = infoRect.CutLeftUnscaled(infoRect.Width*0.5f);
+                petIconRect = petIconRect.Inset(10, 10, 10, 10).Offset(10, 0);
+                UI.Image(petIconRect.FitAspect(petDefn.IconSprite.Aspect), petDefn.IconSprite, Vector4.White);
 
-                var rarityColor = SelectedPet.GetDefinition().Rarity switch
+                var rarityColor = petDefn.Rarity switch
                 {
                     PetData.Rarity.Uncommon => RarityColorUncommon,
                     PetData.Rarity.Rare => RarityColorRare,
@@ -523,7 +530,7 @@ public class GameUI : System<GameUI>
                     _ => RarityColorCommon,
                 };
                 var rarityRect = infoRect.CutTop(50);
-                UI.Text(rarityRect, SelectedPet.GetDefinition().Rarity.ToString(), new UI.TextSettings(){
+                UI.Text(rarityRect, petDefn.Rarity.ToString(), new UI.TextSettings(){
                     color = rarityColor,
                     outline = true,
                     outlineThickness = 2,
@@ -533,7 +540,7 @@ public class GameUI : System<GameUI>
                 });
                 
                 infoRect.CutTop(5);
-                foreach(var modifier in SelectedPet.GetDefinition().StatModifiers)
+                foreach(var modifier in petDefn.StatModifiers)
                 {
                     var statModRect = infoRect.CutTop(50);
                     var (text, col) = BuildStatModifierText(modifier);
@@ -590,11 +597,11 @@ public class GameUI : System<GameUI>
             }
 
             {
-                Rect contentRect = windowRect.Inset(75, 50, 5, 50);
+                Rect contentRect = windowRect.Inset(5, 50, 5, 50);
                 var scrollView = UI.PushScrollView("pets_scroll_view", contentRect, new UI.ScrollViewSettings() { Vertical = true, });
                 using var _3 = AllOut.Defer(() => UI.PopScrollView());
 
-                var petsRect = scrollView.contentRect.TopRect();
+                var petsRect = scrollView.contentRect.TopRect().Offset(0, -25);
                 var grid = UI.GridLayout.Make(petsRect, 165, 165, UI.GridLayout.SizeSource.ELEMENT_SIZE);
 
                 int petCount = Math.Min(localPlayer.MaxPetsInStorage, localPlayer.PetManager.OwnedPets.Count);
@@ -613,7 +620,8 @@ public class GameUI : System<GameUI>
                         UI.Image(petRect.Grow(2), References.Instance.PanelContent, Vector4.Green, References.Instance.WhiteFrameSlice);
                     }
 
-                    buttonSettings.colorMultiplier = pet.GetDefinition().Rarity switch
+                    var petDefn = pet.GetDefinition();
+                    buttonSettings.colorMultiplier = petDefn.Rarity switch
                     {
                         PetData.Rarity.Uncommon => RarityColorUncommon,
                         PetData.Rarity.Rare => RarityColorRare,
@@ -632,8 +640,8 @@ public class GameUI : System<GameUI>
                         HoveredPet = pet;
                     }
 
-                    var petIconRect = petRect.Inset(5);
-                    UI.Image(petIconRect, References.Instance.PetBrown, Vector4.White);
+                    var petIconRect = petRect.Inset(10);
+                    UI.Image(petIconRect.FitAspect(petDefn.IconSprite.Aspect), petDefn.IconSprite, Vector4.White);
 
                     if (pet.Equipped)
                     {

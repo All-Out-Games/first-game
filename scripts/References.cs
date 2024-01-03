@@ -64,6 +64,27 @@ public class References : Component
     [Serialized] public SpineSkeletonAsset SherbertLumpPet;
     [Serialized] public SpineSkeletonAsset EggOpenAnimSkeleton;
 
+    [Serialized] public Texture IconCarrotPet;
+    [Serialized] public Texture IconDrumstickPet;
+    [Serialized] public Texture IconFriesPet;
+    [Serialized] public Texture IconIceCreamConePet;
+    [Serialized] public Texture IconSubwayPet;
+    [Serialized] public Texture IconSqueezySaucePet;
+    [Serialized] public Texture IconPenguinPet;
+    [Serialized] public Texture IconDiamondPet;
+    [Serialized] public Texture IconFoodFacePet;
+    [Serialized] public Texture IconHotDogPet;
+    [Serialized] public Texture IconBurgerPet;
+    [Serialized] public Texture IconPizzaPet;
+    [Serialized] public Texture IconDogPet;
+    [Serialized] public Texture IconMolePet;
+    [Serialized] public Texture IconLizardPet;
+    [Serialized] public Texture IconSpiderPet;
+    [Serialized] public Texture IconDonutGoatPet;
+    [Serialized] public Texture IconSherbertLumpPet;
+    [Serialized] public Texture IconFruitJellySlimePet;
+    [Serialized] public Texture IconPizzaMonsterPet;
+
     public UI.NineSlice DarkFrameSlice  = new UI.NineSlice() { slice = new Vector4(8, 8, 8, 8), sliceScale = 1f };
     public UI.NineSlice WhiteFrameSlice = new UI.NineSlice() { slice = new Vector4(45, 45, 45, 45), sliceScale = 1f };
     public UI.NineSlice ButtonSlice = new UI.NineSlice() { slice = new Vector4(30, 30, 30, 30), sliceScale = 1f };

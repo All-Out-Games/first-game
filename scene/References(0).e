@@ -75,6 +75,26 @@
     "PizzaMonsterPet": "pets/pet_pizza_monster/FAT001_pizza_monster.spine",
     "DonutGoatPet": "pets/pet_donut_goat/FAT001_pet_donut_goat.spine",
     "SherbertLumpPet": "pets/pet_sherbert_lump/FAT001_sherbert_lump.spine",
-    "EggOpenAnimSkeleton": "egg_spine/FAT001_eggs.spine"
+    "EggOpenAnimSkeleton": "egg_spine/FAT001_eggs.spine",
+    "IconCarrotPet": "pets/icons/carrot.png",
+    "IconDrumstickPet": "pets/icons/drumstick.png",
+    "IconFriesPet": "pets/icons/fries.png",
+    "IconIceCreamConePet": "pets/icons/ice_cream.png",
+    "IconSubwayPet": "pets/icons/sandwich.png",
+    "IconSqueezySaucePet": "pets/icons/sauce_bottle.png",
+    "IconPenguinPet": "pets/icons/penguin.png",
+    "IconDiamondPet": "pets/icons/diamond.png",
+    "IconFoodFacePet": "pets/icons/food_face.png",
+    "IconHotDogPet": "pets/icons/hotdog.png",
+    "IconBurgerPet": "pets/icons/burger.png",
+    "IconPizzaPet": "pets/icons/pizza.png",
+    "IconDogPet": "pets/icons/cooper.png",
+    "IconMolePet": "pets/icons/mole.png",
+    "IconLizardPet": "pets/icons/greenlizard.png",
+    "IconSpiderPet": "pets/icons/spider.png",
+    "IconDonutGoatPet": "pets/icons/donutgoat.png",
+    "IconSherbertLumpPet": "pets/icons/shertbert.png",
+    "IconFruitJellySlimePet": "pets/icons/slime.png",
+    "IconPizzaMonsterPet": "pets/icons/pizza_monster.png"
   }
 }
