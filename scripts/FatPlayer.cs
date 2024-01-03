@@ -1097,12 +1097,14 @@ public partial class FatPlayer : Player
         }
     }
 
-    public void UpdateAndDrawEggSkeletonUI(SpineSkeleton skeleton)
+    public void UpdateAndDrawEggSkeletonUI(SpineSkeleton eggSkeleton, float fadeT, SpineSkeleton petSkeleton, float petAlpha)
     {
-        Rect eggRect = UI.ScreenRect.Scale(0.45f, 0.45f);
-        skeleton.Update(Time.DeltaTime);
-        UI.Image(UI.ScreenRect, null, new Vector4(0, 0, 0, 0.7f), new UI.NineSlice());
-        UI.DrawSkeleton(eggRect, skeleton, Vector4.White);
+        Rect eggRect = UI.ScreenRect.Slide(0, Ease.OutQuart(fadeT)).Scale(0.45f, 0.45f);
+        if (eggSkeleton != null) eggSkeleton.Update(Time.DeltaTime);
+        if (petSkeleton != null) petSkeleton.Update(Time.DeltaTime);
+        UI.Image(UI.ScreenRect, null, new Vector4(0, 0, 0, 0.7f) * Ease.OutQuart(1.0f-fadeT), new UI.NineSlice());
+        if (petSkeleton != null) UI.DrawSkeleton(eggRect.Scale(petAlpha), petSkeleton, Vector4.White * petAlpha, (float)Math.Sin(2 * Math.PI * Time.TimeSinceStartup * 0.5) * 8);
+        if (eggSkeleton != null) UI.DrawSkeleton(eggRect, eggSkeleton, Vector4.White, 0);
     }
 
     public IEnumerator OpenEggAnimation()
@@ -1121,15 +1123,21 @@ public partial class FatPlayer : Player
         };
 
         Rect textRect = UI.ScreenRect.BottomCenterRect().Offset(0, 50);
-        var skeletonAsset = References.Instance.EggOpenAnimSkeleton;
-        var skeleton = SpineSkeleton.Make(skeletonAsset);
-        skeleton.SetSkin("eggs/burger"); // todo(josh): config
-        skeleton.SetAnimation("idle", true);
+        var eggSkeleton = SpineSkeleton.Make(References.Instance.EggOpenAnimSkeleton);
+        eggSkeleton.SetSkin("eggs/burger"); // todo(josh): config
+        eggSkeleton.SetAnimation("idle", true);
+        var petDefinition = PetData.Pets["Carrot"]; // todo(josh): config
+        Util.Assert(petDefinition != null);
+        var petSkeleton = SpineSkeleton.Make(petDefinition.Spine);
+        petSkeleton.SetSkin(petDefinition.Skin);
+        petSkeleton.SetAnimation("idle", true);
+        float startTime = Time.TimeSinceStartup;
         while (true)
         {
-            UI.PushLayer(GameUI.EggUILayer); using var _1 = AllOut.Defer(UI.PopLayer);
-            UpdateAndDrawEggSkeletonUI(skeleton);
+            UI.PushLayer(GameUI.EggUILayer);
+            UpdateAndDrawEggSkeletonUI(eggSkeleton, 1.0f - Ease.Linearstep(0, 0.75f, Time.TimeSinceStartup - startTime), null, 0);
             UI.Text(textRect, "Click to open!", ts);
+            UI.PopLayer();
             yield return null;
             if (this.IsInputDown(Input.UnifiedInput.MOUSE_LEFT))
             {
@@ -1137,20 +1145,26 @@ public partial class FatPlayer : Player
             }
         }
 
-        skeleton.SetAnimation("hatch", false);
+        eggSkeleton.SetAnimation("hatch", false);
         float timer = 0;
-        while (Coroutine.Timer(ref timer, 4))
+        while (Coroutine.Timer(ref timer, 3.5f))
         {
-            UI.PushLayer(GameUI.EggUILayer); using var _1 = AllOut.Defer(UI.PopLayer);
-            UpdateAndDrawEggSkeletonUI(skeleton);
+            UI.PushLayer(GameUI.EggUILayer);
+            UpdateAndDrawEggSkeletonUI(eggSkeleton, 0, petSkeleton, Ease.Linearstep(1.7f, 1.95f, timer));
+            UI.PopLayer();
             yield return null;
+            if (this.IsInputDown(Input.UnifiedInput.MOUSE_LEFT))
+            {
+                break;
+            }
         }
 
         while (true)
         {
-            UI.PushLayer(GameUI.EggUILayer); using var _1 = AllOut.Defer(UI.PopLayer);
-            UpdateAndDrawEggSkeletonUI(skeleton);
+            UI.PushLayer(GameUI.EggUILayer);
+            UpdateAndDrawEggSkeletonUI(null, 0, petSkeleton, 1);
             UI.Text(textRect, "Click to continue", ts);
+            UI.PopLayer();
             yield return null;
             if (this.IsInputDown(Input.UnifiedInput.MOUSE_LEFT))
             {
@@ -1158,7 +1172,7 @@ public partial class FatPlayer : Player
             }
         }
 
-        skeleton.Destroy();
+        eggSkeleton.Destroy();
     }
 
     [ServerRpc]
