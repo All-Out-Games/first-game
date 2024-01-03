@@ -50,7 +50,7 @@ public class References : Component
     [Serialized] public SpineSkeletonAsset DiamondPet;
     [Serialized] public SpineSkeletonAsset FriesPet;
     [Serialized] public SpineSkeletonAsset SubwayPet;
-    [Serialized] public SpineSkeletonAsset StackedBurgerPet;
+    [Serialized] public SpineSkeletonAsset SqueezySaucePet;
     [Serialized] public SpineSkeletonAsset HotDogPet;
     [Serialized] public SpineSkeletonAsset PizzaPet;
     [Serialized] public SpineSkeletonAsset FoodFacePet;

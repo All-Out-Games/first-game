@@ -1101,13 +1101,14 @@ public partial class FatPlayer : Player
         }
     }
 
-    public void UpdateAndDrawEggSkeletonUI(SpineSkeleton eggSkeleton, float fadeT, SpineSkeleton petSkeleton, float petAlpha)
+    public void UpdateAndDrawEggSkeletonUI(SpineSkeleton eggSkeleton, float fadeT, SpineSkeleton petSkeleton, float petAlpha, PetData.PetDefinition petDefinition)
     {
-        Rect eggRect = UI.ScreenRect.Slide(0, Ease.OutQuart(fadeT)).Scale(0.45f, 0.45f);
+        Rect eggRect = UI.ScreenRect.Slide(0, Ease.OutQuart(fadeT)).Scale(0.45f);
+        Rect petRect = eggRect.Offset(0, petDefinition.EggOpenAnimYOffset).Scale(petDefinition.EggOpenAnimScale);
         if (eggSkeleton != null) eggSkeleton.Update(Time.DeltaTime);
         if (petSkeleton != null) petSkeleton.Update(Time.DeltaTime);
         UI.Image(UI.ScreenRect, null, new Vector4(0, 0, 0, 0.7f) * Ease.OutQuart(1.0f-fadeT), new UI.NineSlice());
-        if (petSkeleton != null) UI.DrawSkeleton(eggRect.Scale(petAlpha), petSkeleton, Vector4.White * petAlpha, (float)Math.Sin(2 * Math.PI * Time.TimeSinceStartup * 0.5) * 8);
+        if (petSkeleton != null) UI.DrawSkeleton(petRect.Scale(petAlpha), petSkeleton, Vector4.White * petAlpha, (float)Math.Sin(2 * Math.PI * Time.TimeSinceStartup * 0.5) * 8);
         if (eggSkeleton != null) UI.DrawSkeleton(eggRect, eggSkeleton, Vector4.White, 0);
     }
 
@@ -1137,7 +1138,7 @@ public partial class FatPlayer : Player
         while (true)
         {
             UI.PushLayer(GameUI.EggUILayer);
-            UpdateAndDrawEggSkeletonUI(eggSkeleton, 1.0f - Ease.Linearstep(0, 0.75f, Time.TimeSinceStartup - startTime), null, 0);
+            UpdateAndDrawEggSkeletonUI(eggSkeleton, 1.0f - Ease.Linearstep(0, 0.75f, Time.TimeSinceStartup - startTime), null, 0, petDefinition);
             UI.Text(textRect, "Click to open!", ts);
             UI.PopLayer();
             yield return null;
@@ -1152,7 +1153,7 @@ public partial class FatPlayer : Player
         while (Coroutine.Timer(ref timer, 3.5f))
         {
             UI.PushLayer(GameUI.EggUILayer);
-            UpdateAndDrawEggSkeletonUI(eggSkeleton, 0, petSkeleton, Ease.Linearstep(1.7f, 1.95f, timer));
+            UpdateAndDrawEggSkeletonUI(eggSkeleton, 0, petSkeleton, Ease.Linearstep(1.7f, 1.95f, timer), petDefinition);
             UI.PopLayer();
             yield return null;
             if (this.IsInputDown(Input.UnifiedInput.MOUSE_LEFT))
@@ -1164,7 +1165,7 @@ public partial class FatPlayer : Player
         while (true)
         {
             UI.PushLayer(GameUI.EggUILayer);
-            UpdateAndDrawEggSkeletonUI(null, 0, petSkeleton, 1);
+            UpdateAndDrawEggSkeletonUI(null, 0, petSkeleton, 1, petDefinition);
             UI.Text(textRect, "Click to continue", ts);
             UI.PopLayer();
             yield return null;

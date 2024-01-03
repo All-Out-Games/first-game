@@ -63,7 +63,7 @@
     "DiamondPet": "pets/pets_multiple/FAT001_pets_common.spine",
     "FriesPet": "pets/pets_multiple/FAT001_pets_common.spine",
     "SubwayPet": "pets/pets_multiple/FAT001_pets_common.spine",
-    "StackedBurgerPet": "pets/pets_multiple/FAT001_pets_common.spine",
+    "SqueezySaucePet": "pets/pets_multiple/FAT001_pets_common.spine",
     "HotDogPet": "pets/pets_multiple/FAT001_pets_common.spine",
     "PizzaPet": "pets/pets_multiple/FAT001_pets_common.spine",
     "FoodFacePet": "pets/pets_multiple/FAT001_pets_common.spine",
