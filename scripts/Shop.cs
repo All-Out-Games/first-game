@@ -61,7 +61,7 @@ public class Shop : System<Shop>
         var windowRect = UI.SafeRect.CenterRect();
         windowRect = windowRect.Grow(350, 600, 350, 600);
         UI.Blocker(windowRect, "shop");
-        UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+        UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
 
         {
             var scrollRect = windowRect.Inset(5, 20, 5, 20);
@@ -113,7 +113,7 @@ public class Shop : System<Shop>
                             case ShopData.ItemDisplaySize.SingleBigEntry:
                             {
                                 entryRect = scrollView.contentRect.CutTop(325);
-                                UI.Image(entryRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                                UI.Image(entryRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
 
                                 var titleTextRect = entryRect.TopRect().GrowBottom(75);
                                 UI.Text(titleTextRect, product.Name, new UI.TextSettings() { size = 60, color = Vector4.White, outline = true, outlineThickness = 2, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom, wordWrap = true });
@@ -138,7 +138,7 @@ public class Shop : System<Shop>
                                         if (!packProduct.IsValid()) continue;
 
                                         var iconRect = iconGrid.Next();
-                                        UI.Image(iconRect, packProduct.Icon, Vector4.White, References.Instance.FrameSlice);
+                                        UI.Image(iconRect, packProduct.Icon, Vector4.White, References.Instance.WhiteFrameSlice);
                                     }
                                 }
                                 else
@@ -146,7 +146,7 @@ public class Shop : System<Shop>
                                     foreach (var icon in entry.Icons)
                                     {
                                         var iconRect = iconGrid.Next();
-                                        UI.Image(iconRect, References.Instance.FrameDark, Vector4.White, References.Instance.FrameSlice);
+                                        UI.Image(iconRect, References.Instance.FrameDark, Vector4.White, References.Instance.DarkFrameSlice);
                                     }
                                 }
 
@@ -192,7 +192,7 @@ public class Shop : System<Shop>
                                      if (buyResult.pressed)  entryRect = entryRect.Inset(3);
                                 else if (buyResult.hovering) entryRect = entryRect.Grow(3);
 
-                                UI.Image(entryRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                                UI.Image(entryRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
 
                                 var titleTextRect = entryCutRect.CutTop(100);
                                 UI.Text(titleTextRect, product.Name, new UI.TextSettings() { size = 72, color = Vector4.White, outline = true, outlineThickness = 2, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom, wordWrap = true });

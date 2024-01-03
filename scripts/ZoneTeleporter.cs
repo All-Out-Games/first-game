@@ -30,7 +30,7 @@ public class ZoneTeleporter : Component
 
             var worldRect = interactable.GetWorldRect();
             var rect = worldRect.TopCenterRect().Grow(0.2f, 0.3f, 0, 0.3f);
-            UI.Image(rect, References.Instance.FrameDark, new AO.Vector4(0,0,0, 0.5f), References.Instance.FrameSlice);
+            UI.Image(rect, References.Instance.FrameDark, new AO.Vector4(0,0,0, 0.5f), References.Instance.DarkFrameSlice);
 
             var textSettings = new UI.TextSettings()
             {

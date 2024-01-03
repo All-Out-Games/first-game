@@ -313,7 +313,7 @@ public class GameUI : System<GameUI>
             var windowRect = UI.SafeRect.CenterRect();
             windowRect = windowRect.Grow(350, 550, 350, 550);
             UI.Blocker(windowRect, "upgrades");
-            UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+            UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
 
             var iconRect = windowRect.TopLeftRect().Grow(40, 40, 40, 40).Offset(0, -5);
             UI.Image(iconRect, References.Instance.Upgrade, Vector4.White);
@@ -342,7 +342,7 @@ public class GameUI : System<GameUI>
                 using var _ = UI.PUSH_ID(title);
 
                 var upgradeRect = grid.Next().Inset(10);
-                UI.Image(upgradeRect, References.Instance.FrameWhite, new Vector4(233.0f/255.0f, 233.0f/255.0f, 233.0f/255.0f, 1.0f), References.Instance.FrameSlice);
+                UI.Image(upgradeRect, References.Instance.FrameWhite, new Vector4(233.0f/255.0f, 233.0f/255.0f, 233.0f/255.0f, 1.0f), References.Instance.WhiteFrameSlice);
                 
                 var iconRect = upgradeRect.LeftRect().GrowRightUnscaled(upgradeRect.Height).Inset(10);
                 UI.Image(iconRect, icon, Vector4.White);
@@ -448,7 +448,7 @@ public class GameUI : System<GameUI>
             var windowRect = UI.SafeRect.CenterRect();
             windowRect = windowRect.Grow(300, 650, 300, 650);
             UI.Blocker(windowRect, "pets");
-            UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+            UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
 
             var iconRect = windowRect.TopLeftRect().Grow(40, 40, 40, 40).Offset(0, -5);
             UI.Image(iconRect, References.Instance.PetBrown, Vector4.White);
@@ -472,7 +472,7 @@ public class GameUI : System<GameUI>
             var equippedPetsCount = localPlayer.PetManager.OwnedPets.Count(p => p.Equipped);
             var equippedCapacityRect = windowRect.TopRightRect().Offset(-250, 0).Grow(20, 115, 20, 115);
             var equippedCapacityRectHeight = equippedCapacityRect.Height;
-            UI.Image(equippedCapacityRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+            UI.Image(equippedCapacityRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
             var equippedCapacityIconRect = equippedCapacityRect.LeftRect().Grow(0, equippedCapacityRectHeight/2, 0, equippedCapacityRectHeight/2).Grow(10, 10, 10, 10);
             UI.Image(equippedCapacityIconRect, References.Instance.Backpack, Vector4.White);
             var equippedCapacityTextRect = equippedCapacityRect.LeftRect().Offset(85, 0);
@@ -558,7 +558,7 @@ public class GameUI : System<GameUI>
                 var equipButtonRect = selectedPetRect.CutTop(90).Inset(5, 10, 5, 10);
                 if (SelectedPet.Equipped) 
                 {
-                    var unequipButtonResult = UI.Button(equipButtonRect, "Unequip", new UI.ButtonSettings(){ sprite = References.Instance.BlueButton, slice = References.Instance.FrameSlice }, buttonTs);
+                    var unequipButtonResult = UI.Button(equipButtonRect, "Unequip", new UI.ButtonSettings(){ sprite = References.Instance.BlueButton, slice = References.Instance.WhiteFrameSlice }, buttonTs);
                     if (unequipButtonResult.clicked) 
                     {
                         localPlayer.CallServer_RequestUnequipPet(SelectedPet.Id);
@@ -570,7 +570,7 @@ public class GameUI : System<GameUI>
                     {
                         UI.PushDisabled();
                     }
-                    var equipButtonResult = UI.Button(equipButtonRect, "Equip", new UI.ButtonSettings(){ sprite = References.Instance.GreenButton, slice = References.Instance.FrameSlice }, buttonTs);
+                    var equipButtonResult = UI.Button(equipButtonRect, "Equip", new UI.ButtonSettings(){ sprite = References.Instance.GreenButton, slice = References.Instance.WhiteFrameSlice }, buttonTs);
                     if (equipButtonResult.clicked) 
                     {
                         localPlayer.CallServer_RequestEquipPet(SelectedPet.Id);
@@ -581,7 +581,7 @@ public class GameUI : System<GameUI>
                 }
 
                 var deleteButtonRect = selectedPetRect.CutTop(90).Inset(5, 10, 5, 10);
-                var deleteButtonResult = UI.Button(deleteButtonRect, "Delete", new UI.ButtonSettings(){ sprite = References.Instance.RedButton, slice = References.Instance.FrameSlice }, buttonTs);
+                var deleteButtonResult = UI.Button(deleteButtonRect, "Delete", new UI.ButtonSettings(){ sprite = References.Instance.RedButton, slice = References.Instance.WhiteFrameSlice }, buttonTs);
                 if (deleteButtonResult.clicked) 
                 {
                     PetToDelete = SelectedPet;
@@ -610,7 +610,7 @@ public class GameUI : System<GameUI>
                     buttonSettings.sprite = References.Instance.FrameWhite;
 
                     if (isSelected) {
-                        UI.Image(petRect.Grow(2), References.Instance.PanelContent, Vector4.Green, References.Instance.FrameSlice);
+                        UI.Image(petRect.Grow(2), References.Instance.PanelContent, Vector4.Green, References.Instance.WhiteFrameSlice);
                     }
 
                     buttonSettings.colorMultiplier = pet.GetDefinition().Rarity switch
@@ -694,7 +694,7 @@ public class GameUI : System<GameUI>
                 }
 
                 var deleteRect = UI.SafeRect.CenterRect().Grow(150, 200, 150, 200);
-                UI.Image(deleteRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                UI.Image(deleteRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
                 var deleteTextRect = deleteRect.CutTop(150);
                 UI.Text(deleteTextRect, $"Are you sure you want to delete {PetToDelete.Name}?", new UI.TextSettings(){
                     color = Vector4.White,
@@ -707,7 +707,7 @@ public class GameUI : System<GameUI>
                 });
 
                 var deleteButtonRect = deleteRect.CutTop(75).Inset(0, 10, 10, 10);
-                var deleteButtonResult = UI.Button(deleteButtonRect, "Delete", new UI.ButtonSettings(){ sprite = References.Instance.RedButton, slice = References.Instance.FrameSlice }, new UI.TextSettings(){
+                var deleteButtonResult = UI.Button(deleteButtonRect, "Delete", new UI.ButtonSettings(){ sprite = References.Instance.RedButton, slice = References.Instance.WhiteFrameSlice }, new UI.TextSettings(){
                     color = Vector4.White,
                     outline = true,
                     outlineThickness = 2,
@@ -723,7 +723,7 @@ public class GameUI : System<GameUI>
                 }
 
                 var cancelButtonRect = deleteRect.CutTop(75).Inset(0, 10, 10, 10);
-                var cancelButtonResult = UI.Button(cancelButtonRect, "Cancel", new UI.ButtonSettings(){ sprite = References.Instance.GreenButton, slice = References.Instance.FrameSlice }, new UI.TextSettings(){
+                var cancelButtonResult = UI.Button(cancelButtonRect, "Cancel", new UI.ButtonSettings(){ sprite = References.Instance.GreenButton, slice = References.Instance.WhiteFrameSlice }, new UI.TextSettings(){
                     color = Vector4.White,
                     outline = true,
                     outlineThickness = 2,
@@ -742,7 +742,7 @@ public class GameUI : System<GameUI>
 
                 var pos = Input.GetMouseScreenPosition();
                 Rect tooltipRect = new Rect(pos).Grow(0, 200, rectSize, 0).Offset(20, -20);
-                UI.Image(tooltipRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                UI.Image(tooltipRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
 
                 var nameRect = tooltipRect.CutTop(50);
                 UI.Text(nameRect, HoveredPet.Name, new UI.TextSettings(){
@@ -812,7 +812,7 @@ public class GameUI : System<GameUI>
             var windowRect = UI.SafeRect;
             windowRect = windowRect.Inset(200, 350, 200, 350);
             UI.Blocker(windowRect, "rebirth");
-            UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+            UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
 
             var halfWidth = windowRect.Width / 2;
 
@@ -822,7 +822,7 @@ public class GameUI : System<GameUI>
             // Current
             {
                 var beforeRect = windowRect.LeftRect().GrowRightUnscaled(halfWidth).Inset(50, 200, 225, 50);
-                UI.Image(beforeRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                UI.Image(beforeRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
                 
                 beforeRect = beforeRect.SubRect(0, 0, 1, 1, 0, 0, 10, 0);
                 var h = beforeRect.Height / 5;
@@ -832,22 +832,22 @@ public class GameUI : System<GameUI>
                 UI.Text(textRect, "Current:", headerTextSettings);
 
                 var trophiesRect = beforeRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
-                UI.Image(trophiesRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                UI.Image(trophiesRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
                 upgradeItemTextSettings.color = References.Instance.YellowText;
                 UI.Text(trophiesRect, $"{Util.FormatDouble(localPlayer.Trophies)}", upgradeItemTextSettings);
 
                 var cashRect = beforeRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
-                UI.Image(cashRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                UI.Image(cashRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
                 upgradeItemTextSettings.color = References.Instance.GreenText;
                 UI.Text(cashRect, $"{Util.FormatDouble(localPlayer.Coins)}", upgradeItemTextSettings);
 
                 var cashMultiplierRect = beforeRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
-                UI.Image(cashMultiplierRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                UI.Image(cashMultiplierRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
                 upgradeItemTextSettings.color = References.Instance.BlueText;
                 UI.Text(cashMultiplierRect, $"{currentRebirthData.CashMultiplier:0.##}", upgradeItemTextSettings);
 
                 var rankRect = beforeRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
-                UI.Image(rankRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                UI.Image(rankRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
                 upgradeItemTextSettings.color = References.Instance.YellowText;
                 UI.Text(rankRect, $"{currentRebirthData.RankName}", upgradeItemTextSettings);
             }
@@ -855,7 +855,7 @@ public class GameUI : System<GameUI>
             // Next
             {
                 var afterRect = windowRect.RightRect().GrowLeftUnscaled(halfWidth).Inset(50, 50, 225, 200);
-                UI.Image(afterRect, References.Instance.FrameWhite, References.Instance.BlueBg, References.Instance.FrameSlice);
+                UI.Image(afterRect, References.Instance.FrameWhite, References.Instance.BlueBg, References.Instance.WhiteFrameSlice);
 
                 afterRect = afterRect.SubRect(0, 0, 1, 1, 0, 0, 10, 0);
                 var h = afterRect.Height / 5;
@@ -865,22 +865,22 @@ public class GameUI : System<GameUI>
                 UI.Text(textRect, "Next:", headerTextSettings);
 
                 var trophiesRect = afterRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
-                UI.Image(trophiesRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                UI.Image(trophiesRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
                 upgradeItemTextSettings.color = References.Instance.YellowText;
                 UI.Text(trophiesRect, $"{Util.FormatDouble(localPlayer.Trophies - nextRebirthData.TrophiesCost)}", upgradeItemTextSettings);
 
                 var cashRect = afterRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
-                UI.Image(cashRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                UI.Image(cashRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
                 upgradeItemTextSettings.color = References.Instance.GreenText;
                 UI.Text(cashRect, $"0", upgradeItemTextSettings);
 
                 var cashMultiplierRect = afterRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
-                UI.Image(cashMultiplierRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                UI.Image(cashMultiplierRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
                 upgradeItemTextSettings.color = References.Instance.BlueText;
                 UI.Text(cashMultiplierRect, $"{nextRebirthData.CashMultiplier:0.##}", upgradeItemTextSettings);
 
                 var rankRect = afterRect.CutTopUnscaled(h).Inset(10, 20, 10, 20);
-                UI.Image(rankRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                UI.Image(rankRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
                 upgradeItemTextSettings.color = References.Instance.YellowText;
                 UI.Text(rankRect, $"{nextRebirthData.RankName}", upgradeItemTextSettings);
             }
@@ -892,7 +892,7 @@ public class GameUI : System<GameUI>
                                            .Inset(0, 50, 0, 50);
 
                 var sliderRect = bottomRect.CutLeftUnscaled((bottomRect.Width / 3) * 2);
-                UI.Image(sliderRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+                UI.Image(sliderRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
 
                 double has   = localPlayer.Trophies;
                 double needs = currentRebirthData.TrophiesCost;
@@ -931,10 +931,10 @@ public class GameUI : System<GameUI>
             var myProgressRect   = myRect.Inset(5).SubRect(0, 0, 1, (float)myProgress, 0, 0, 0, 0);
             var bossProgressRect = bossRect.Inset(5).SubRect(0, 0, 1, (float)bossProgress, 0, 0, 0, 0);
 
-            UI.Image(myRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+            UI.Image(myRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
             UI.Image(myProgressRect, References.Instance.GreenFill, Vector4.White);
 
-            UI.Image(bossRect, References.Instance.FrameWhite, Vector4.White, References.Instance.FrameSlice);
+            UI.Image(bossRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
             UI.Image(bossProgressRect, References.Instance.RedFill, Vector4.White);
 
             var myTextRect = myRect.SubRect(0, 0, 1, 0, 0, 0, 0, 0).GrowBottom(50);

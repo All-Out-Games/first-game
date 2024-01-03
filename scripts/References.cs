@@ -64,7 +64,8 @@ public class References : Component
     [Serialized] public SpineSkeletonAsset SherbertLumpPet;
     [Serialized] public SpineSkeletonAsset EggOpenAnimSkeleton;
 
-    public UI.NineSlice FrameSlice = new UI.NineSlice() { slice = new Vector4(8, 8, 8, 8), sliceScale = 1f };
+    public UI.NineSlice DarkFrameSlice  = new UI.NineSlice() { slice = new Vector4(8, 8, 8, 8), sliceScale = 1f };
+    public UI.NineSlice WhiteFrameSlice = new UI.NineSlice() { slice = new Vector4(45, 45, 45, 45), sliceScale = 1f };
     public UI.NineSlice ButtonSlice = new UI.NineSlice() { slice = new Vector4(30, 30, 30, 30), sliceScale = 1f };
     public UI.NineSlice TopBarSlice = new UI.NineSlice() { slice = new Vector4(40, 40, 40, 40), sliceScale = 1f };
 

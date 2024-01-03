@@ -1082,7 +1082,11 @@ public partial class FatPlayer : Player
         if (!this.IsLocal) return;
         Log.Info($"Open egg: {eggId} {petId}");
 
-        Coroutine.Start(Entity, OpenEggAnimation());
+        PetData.EggDefinition eggDefinition = PetData.Eggs[eggId];
+        Util.Assert(eggDefinition != null);
+        PetData.PetDefinition petDefinition = PetData.Pets[petId];
+        Util.Assert(petDefinition != null);
+        Coroutine.Start(Entity, OpenEggAnimation(eggDefinition, petDefinition));
     }
 
     [ClientRpc]
@@ -1107,7 +1111,7 @@ public partial class FatPlayer : Player
         if (eggSkeleton != null) UI.DrawSkeleton(eggRect, eggSkeleton, Vector4.White, 0);
     }
 
-    public IEnumerator OpenEggAnimation()
+    public IEnumerator OpenEggAnimation(PetData.EggDefinition eggDefinition, PetData.PetDefinition petDefinition)
     {
         var ts = new UI.TextSettings()
         {
@@ -1124,10 +1128,8 @@ public partial class FatPlayer : Player
 
         Rect textRect = UI.ScreenRect.BottomCenterRect().Offset(0, 50);
         var eggSkeleton = SpineSkeleton.Make(References.Instance.EggOpenAnimSkeleton);
-        eggSkeleton.SetSkin("eggs/burger"); // todo(josh): config
+        eggSkeleton.SetSkin(eggDefinition.EggHatchAnimSkin);
         eggSkeleton.SetAnimation("idle", true);
-        var petDefinition = PetData.Pets["Carrot"]; // todo(josh): config
-        Util.Assert(petDefinition != null);
         var petSkeleton = SpineSkeleton.Make(petDefinition.Spine);
         petSkeleton.SetSkin(petDefinition.Skin);
         petSkeleton.SetAnimation("idle", true);
