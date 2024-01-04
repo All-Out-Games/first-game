@@ -52,6 +52,16 @@ public class Coroutine : IYield
     }
 }
 
+public static class CoroutineExtensions
+{
+    public static bool Alive(this Coroutine c)
+    {
+        if (c == null) return false;
+        if (c.Finished) return false;
+        return true;
+    }
+}
+
 public class CoroutineSystem : System<CoroutineSystem>
 {
     public override void Update()

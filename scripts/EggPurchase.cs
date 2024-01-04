@@ -9,6 +9,16 @@ public class EggPurchase : Component
     public override void Start()
     {
         Interactable.OnInteract += OnInteract;
+
+        Interactable.CanUseCallback = (Player p) =>
+        {
+            var player = (FatPlayer) p;
+            if (player.IsBusy)
+            {
+                return false;
+            }
+            return true;
+        };
     }
 
     public void OnInteract(Player p)

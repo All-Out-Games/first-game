@@ -93,6 +93,8 @@ public partial class FatPlayer : Player
     public double _lerpedTrophies;
     public double TrophiesVisual => _lerpedTrophies;
 
+    public bool IsBusy => CurrentBoss != null || FoodBeingEaten != null || EggHatchCoroutine.Alive();
+
     public IEnumerator BossIntroCoroutine()
     {
         var ts = new UI.TextSettings()
@@ -284,8 +286,21 @@ public partial class FatPlayer : Player
         return DefaultPlayerVelocityCalculation(currentVelocity, input, deltaTime, (float)ModifiedMoveSpeed);
     }
 
+    public Coroutine EggHatchCoroutine;
+
     public override void Update()
     {
+        EggsToOpenHighWaterMark = Math.Max(EggsToOpenHighWaterMark, EggsToOpen.Count);
+        if (EggsToOpen.Count == 0 && !EggHatchCoroutine.Alive())
+        {
+            EggsToOpenHighWaterMark = 0;
+        }
+        if (EggsToOpen.Count != 0 && !EggHatchCoroutine.Alive())
+        {
+            Log.Info("Starting egg anim");
+            EggHatchCoroutine = Coroutine.Start(Entity, OpenEggAnimation());
+        }
+
         if (AmountOfFoodInStomach != 0)
         {
             foreach (var sellArea in Scene.Components<SellArea>())
@@ -1076,44 +1091,102 @@ public partial class FatPlayer : Player
         PetManager.DeleteAllPets();
     }
 
-    [ClientRpc]
-    public void OpenEgg(string eggId, string petId)
+    public struct EggToOpen
     {
-        if (!this.IsLocal) return;
-        Log.Info($"Open egg: {eggId} {petId}");
-
-        PetData.EggDefinition eggDefinition = PetData.Eggs[eggId];
-        Util.Assert(eggDefinition != null);
-        PetData.PetDefinition petDefinition = PetData.Pets[petId];
-        Util.Assert(petDefinition != null);
-        Coroutine.Start(Entity, OpenEggAnimation(eggDefinition, petDefinition));
-    }
-
-    [ClientRpc]
-    public void OpenMultipleEggs(string[] eggIds, string[] petIds)
-    {
-        if (!this.IsLocal) return;
-
-        Log.Info("Open multiple eggs");
-        for (int i = 0; i < eggIds.Length; i++)
+        public PetData.PetDefinition Pet;
+        public PetData.EggDefinition Egg;
+        public EggToOpen(PetData.PetDefinition pet, PetData.EggDefinition egg)
         {
-            Log.Info($"Open egg: {eggIds[i]} {petIds[i]}");
+            Pet = pet;
+            Egg = egg;
         }
     }
 
-    public void UpdateAndDrawEggSkeletonUI(SpineSkeleton eggSkeleton, float fadeT, SpineSkeleton petSkeleton, float petAlpha, PetData.PetDefinition petDefinition)
+    public List<EggToOpen> EggsToOpen = new();
+    public int EggsToOpenHighWaterMark;
+
+    [ClientRpc]
+    public void AddEggToOpen(string eggId, string petId)
     {
-        Rect eggRect = UI.ScreenRect.Slide(0, Ease.OutQuart(fadeT)).Scale(0.45f);
-        Rect petRect = eggRect.Offset(0, petDefinition.EggOpenAnimYOffset).Scale(petDefinition.EggOpenAnimScale);
-        if (eggSkeleton != null) eggSkeleton.Update(Time.DeltaTime);
-        if (petSkeleton != null) petSkeleton.Update(Time.DeltaTime);
-        UI.Image(UI.ScreenRect, null, new Vector4(0, 0, 0, 0.7f) * Ease.OutQuart(1.0f-fadeT), new UI.NineSlice());
-        if (petSkeleton != null) UI.DrawSkeleton(petRect.Scale(petAlpha), petSkeleton, Vector4.White * petAlpha, (float)Math.Sin(2 * Math.PI * Time.TimeSinceStartup * 0.5) * 8);
-        if (eggSkeleton != null) UI.DrawSkeleton(eggRect, eggSkeleton, Vector4.White, 0);
+        if (!this.IsLocal) return;
+        Log.Info($"Open egg: {eggId} {petId}");
+        PetData.PetDefinition petDefinition = PetData.Pets[petId];
+        PetData.EggDefinition eggDefinition = PetData.Eggs[eggId];
+        Util.Assert(petDefinition != null);
+        Util.Assert(eggDefinition != null);
+        EggsToOpen.Add(new EggToOpen(petDefinition, eggDefinition));
     }
 
-    public IEnumerator OpenEggAnimation(PetData.EggDefinition eggDefinition, PetData.PetDefinition petDefinition)
+    [ClientRpc]
+    public void AddEggsToOpen(string[] eggIds, string[] petIds)
     {
+        if (!this.IsLocal) return;
+
+        for (int i = 0; i < eggIds.Length; i++)
+        {
+            AddEggToOpen(eggIds[i], petIds[i]);
+        }
+    }
+
+    [ServerRpc]
+    public void IAmOpeningEggs()
+    {
+        CallClient_OpeningEggs();
+    }
+
+    [ServerRpc]
+    public void IAmDoneOpeningEggs()
+    {
+        CallClient_DoneOpeningEggs();
+    }
+
+    [ClientRpc]
+    public void OpeningEggs()
+    {
+        AddFreezeReason("EggHatchAnimation");
+    }
+
+    [ClientRpc]
+    public void DoneOpeningEggs()
+    {
+        RemoveFreezeReason("EggHatchAnimation");
+    }
+
+    public void UpdateAndDrawEggSkeletonUI(float fadeT, SpineSkeleton eggSkeleton, float eggDropT, SpineSkeleton petSkeleton, float petAlpha, PetData.PetDefinition petDefinition, bool showEggCount)
+    {
+        Rect eggRect = UI.ScreenRect.Slide(0, 1.0f - Ease.OutQuart(eggDropT)).Offset(0, -100).Scale(0.45f);
+        if (eggSkeleton != null) eggSkeleton.Update(Time.DeltaTime);
+        if (petSkeleton != null) petSkeleton.Update(Time.DeltaTime);
+        UI.Image(UI.ScreenRect, null, new Vector4(0, 0, 0, 0.8f) * Ease.OutQuart(fadeT), new UI.NineSlice());
+        if (petSkeleton != null)
+        {
+            Rect petRect = eggRect.Offset(0, petDefinition.EggOpenAnimYOffset).Scale(petDefinition.EggOpenAnimScale);
+            UI.DrawSkeleton(petRect.Scale(petAlpha), petSkeleton, Vector4.White * petAlpha, new Vector2(100, 100), (float)Math.Sin(2 * Math.PI * Time.TimeSinceStartup * 0.5) * 8);
+        }
+        if (eggSkeleton != null) UI.DrawSkeleton(eggRect, eggSkeleton, Vector4.White, new Vector2(100, 100), 0);
+
+        if (showEggCount)
+        {
+            var ts = new UI.TextSettings()
+            {
+                font = UI.TextSettings.Font.AlphaKind,
+                size = 36,
+                color = Vector4.White,
+                horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom,
+                wordWrap = false,
+                wordWrapOffset = 0,
+                outline = true,
+                outlineThickness = 2,
+            };
+            UI.Text(UI.ScreenRect.BottomCenterRect().Offset(0, 25), $"{EggsToOpenHighWaterMark-EggsToOpen.Count}/{EggsToOpenHighWaterMark} eggs", ts);
+        }
+    }
+
+    public IEnumerator OpenEggAnimation()
+    {
+        CallServer_IAmOpeningEggs();
+
         var ts = new UI.TextSettings()
         {
             font = UI.TextSettings.Font.AlphaKind,
@@ -1127,19 +1200,12 @@ public partial class FatPlayer : Player
             outlineThickness = 2,
         };
 
-        Rect textRect = UI.ScreenRect.BottomCenterRect().Offset(0, 50);
-        var eggSkeleton = SpineSkeleton.Make(References.Instance.EggOpenAnimSkeleton);
-        eggSkeleton.SetSkin(eggDefinition.EggHatchAnimSkin);
-        eggSkeleton.SetAnimation("idle", true);
-        var petSkeleton = SpineSkeleton.Make(petDefinition.Spine);
-        petSkeleton.SetSkin(petDefinition.Skin);
-        petSkeleton.SetAnimation("idle", true);
-        float startTime = Time.TimeSinceStartup;
-        while (true)
+        Rect textRect = UI.ScreenRect.BottomCenterRect().Offset(0, 75);
+        float timer0 = 0;
+        while (Coroutine.Timer(ref timer0, 0.75f))
         {
             UI.PushLayer(GameUI.EggUILayer);
-            UpdateAndDrawEggSkeletonUI(eggSkeleton, 1.0f - Ease.Linearstep(0, 0.75f, Time.TimeSinceStartup - startTime), null, 0, petDefinition);
-            UI.Text(textRect, "Click to open!", ts);
+            UpdateAndDrawEggSkeletonUI(Ease.T(timer0, 0.75f), null, 0, null, 0, null, false);
             UI.PopLayer();
             yield return null;
             if (this.IsInputDown(Input.UnifiedInput.MOUSE_LEFT))
@@ -1148,12 +1214,68 @@ public partial class FatPlayer : Player
             }
         }
 
-        eggSkeleton.SetAnimation("hatch", false);
-        float timer = 0;
-        while (Coroutine.Timer(ref timer, 3.5f))
+        while (EggsToOpen.Count > 0)
+        {
+            var eggToOpen = EggsToOpen.Pop();
+            var eggDefinition = eggToOpen.Egg;
+            var petDefinition = eggToOpen.Pet;
+
+            var eggSkeleton = SpineSkeleton.Make(References.Instance.EggOpenAnimSkeleton);
+            eggSkeleton.SetSkin(eggDefinition.EggHatchAnimSkin);
+            eggSkeleton.SetAnimation("idle", true);
+            var petSkeleton = SpineSkeleton.Make(petDefinition.Spine);
+            petSkeleton.SetSkin(petDefinition.Skin);
+            petSkeleton.SetAnimation("idle", true);
+
+            float startTime1 = Time.TimeSinceStartup;
+            while (true)
+            {
+                UI.PushLayer(GameUI.EggUILayer);
+                UpdateAndDrawEggSkeletonUI(1, eggSkeleton, Ease.T(Time.TimeSinceStartup - startTime1, 0.75f), null, 0, null, true);
+                UI.Text(textRect, "Click to open!", ts);
+                UI.PopLayer();
+                yield return null;
+                if (this.IsInputDown(Input.UnifiedInput.MOUSE_LEFT))
+                {
+                    break;
+                }
+            }
+
+            eggSkeleton.SetAnimation("hatch", false);
+            float timer2 = 0;
+            while (Coroutine.Timer(ref timer2, 3.5f))
+            {
+                UI.PushLayer(GameUI.EggUILayer);
+                UpdateAndDrawEggSkeletonUI(1, eggSkeleton, 1, petSkeleton, Ease.Linearstep(1.7f, 1.95f, timer2), petDefinition, true);
+                UI.PopLayer();
+                yield return null;
+                if (this.IsInputDown(Input.UnifiedInput.MOUSE_LEFT))
+                {
+                    break;
+                }
+            }
+
+            while (true)
+            {
+                UI.PushLayer(GameUI.EggUILayer);
+                UpdateAndDrawEggSkeletonUI(1, null, 1, petSkeleton, 1, petDefinition, true);
+                UI.Text(textRect, "Click to continue", ts);
+                UI.PopLayer();
+                yield return null;
+                if (this.IsInputDown(Input.UnifiedInput.MOUSE_LEFT))
+                {
+                    break;
+                }
+            }
+
+            eggSkeleton.Destroy();
+        }
+
+        float timer3 = 0;
+        while (Coroutine.Timer(ref timer3, 0.5f))
         {
             UI.PushLayer(GameUI.EggUILayer);
-            UpdateAndDrawEggSkeletonUI(eggSkeleton, 0, petSkeleton, Ease.Linearstep(1.7f, 1.95f, timer), petDefinition);
+            UpdateAndDrawEggSkeletonUI(1.0f - Ease.T(timer3, 0.5f), null, 0, null, 0, null, false);
             UI.PopLayer();
             yield return null;
             if (this.IsInputDown(Input.UnifiedInput.MOUSE_LEFT))
@@ -1162,20 +1284,7 @@ public partial class FatPlayer : Player
             }
         }
 
-        while (true)
-        {
-            UI.PushLayer(GameUI.EggUILayer);
-            UpdateAndDrawEggSkeletonUI(null, 0, petSkeleton, 1, petDefinition);
-            UI.Text(textRect, "Click to continue", ts);
-            UI.PopLayer();
-            yield return null;
-            if (this.IsInputDown(Input.UnifiedInput.MOUSE_LEFT))
-            {
-                break;
-            }
-        }
-
-        eggSkeleton.Destroy();
+        CallServer_IAmDoneOpeningEggs();
     }
 
     [ServerRpc]

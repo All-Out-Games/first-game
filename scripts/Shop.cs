@@ -415,7 +415,7 @@ public class Shop : System<Shop>
 
             if (eggIds.Count > 0)
             {
-                player.CallClient_OpenMultipleEggs(eggIds.ToArray(), petIds.ToArray());
+                player.CallClient_AddEggsToOpen(eggIds.ToArray(), petIds.ToArray());
             }
         }
 
@@ -527,7 +527,7 @@ public class Shop : System<Shop>
 
             if (allowOpeningEggs) 
             {
-                player.CallClient_OpenEgg(item.Id, selectedPet.Id);
+                player.CallClient_AddEggToOpen(item.Id, selectedPet.Id);
             }
             return (true, selectedPet.Id);
         }

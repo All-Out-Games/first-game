@@ -90,6 +90,13 @@ public static class Util
         return (float)rng.NextDouble();
     }
 
+    public static T Pop<T>(this List<T> list)
+    {
+        T result = list[list.Count-1];
+        list.RemoveAt(list.Count-1);
+        return result;
+    }
+
     public static void UnorderedRemoveAt<T>(this List<T> list, int index)
     {
         list[index] = list[list.Count-1];

@@ -64,11 +64,7 @@ public class Boss : Component
         interactable.CanUseCallback = (Player p) =>
         {
             var player = (FatPlayer) p;
-            if (player.FoodBeingEaten != null)
-            {
-                return false;
-            }
-            if (player.CurrentBoss != null)
+            if (player.IsBusy)
             {
                 return false;
             }
