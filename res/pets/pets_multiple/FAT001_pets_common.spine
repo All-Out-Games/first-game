@@ -1,5 +1,5 @@
 {
-"skeleton": { "hash": "GBuLbA9lFOI", "spine": "4.0.64", "x": -127.99, "y": -45.73, "width": 246, "height": 339 },
+"skeleton": { "hash": "GBuLbA9lFOI", "spine": "4.0.64", "x": -135.97, "y": -44.19, "width": 283, "height": 205.2 },
 "bones": [
 	{ "name": "root" },
 	{ "name": "body", "parent": "root" }

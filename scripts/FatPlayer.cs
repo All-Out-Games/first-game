@@ -1160,7 +1160,7 @@ public partial class FatPlayer : Player
         UI.Image(UI.ScreenRect, null, new Vector4(0, 0, 0, 0.8f) * Ease.OutQuart(fadeT), new UI.NineSlice());
         if (petSkeleton != null)
         {
-            Rect petRect = eggRect.Offset(0, petDefinition.EggOpenAnimYOffset).Scale(petDefinition.EggOpenAnimScale);
+            Rect petRect = eggRect.Offset(0, petDefinition.EggOpenAnimYOffset);
             UI.DrawSkeleton(petRect.Scale(petAlpha), petSkeleton, Vector4.White * petAlpha, new Vector2(100, 100), (float)Math.Sin(2 * Math.PI * Time.TimeSinceStartup * 0.5) * 8);
         }
         if (eggSkeleton != null) UI.DrawSkeleton(eggRect, eggSkeleton, Vector4.White, new Vector2(100, 100), 0);

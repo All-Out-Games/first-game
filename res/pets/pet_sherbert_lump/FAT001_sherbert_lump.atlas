@@ -14,8 +14,6 @@ leg_L
 leg_R
 	bounds: 238, 48, 69, 90
 	rotate: 180
-shadow
-	bounds: 2, 473, 1, 1
 sludge_tail
 	bounds: 2, 82, 223, 138
 	rotate: 180
