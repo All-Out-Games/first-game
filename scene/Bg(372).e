@@ -3,7 +3,7 @@
 1042635962943660 1704378542591397500
 {
   "name": "Bg",
-  "local_enabled": true,
+  "local_enabled": false,
   "local_position": {
     "X": 16.2342109680175781,
     "Y": -16.2341995239257812

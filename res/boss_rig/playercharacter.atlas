@@ -1,0 +1,545 @@
+playercharacter.png
+	size: 4064, 4064
+	filter: Linear, Linear
+	scale: 0.5
+001_Fat/skins/World 1 Bosses/Chef/images/hat
+	bounds: 1226, 1210, 168, 162
+	rotate: 90
+001_Fat/skins/World 1 Bosses/Chef/images/leg_L
+	bounds: 1540, 405, 65, 79
+	offsets: 33, 30, 136, 141
+	rotate: 180
+001_Fat/skins/World 1 Bosses/Chef/images/leg_R
+	bounds: 1562, 2340, 66, 79
+	offsets: 34, 30, 136, 141
+001_Fat/skins/World 1 Bosses/Chef/images/top
+	bounds: 1011, 6, 190, 217
+	offsets: 83, 56, 357, 357
+	rotate: 90
+001_Fat/skins/World 1 Bosses/FastFood_Worker/images/hat
+	bounds: 1228, 2537, 169, 161
+	rotate: 90
+001_Fat/skins/World 1 Bosses/FastFood_Worker/images/leg_L
+	bounds: 1535, 522, 65, 79
+	offsets: 33, 30, 136, 141
+001_Fat/skins/World 1 Bosses/FastFood_Worker/images/leg_R
+	bounds: 1560, 736, 66, 79
+	offsets: 34, 30, 136, 141
+001_Fat/skins/World 1 Bosses/FastFood_Worker/images/top
+	bounds: 1041, 3826, 190, 217
+	offsets: 83, 56, 357, 357
+	rotate: 180
+001_Fat/skins/World 1 Bosses/Food_Critique/images/eyebrow_L
+	bounds: 1440, 3605, 44, 33
+001_Fat/skins/World 1 Bosses/Food_Critique/images/eyebrow_R
+	bounds: 1032, 4028, 45, 27
+	offsets: 0, 1, 45, 28
+001_Fat/skins/World 1 Bosses/Food_Critique/images/face
+	bounds: 1365, 2113, 145, 70
+001_Fat/skins/World 1 Bosses/Food_Critique/images/hat
+	bounds: 1369, 1786, 132, 109
+001_Fat/skins/World 1 Bosses/Food_Critique/images/head
+	bounds: 1366, 3785, 161, 107
+	offsets: 96, 189, 357, 357
+	rotate: 180
+001_Fat/skins/World 1 Bosses/Food_Critique/images/leg_L
+	bounds: 1534, 2962, 65, 79
+	offsets: 33, 30, 136, 141
+001_Fat/skins/World 1 Bosses/Food_Critique/images/leg_R
+	bounds: 1551, 819, 66, 79
+	offsets: 34, 30, 136, 141
+001_Fat/skins/World 1 Bosses/Food_Critique/images/top
+	bounds: 1039, 3365, 190, 217
+	offsets: 83, 56, 357, 357
+	rotate: 180
+001_Fat/skins/World 1 Bosses/Food_Eater/images/eyebrow_L
+	bounds: 569, 2671, 48, 32
+001_Fat/skins/World 1 Bosses/Food_Eater/images/eyebrow_R
+	bounds: 569, 3569, 38, 41
+001_Fat/skins/World 1 Bosses/Food_Eater/images/head
+	bounds: 1427, 388, 193, 115
+	offsets: 89, 188, 357, 357
+	rotate: 270
+001_Fat/skins/World 1 Bosses/Food_Eater/images/leg_L
+	bounds: 1534, 3045, 65, 79
+	offsets: 33, 30, 136, 141
+001_Fat/skins/World 1 Bosses/Food_Eater/images/leg_R
+	bounds: 1540, 3224, 66, 79
+	offsets: 34, 30, 136, 141
+001_Fat/skins/World 1 Bosses/Food_Eater/images/top
+	bounds: 992, 3606, 214, 217
+	offsets: 59, 56, 357, 357
+001_Fat/skins/World 1 Bosses/GuyFiery_LookAlike/images/hair
+	bounds: 816, 3444, 224, 191
+001_Fat/skins/World 1 Bosses/GuyFiery_LookAlike/images/shades
+	bounds: 851, 1970, 250, 159
+	rotate: 90
+001_Fat/skins/World 1 Bosses/GuyFiery_LookAlike/images/skin_leg_L
+	bounds: 1516, 2821, 71, 79
+	offsets: 30, 30, 136, 141
+001_Fat/skins/World 1 Bosses/GuyFiery_LookAlike/images/skin_leg_R
+	bounds: 1498, 1425, 76, 79
+	offsets: 34, 30, 136, 141
+	rotate: 90
+001_Fat/skins/World 1 Bosses/GuyFiery_LookAlike/images/top
+	bounds: 1032, 2617, 190, 217
+	offsets: 83, 56, 357, 357
+	rotate: 180
+001_Fat/skins/World 2 Bosses/Banana_Guy/images/top
+	bounds: 569, 3444, 294, 321
+	offsets: 44, 35, 357, 357
+001_Fat/skins/World 2 Bosses/Burger_Guy/images/top
+	bounds: 666, 1140, 270, 239
+	offsets: 45, 65, 357, 357
+	rotate: 90
+001_Fat/skins/World 2 Bosses/Cake_Guy/images/hat
+	bounds: 1372, 242, 125, 141
+001_Fat/skins/World 2 Bosses/Cake_Guy/images/top
+	bounds: 789, 3788, 267, 256
+	offsets: 44, 18, 357, 357
+	rotate: 90
+001_Fat/skins/World 2 Bosses/Hot_Dog_Guy/images/top
+	bounds: 665, 1408, 264, 281
+	offsets: 48, 48, 357, 357
+001_Fat/skins/World 2 Bosses/Pizza_Guy/images/top
+	bounds: 649, 1693, 252, 299
+	offsets: 82, 42, 357, 357
+001_Fat/skins/World 3 Bosses/Soda Fan/back
+	bounds: 1472, 1665, 115, 99
+	rotate: 90
+001_Fat/skins/World 3 Bosses/Soda Fan/hat
+	bounds: 1356, 3644, 173, 129
+	rotate: 90
+001_Fat/skins/World 3 Bosses/Soda Fan/leg_L
+	bounds: 1503, 2402, 69, 79
+	offsets: 33, 30, 136, 141
+001_Fat/skins/World 3 Bosses/Soda Fan/leg_R
+	bounds: 1512, 2064, 71, 79
+	offsets: 34, 30, 136, 141
+	rotate: 180
+001_Fat/skins/World 3 Bosses/Soda Fan/skin_top
+	bounds: 1008, 2854, 210, 217
+	offsets: 76, 56, 357, 357
+	rotate: 180
+001_Fat/skins/World 3 Bosses/candy boss/backpack
+	bounds: 808, 874, 261, 183
+	rotate: 90
+001_Fat/skins/World 3 Bosses/candy boss/hat
+	bounds: 1386, 643, 188, 92
+	rotate: 90
+001_Fat/skins/World 3 Bosses/candy boss/leg_L
+	bounds: 1503, 323, 69, 79
+	offsets: 33, 30, 136, 141
+001_Fat/skins/World 3 Bosses/candy boss/leg_R
+	bounds: 1509, 2738, 71, 79
+	offsets: 34, 30, 136, 141
+001_Fat/skins/World 3 Bosses/candy boss/skin_top
+	bounds: 1023, 2396, 193, 217
+	offsets: 81, 56, 357, 357
+001_Fat/skins/World 3 Bosses/food wizard/hat
+	bounds: 824, 573, 295, 153
+	rotate: 90
+001_Fat/skins/World 3 Bosses/food wizard/skin_face
+	bounds: 1042, 1205, 178, 187
+001_Fat/skins/World 3 Bosses/food wizard/skin_top
+	bounds: 886, 1651, 189, 246
+	offsets: 76, 27, 357, 357
+001_Fat/skins/World 3 Bosses/pizza prince/Backpack
+	bounds: 1379, 3207, 179, 101
+	rotate: 90
+001_Fat/skins/World 3 Bosses/pizza prince/hat
+	bounds: 1370, 2392, 139, 127
+	rotate: 90
+001_Fat/skins/World 3 Bosses/pizza prince/leg_L
+	bounds: 1502, 2485, 69, 79
+	offsets: 33, 30, 136, 141
+001_Fat/skins/World 3 Bosses/pizza prince/leg_R
+	bounds: 1507, 1816, 71, 79
+	offsets: 34, 30, 136, 141
+001_Fat/skins/World 3 Bosses/pizza prince/skin_top
+	bounds: 1022, 3144, 195, 217
+	offsets: 79, 56, 357, 357
+001_Fat/skins/World 3 Bosses/sushi chef/leg_L
+	bounds: 1496, 887, 67, 86
+	offsets: 33, 23, 136, 141
+001_Fat/skins/World 3 Bosses/sushi chef/leg_R
+	bounds: 1366, 3554, 70, 84
+	offsets: 34, 25, 136, 141
+001_Fat/skins/World 3 Bosses/sushi chef/skin_head
+	bounds: 1436, 3392, 180, 77
+	offsets: 68, 194, 357, 357
+	rotate: 90
+001_Fat/skins/World 3 Bosses/sushi chef/skin_top
+	bounds: 1016, 1878, 193, 217
+	offsets: 81, 56, 357, 357
+100_buttons/objects/LOSER_neon/LOSER_back
+	bounds: 569, 3205, 258, 233
+100_buttons/objects/LOSER_neon/LOSER_on
+	bounds: 569, 2983, 278, 216
+	offsets: 1, 2, 281, 220
+100_buttons/objects/annoying_creature/face
+	bounds: 826, 2679, 207, 194
+100_buttons/objects/annoying_creature/hand_L
+	bounds: 1493, 2648, 65, 85
+100_buttons/objects/annoying_creature/hand_R
+	bounds: 1495, 2305, 81, 61
+	rotate: 90
+100_buttons/objects/annoying_creature/mouth_1
+	bounds: 1491, 3882, 87, 74
+	rotate: 90
+100_buttons/objects/annoying_creature/mouth_2
+	bounds: 1483, 21, 104, 91
+	rotate: 90
+100_buttons/objects/annoying_creature/mouth_3
+	bounds: 1491, 3692, 89, 76
+	rotate: 90
+100_buttons/objects/annoying_creature/tail
+	bounds: 1394, 1250, 170, 97
+	offsets: 0, 1, 170, 98
+	rotate: 90
+100_buttons/objects/baby/binky
+	bounds: 1497, 1287, 76, 60
+100_buttons/objects/baby/diaper
+	bounds: 868, 3645, 138, 109
+	rotate: 90
+100_buttons/objects/baby/hand_L
+	bounds: 1516, 2150, 74, 57
+	rotate: 90
+100_buttons/objects/baby/hand_R
+	bounds: 1578, 3991, 64, 49
+	offsets: 0, 0, 65, 49
+	rotate: 90
+100_buttons/objects/baby/head
+	bounds: 1196, 818, 157, 186
+100_buttons/objects/baby/leg_L
+	bounds: 1496, 979, 70, 69
+100_buttons/objects/escape_chute/back_tube
+	bounds: 6, 1894, 539, 400
+100_buttons/objects/escape_chute/dust
+	bounds: 1483, 131, 93, 105
+	offsets: 2, 2, 96, 109
+100_buttons/objects/escape_chute/front_tube_full
+	bounds: 6, 2300, 557, 1755
+100_buttons/objects/escape_chute/wind
+	bounds: 432, 1508, 380, 212
+	offsets: 1, 4, 384, 226
+	rotate: 90
+100_buttons/objects/invisibility_cloak
+	bounds: 441, 1137, 365, 219
+	rotate: 90
+100_buttons/objects/pig/body
+	bounds: 831, 123, 266, 154
+	rotate: 90
+100_buttons/objects/pig/ear
+	bounds: 1498, 1507, 70, 65
+100_buttons/objects/pig/leg_b
+	bounds: 1493, 2570, 74, 72
+	offsets: 0, 0, 75, 73
+100_buttons/objects/pig/leg_f
+	bounds: 1503, 252, 67, 66
+	offsets: 7, 0, 74, 66
+100_buttons/objects/pig/ropes
+	bounds: 1486, 3210, 48, 176
+100_buttons/objects/poop/poop_fall
+	bounds: 312, 719, 306, 351
+100_buttons/objects/poop/poop_land
+	bounds: 6, 132, 350, 312
+100_buttons/objects/poop/poop_particle1
+	bounds: 1472, 1578, 93, 81
+100_buttons/objects/poop/poop_particle2
+	bounds: 1351, 2189, 167, 138
+	rotate: 90
+100_buttons/objects/poop/poop_particle3
+	bounds: 1233, 15, 188, 146
+	rotate: 90
+100_buttons/objects/sleep dart
+	bounds: 1385, 46, 190, 92
+	rotate: 90
+100_buttons/skins/armours/armour_lvl1/skin_body
+	bounds: 1154, 2034, 217, 206
+	offsets: 72, 65, 357, 357
+	rotate: 90
+100_buttons/skins/armours/armour_lvl2/skin_body
+	bounds: 1349, 2879, 219, 129
+	offsets: 68, 48, 357, 357
+	rotate: 90
+100_buttons/skins/armours/armour_lvl3/skin_body
+	bounds: 1300, 388, 245, 143
+	offsets: 57, 62, 357, 357
+	rotate: 270
+100_buttons/skins/beehive_head
+	bounds: 569, 3765, 214, 290
+100_buttons/skins/button_plague
+	bounds: 983, 569, 225, 242
+	offsets: 63, 61, 357, 357
+100_buttons/skins/cake
+	bounds: 551, 1995, 297, 299
+	offsets: 33, 54, 357, 357
+100_buttons/skins/disco/glasses
+	bounds: 1222, 3189, 185, 151
+	rotate: 90
+100_buttons/skins/disco/hair
+	bounds: 611, 441, 272, 207
+	rotate: 90
+100_buttons/skins/disco/leg_L
+	bounds: 1540, 3307, 65, 79
+	offsets: 33, 30, 136, 141
+100_buttons/skins/disco/leg_R
+	bounds: 1564, 2672, 66, 79
+	offsets: 34, 30, 136, 141
+100_buttons/skins/disco/skin_body
+	bounds: 1179, 2330, 189, 201
+	offsets: 81, 70, 357, 357
+	rotate: 180
+100_buttons/skins/fast_sneaker_L
+	bounds: 1578, 3616, 78, 53
+	offsets: 25, 27, 136, 141
+	rotate: 90
+100_buttons/skins/fast_sneaker_R
+	bounds: 1576, 1232, 73, 55
+	offsets: 28, 29, 136, 141
+	rotate: 90
+100_buttons/skins/helmet_lvl1
+	bounds: 1360, 1045, 159, 122
+	offsets: 0, 1, 159, 123
+	rotate: 90
+100_buttons/skins/helmet_lvl2
+	bounds: 853, 2889, 147, 103
+100_buttons/skins/helmet_lvl3
+	bounds: 833, 3221, 217, 183
+	offsets: 5, 0, 222, 190
+	rotate: 90
+100_buttons/skins/tarred_feathered_skin
+	bounds: 992, 2159, 208, 233
+	offsets: 63, 70, 357, 357
+100_buttons/vfx/blue_button
+	bounds: 997, 1011, 193, 188
+100_buttons/vfx/electrocute/electricity_sparks1
+	bounds: 1362, 3898, 123, 157
+100_buttons/vfx/electrocute/electricity_sparks2
+	bounds: 1484, 706, 125, 70
+	rotate: 90
+100_buttons/vfx/electrocute/electricity_sparks3
+	bounds: 1395, 2586, 147, 92
+	rotate: 90
+100_buttons/vfx/electrocute/electrocute_aura1
+	bounds: 6, 1076, 389, 429
+	offsets: 2, 2, 393, 433
+	rotate: 90
+100_buttons/vfx/electrocute/electrocute_aura2
+	bounds: 6, 1471, 420, 417
+	offsets: 2, 2, 424, 421
+100_buttons/vfx/feathers1
+	bounds: 1576, 3393, 58, 61
+100_buttons/vfx/feathers2
+	bounds: 1577, 1682, 49, 69
+100_buttons/vfx/feathers3
+	bounds: 1517, 3392, 80, 53
+	rotate: 90
+100_buttons/vfx/mouth_sleep_closed
+	bounds: 569, 2951, 29, 26
+100_buttons/vfx/mouth_sleep_open
+	bounds: 569, 3452, 101, 46
+	rotate: 90
+100_buttons/vfx/red_button
+	bounds: 997, 817, 193, 188
+100_buttons/vfx/smoke_particle
+	bounds: 1484, 607, 93, 91
+	offsets: 2, 2, 97, 97
+	rotate: 90
+100_buttons/vfx/smoke_particle2
+	bounds: 1492, 1987, 78, 72
+	offsets: 3, 3, 84, 78
+100_buttons/vfx/smoke_particle3
+	bounds: 1577, 1932, 54, 62
+	offsets: 2, 2, 62, 66
+100_buttons/vfx/weapon_swings/swipe333
+	bounds: 6, 449, 300, 621
+100_buttons/vfx/yellow_button
+	bounds: 991, 201, 193, 188
+100_buttons/weapons/balloon_sword
+	bounds: 910, 1233, 126, 308
+100_buttons/weapons/beam_sabre
+	bounds: 1483, 2903, 45, 298
+	offsets: 1, 0, 47, 299
+100_buttons/weapons/beehive_launcher
+	bounds: 362, 336, 377, 243
+	rotate: 90
+100_buttons/weapons/cactus_sword
+	bounds: 624, 831, 178, 300
+100_buttons/weapons/chicken
+	bounds: 669, 123, 156, 312
+100_buttons/weapons/disco_ball_shooter
+	bounds: 362, 66, 301, 264
+100_buttons/weapons/finger_gun
+	bounds: 1488, 1154, 90, 85
+	rotate: 90
+100_buttons/weapons/foam_hand
+	bounds: 1196, 1010, 158, 189
+100_buttons/weapons/gun
+	bounds: 1363, 1426, 144, 129
+	rotate: 90
+base/body_base
+	bounds: 1204, 2711, 165, 203
+	offsets: 93, 69, 356, 356
+base/eyeball_L
+	bounds: 1491, 3975, 81, 80
+base/eyeball_R
+	bounds: 1492, 1901, 79, 80
+base/eyelids/lid_angry
+	bounds: 1534, 3130, 74, 56
+	rotate: 90
+base/eyelids/lid_blink
+	bounds: 1491, 3606, 81, 80
+base/eyelids/lid_happy
+	bounds: 789, 4012, 79, 43
+base/eyelids/lid_sad
+	bounds: 1488, 1054, 81, 94
+base/finger_L
+	bounds: 1196, 4021, 35, 34
+base/hand_L_fist
+	bounds: 789, 3771, 72, 68
+base/hand_L_palm
+	bounds: 1495, 2230, 71, 69
+base/hand_R_fist
+	bounds: 1497, 1353, 70, 67
+base/leg_L
+	bounds: 1572, 2589, 56, 79
+	offsets: 40, 30, 135, 140
+base/leg_R
+	bounds: 1573, 1362, 54, 80
+	offsets: 42, 32, 135, 140
+base/mouth_flat
+	bounds: 1440, 3578, 57, 20
+base/mouth_teethygrin
+	bounds: 1573, 3700, 94, 42
+	rotate: 90
+base/pupil_L
+	bounds: 621, 3445, 34, 34
+base/pupil_R
+	bounds: 1046, 3573, 33, 33
+base/shadow
+	bounds: 1237, 3823, 232, 119
+	offsets: 5, 3, 242, 126
+	rotate: 90
+base/thumb_L
+	bounds: 983, 3641, 36, 39
+player_skins/biffle/leg_L
+	bounds: 1525, 3798, 65, 78
+	offsets: 35, 32, 136, 141
+player_skins/biffle/skin_hat
+	bounds: 831, 403, 233, 164
+player_skins/biffle/skin_leg_R
+	bounds: 830, 2597, 68, 76
+	offsets: 37, 33, 136, 141
+player_skins/biffle/skin_top
+	bounds: 1194, 603, 188, 201
+	offsets: 83, 70, 357, 357
+	rotate: 180
+player_skins/garryblox/leg_L
+	bounds: 1518, 3517, 62, 83
+	offsets: 40, 26, 136, 141
+player_skins/garryblox/leg_R
+	bounds: 1567, 902, 61, 83
+	offsets: 42, 26, 136, 141
+player_skins/garryblox/skin_head
+	bounds: 1210, 3753, 109, 63
+	offsets: 154, 125, 357, 357
+player_skins/garryblox/skin_top
+	bounds: 569, 2404, 262, 284
+	offsets: 5, 70, 357, 357
+player_skins/helloiamk8/skin_head
+	bounds: 826, 2349, 236, 191
+	offsets: 12, 9, 265, 210
+	rotate: 90
+player_skins/helloiamk8/skin_leg_L
+	bounds: 1571, 1756, 61, 77
+	offsets: 37, 32, 136, 141
+player_skins/helloiamk8/skin_leg_R
+	bounds: 1573, 292, 59, 76
+	offsets: 40, 33, 136, 141
+player_skins/helloiamk8/skin_top
+	bounds: 1070, 398, 213, 205
+	offsets: 71, 66, 357, 357
+	rotate: 90
+player_skins/henwy/skin_top
+	bounds: 569, 2693, 262, 284
+	offsets: 5, 70, 357, 357
+player_skins/lookum/leg_L
+	bounds: 1574, 2468, 57, 77
+	offsets: 40, 32, 136, 141
+player_skins/lookum/leg_R
+	bounds: 1575, 1079, 57, 76
+	offsets: 41, 33, 136, 141
+player_skins/lookum/skin_hat
+	bounds: 1359, 837, 167, 131
+	rotate: 90
+player_skins/lookum/skin_head
+	bounds: 1040, 3089, 116, 50
+	offsets: 5, 4, 127, 58
+player_skins/lookum/skin_top
+	bounds: 1133, 1383, 225, 201
+	offsets: 38, 70, 357, 357
+player_skins/nicovald/leg_L
+	bounds: 1572, 3459, 61, 77
+	offsets: 37, 32, 136, 141
+	rotate: 180
+player_skins/nicovald/leg_R
+	bounds: 1571, 1587, 61, 79
+	offsets: 40, 33, 136, 141
+player_skins/nicovald/skin_head
+	bounds: 1190, 209, 184, 176
+	offsets: 4, 2, 190, 185
+	rotate: 90
+player_skins/nicovald/skin_top
+	bounds: 987, 1541, 233, 216
+	offsets: 89, 55, 357, 357
+	rotate: 180
+player_skins/patp/skin_hat
+	bounds: 1349, 1901, 179, 137
+	rotate: 90
+player_skins/patp/skin_top
+	bounds: 1159, 1704, 205, 208
+	offsets: 77, 63, 357, 357
+player_skins/sigils/hat
+	bounds: 1335, 1576, 191, 131
+	offsets: 0, 1, 191, 132
+	rotate: 90
+player_skins/sigils/leg_L
+	bounds: 1571, 2259, 61, 77
+	offsets: 36, 32, 136, 141
+player_skins/sigils/leg_R
+	bounds: 1548, 2898, 61, 78
+	offsets: 40, 33, 136, 141
+	rotate: 90
+player_skins/sigils/skin_top
+	bounds: 1171, 3549, 188, 201
+	offsets: 83, 70, 357, 357
+	rotate: 180
+player_skins/ssundee/leg_L
+	bounds: 1574, 1506, 56, 77
+	offsets: 39, 32, 136, 141
+player_skins/ssundee/leg_R
+	bounds: 1576, 2000, 56, 76
+	offsets: 42, 33, 136, 141
+player_skins/ssundee/skin_head
+	bounds: 1375, 2739, 135, 128
+	offsets: 16, 8, 168, 141
+	rotate: 90
+player_skins/ssundee/skin_top
+	bounds: 1175, 2975, 186, 206
+	offsets: 82, 65, 357, 357
+player_skins/zud/skin_head
+	bounds: 853, 2998, 217, 181
+	offsets: 13, 4, 231, 192
+	rotate: 90
+player_skins/zud/skin_leg_L
+	bounds: 1571, 3899, 60, 77
+	offsets: 37, 32, 136, 141
+player_skins/zud/skin_leg_R
+	bounds: 1572, 992, 59, 76
+	offsets: 40, 33, 136, 141
+player_skins/zud/skin_top
+	bounds: 1231, 3388, 169, 201
+	offsets: 91, 70, 357, 357
+	rotate: 90

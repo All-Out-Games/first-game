@@ -10,8 +10,8 @@
   },
   "local_rotation": 0,
   "local_scale": {
-    "X": 1,
-    "Y": 1
+    "X": 0.2500000000000000,
+    "Y": 0.2500000000000000
   },
   "sibling_index": 4,
   "parent": "42347968170958:1701806595502602200",
@@ -25,7 +25,8 @@
   "data": {
     "WorldIndex": 0,
     "BossIndex": 2,
-    "Name": "Big Boss"
+    "Name": "Big Boss",
+    "SpineAnimator": "0:0"
   }
 },
 {
@@ -38,19 +39,19 @@
   }
 },
 {
-  "cid": 3,
-  "aoid": "2029341023410615:1702331552423788600",
+  "cid": 4,
+  "aoid": "457451845863009:1704399517758197900",
   "component_type": "Internal_Component",
-  "internal_component_type": "Sprite_Renderer",
+  "internal_component_type": "Spine_Animator",
   "data": {
-    "texture": "",
+    "skeleton_data_asset": "boss_rig/playercharacter.spine",
+    "ordered_skins": [
+
+    ],
     "depth_offset": 0,
-    "tint": {
+    "skeleton_scale": {
       "X": 1,
-      "Y": 0.3037037253379822,
-      "Z": 0.3037037253379822,
-      "W": 1
-    },
-    "layer": 0
+      "Y": 1
+    }
   }
 }

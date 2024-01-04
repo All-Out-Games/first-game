@@ -22,7 +22,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Sprite_Renderer",
   "data": {
-    "texture": "environments/FAT001_world1_ref.png",
+    "texture": "",
     "depth_offset": -100,
     "tint": {
       "X": 1,

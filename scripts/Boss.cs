@@ -6,6 +6,7 @@ public class Boss : Component
     [Serialized] public int BossIndex;
     [Serialized] public string Name;
 
+    public Spine_Animator SpineAnimator;
     public BossDefinition Definition;
     public int AmountToWin => Definition.AmountPerClick * 30;
     public double Reward => Definition.Reward;
@@ -26,6 +27,14 @@ public class Boss : Component
         {
             Log.Error($"Failed to find boss index {BossIndex} for world index {WorldIndex}");
             return;
+        }
+
+        SpineAnimator = Entity.GetComponent<Spine_Animator>();
+
+        if (SpineAnimator != null)
+        {
+            SpineAnimator.SetAnimation("Idle", true);
+            SpineAnimator.SetSkin(Definition.SpineSkin);
         }
 
         var interactable = Entity.GetComponent<Interactable>();
@@ -75,25 +84,25 @@ public class Boss : Component
     public static BossDefinition[] BossDefinitions = new BossDefinition[]
     {
         // world 1
-        new BossDefinition(){ Id = "Food Eater",              WorldIndex = 0, IndexInWorld = 0, Reward = 5,          AmountPerClick = 2,  TimeBetweenClicks = 0.1, RequiredLevel = 3,   RequiredStatFlags = BossRequiredStat.MouthSize, },
-        new BossDefinition(){ Id = "Chef",                    WorldIndex = 0, IndexInWorld = 1, Reward = 10,         AmountPerClick = 3,  TimeBetweenClicks = 0.1, RequiredLevel = 5,   RequiredStatFlags = BossRequiredStat.ClickPower, },
-        new BossDefinition(){ Id = "Food Critic",             WorldIndex = 0, IndexInWorld = 2, Reward = 30,         AmountPerClick = 7,  TimeBetweenClicks = 0.1, RequiredLevel = 8,   RequiredStatFlags = BossRequiredStat.StomachSize, },
-        new BossDefinition(){ Id = "Fast Food Worker",        WorldIndex = 0, IndexInWorld = 3, Reward = 120,        AmountPerClick = 10, TimeBetweenClicks = 0.1, RequiredLevel = 12,  RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.ClickPower, },
-        new BossDefinition(){ Id = "Guy Fieri (Look-a-like)", WorldIndex = 0, IndexInWorld = 4, Reward = 600,        AmountPerClick = 17, TimeBetweenClicks = 0.1, RequiredLevel = 19,  RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.ClickPower | BossRequiredStat.StomachSize, },
+        new BossDefinition(){ Id = "Food Eater",              WorldIndex = 0, IndexInWorld = 0, Reward = 5,          AmountPerClick = 2,  TimeBetweenClicks = 0.1, RequiredLevel = 3,   RequiredStatFlags = BossRequiredStat.MouthSize,                                                              SpineSkin = "001_FAT/boss_Skins/world 1/food_eater" },
+        new BossDefinition(){ Id = "Chef",                    WorldIndex = 0, IndexInWorld = 1, Reward = 10,         AmountPerClick = 3,  TimeBetweenClicks = 0.1, RequiredLevel = 5,   RequiredStatFlags = BossRequiredStat.ClickPower,                                                             SpineSkin = "001_FAT/boss_Skins/world 1/chef" },
+        new BossDefinition(){ Id = "Food Critic",             WorldIndex = 0, IndexInWorld = 2, Reward = 30,         AmountPerClick = 7,  TimeBetweenClicks = 0.1, RequiredLevel = 8,   RequiredStatFlags = BossRequiredStat.StomachSize,                                                            SpineSkin = "001_FAT/boss_Skins/world 1/food_critic" },
+        new BossDefinition(){ Id = "Fast Food Worker",        WorldIndex = 0, IndexInWorld = 3, Reward = 120,        AmountPerClick = 10, TimeBetweenClicks = 0.1, RequiredLevel = 12,  RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.ClickPower,                                SpineSkin = "001_FAT/boss_Skins/world 1/fastfood_worker" },
+        new BossDefinition(){ Id = "Guy Fieri (Look-a-like)", WorldIndex = 0, IndexInWorld = 4, Reward = 600,        AmountPerClick = 17, TimeBetweenClicks = 0.1, RequiredLevel = 19,  RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.ClickPower | BossRequiredStat.StomachSize, SpineSkin = "001_FAT/boss_Skins/world 1/guy_fiery" },
 
         // world 2
-        new BossDefinition(){ Id = "Fries/Burger Guy",        WorldIndex = 1, IndexInWorld = 0, Reward = 2700,       AmountPerClick = 19, TimeBetweenClicks = 0.1, RequiredLevel = 21,  RequiredStatFlags = BossRequiredStat.StomachSize, },
-        new BossDefinition(){ Id = "Cake Guy",                WorldIndex = 1, IndexInWorld = 1, Reward = 13600,      AmountPerClick = 23, TimeBetweenClicks = 0.1, RequiredLevel = 25,  RequiredStatFlags = BossRequiredStat.ClickPower, },
-        new BossDefinition(){ Id = "Hot Dog Guy",             WorldIndex = 1, IndexInWorld = 2, Reward = 68000,      AmountPerClick = 30, TimeBetweenClicks = 0.1, RequiredLevel = 32,  RequiredStatFlags = BossRequiredStat.MouthSize, },
-        new BossDefinition(){ Id = "Pizza Guy",               WorldIndex = 1, IndexInWorld = 3, Reward = 340000,     AmountPerClick = 42, TimeBetweenClicks = 0.1, RequiredLevel = 44,  RequiredStatFlags = BossRequiredStat.StomachSize | BossRequiredStat.ClickPower, },
-        new BossDefinition(){ Id = "Banana Guy",              WorldIndex = 1, IndexInWorld = 4, Reward = 1700000,    AmountPerClick = 56, TimeBetweenClicks = 0.1, RequiredLevel = 58,  RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.ClickPower | BossRequiredStat.StomachSize, },
+        new BossDefinition(){ Id = "Fries/Burger Guy",        WorldIndex = 1, IndexInWorld = 0, Reward = 2700,       AmountPerClick = 19, TimeBetweenClicks = 0.1, RequiredLevel = 21,  RequiredStatFlags = BossRequiredStat.StomachSize,                                                            SpineSkin = "001_FAT/boss_Skins/world 1/fastfood_worker" },
+        new BossDefinition(){ Id = "Cake Guy",                WorldIndex = 1, IndexInWorld = 1, Reward = 13600,      AmountPerClick = 23, TimeBetweenClicks = 0.1, RequiredLevel = 25,  RequiredStatFlags = BossRequiredStat.ClickPower,                                                             SpineSkin = "001_FAT/boss_Skins/world 1/fastfood_worker" },
+        new BossDefinition(){ Id = "Hot Dog Guy",             WorldIndex = 1, IndexInWorld = 2, Reward = 68000,      AmountPerClick = 30, TimeBetweenClicks = 0.1, RequiredLevel = 32,  RequiredStatFlags = BossRequiredStat.MouthSize,                                                              SpineSkin = "001_FAT/boss_Skins/world 1/fastfood_worker" },
+        new BossDefinition(){ Id = "Pizza Guy",               WorldIndex = 1, IndexInWorld = 3, Reward = 340000,     AmountPerClick = 42, TimeBetweenClicks = 0.1, RequiredLevel = 44,  RequiredStatFlags = BossRequiredStat.StomachSize | BossRequiredStat.ClickPower,                              SpineSkin = "001_FAT/boss_Skins/world 1/fastfood_worker" },
+        new BossDefinition(){ Id = "Banana Guy",              WorldIndex = 1, IndexInWorld = 4, Reward = 1700000,    AmountPerClick = 56, TimeBetweenClicks = 0.1, RequiredLevel = 58,  RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.ClickPower | BossRequiredStat.StomachSize, SpineSkin = "001_FAT/boss_Skins/world 1/fastfood_worker" },
 
         // world 3
-        new BossDefinition(){ Id = "Soda Lover",              WorldIndex = 2, IndexInWorld = 0, Reward = 7800000,    AmountPerClick = 55, TimeBetweenClicks = 0.1, RequiredLevel = 165, RequiredStatFlags = BossRequiredStat.ClickPower, },
-        new BossDefinition(){ Id = "Sushi Chef",              WorldIndex = 2, IndexInWorld = 1, Reward = 39000000,   AmountPerClick = 63, TimeBetweenClicks = 0.1, RequiredLevel = 189, RequiredStatFlags = BossRequiredStat.MouthSize, },
-        new BossDefinition(){ Id = "Candy Crime Boss",        WorldIndex = 2, IndexInWorld = 2, Reward = 195000000,  AmountPerClick = 72, TimeBetweenClicks = 0.1, RequiredLevel = 216, RequiredStatFlags = BossRequiredStat.StomachSize, },
-        new BossDefinition(){ Id = "Pizza Prince",            WorldIndex = 2, IndexInWorld = 3, Reward = 975000000,  AmountPerClick = 84, TimeBetweenClicks = 0.1, RequiredLevel = 252, RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.StomachSize, },
-        new BossDefinition(){ Id = "Food Wizard",             WorldIndex = 2, IndexInWorld = 4, Reward = 4800000000, AmountPerClick = 99, TimeBetweenClicks = 0.1, RequiredLevel = 297, RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.ClickPower | BossRequiredStat.StomachSize, },
+        new BossDefinition(){ Id = "Soda Lover",              WorldIndex = 2, IndexInWorld = 0, Reward = 7800000,    AmountPerClick = 55, TimeBetweenClicks = 0.1, RequiredLevel = 165, RequiredStatFlags = BossRequiredStat.ClickPower,                                                             SpineSkin = "001_FAT/boss_Skins/world 1/fastfood_worker" },
+        new BossDefinition(){ Id = "Sushi Chef",              WorldIndex = 2, IndexInWorld = 1, Reward = 39000000,   AmountPerClick = 63, TimeBetweenClicks = 0.1, RequiredLevel = 189, RequiredStatFlags = BossRequiredStat.MouthSize,                                                              SpineSkin = "001_FAT/boss_Skins/world 1/fastfood_worker" },
+        new BossDefinition(){ Id = "Candy Crime Boss",        WorldIndex = 2, IndexInWorld = 2, Reward = 195000000,  AmountPerClick = 72, TimeBetweenClicks = 0.1, RequiredLevel = 216, RequiredStatFlags = BossRequiredStat.StomachSize,                                                            SpineSkin = "001_FAT/boss_Skins/world 1/fastfood_worker" },
+        new BossDefinition(){ Id = "Pizza Prince",            WorldIndex = 2, IndexInWorld = 3, Reward = 975000000,  AmountPerClick = 84, TimeBetweenClicks = 0.1, RequiredLevel = 252, RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.StomachSize,                               SpineSkin = "001_FAT/boss_Skins/world 1/fastfood_worker" },
+        new BossDefinition(){ Id = "Food Wizard",             WorldIndex = 2, IndexInWorld = 4, Reward = 4800000000, AmountPerClick = 99, TimeBetweenClicks = 0.1, RequiredLevel = 297, RequiredStatFlags = BossRequiredStat.MouthSize | BossRequiredStat.ClickPower | BossRequiredStat.StomachSize, SpineSkin = "001_FAT/boss_Skins/world 1/fastfood_worker" },
     };
 }
 
@@ -115,5 +124,6 @@ public class BossDefinition
     public double Reward;
     public double TimeBetweenClicks;
     public int    AmountPerClick;
+    public string SpineSkin;
 }
 
