@@ -6,6 +6,7 @@ public class Boss : Component
     [Serialized] public int BossIndex;
     [Serialized] public string Name;
 
+    public FatPlayer CurrentlyBattling;
     public Spine_Animator SpineAnimator;
     public BossDefinition Definition;
     public int AmountToWin => Definition.AmountPerClick * 30;
@@ -80,6 +81,10 @@ public class Boss : Component
         interactable.CanUseCallback = (Player p) =>
         {
             var player = (FatPlayer) p;
+            if (CurrentlyBattling.Alive())
+            {
+                return false;
+            }
             if (player.IsBusy)
             {
                 return false;
