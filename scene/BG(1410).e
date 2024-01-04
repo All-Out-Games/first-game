@@ -1,29 +1,29 @@
 9
-1473173782529
-1038339149123381 1704377316330606800
+6055903887361
+481370052293885 1704405812016290600
 {
-  "name": "Reed2",
+  "name": "BG",
   "local_enabled": true,
   "local_position": {
-    "X": -1.4509170055389404,
-    "Y": -17.7670154571533203
+    "X": 1.4159133434295654,
+    "Y": -0.4001464843750000
   },
   "local_rotation": 0,
   "local_scale": {
-    "X": 0.2500000000000000,
-    "Y": 0.2500000000000000
+    "X": 1,
+    "Y": 1
   },
-  "sibling_index": 19,
+  "sibling_index": 1,
   "parent": "1013752026649973:1704370299451241300"
 },
 {
   "cid": 1,
-  "aoid": "1038339149271371:1704377316330648100",
+  "aoid": "481411680991023:1704405822971198800",
   "component_type": "Internal_Component",
   "internal_component_type": "Sprite_Renderer",
   "data": {
-    "texture": "environments/World1/reeds_2.png",
-    "depth_offset": 0,
+    "texture": "environments/FAT001_ground_combined.png",
+    "depth_offset": 57,
     "tint": {
       "X": 1,
       "Y": 1,
