@@ -530,36 +530,39 @@ public partial class FatPlayer : Player
                 FoodBeingEaten.OnClick(this);
             }
 
-            var foodScreenPos = Camera.WorldToScreen(FoodBeingEaten.EatUIPosition);
-            var clickRect = new Rect(foodScreenPos);
-            clickRect = clickRect.Grow(20, 50, 20, 50).Offset(0, 10);
-            float scale01 = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - LastFoodClickTime, 0.25f));
-            float scale = AOMath.Lerp(1.5f, 1.0f, scale01);
-            clickRect = clickRect.Scale(scale, scale);
-            UI.Image(clickRect, null, Vector4.White, new UI.NineSlice());
-
-            float foodHealth01 = 1.0f - (float)Math.Clamp((float)FoodBeingEaten.CurrentHealth / (float)FoodBeingEaten.ClicksRequired, 0, 1);
-            FoodProgressLerp = AOMath.Lerp(FoodProgressLerp, foodHealth01, 20 * Time.DeltaTime);
-            var chewProgressRect = clickRect.SubRect(0, 0, FoodProgressLerp, 1, 0, 0, 0, 0);
-            UI.Image(chewProgressRect, null, Vector4.HSVLerp(Vector4.Red, Vector4.Green, FoodProgressLerp), new UI.NineSlice());
-
-            var pendingTextSettings = new UI.TextSettings()
+            if (Network.IsClient)
             {
-                font = UI.TextSettings.Font.AlphaKind,
-                size = 32,
-                color = Vector4.White,
-                horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
-                verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
-                wordWrap = false,
-                wordWrapOffset = 0,
-                outline = true,
-                outlineThickness = 2,
-            };
-            var colorEase = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - LastFoodClickTime, 0.25f));
-            pendingTextSettings.color.Y = colorEase;
-            pendingTextSettings.color.Z = colorEase;
-            pendingTextSettings.size = AOMath.Lerp(48, 32, colorEase);
-            UI.Text(clickRect, $"{FoodBeingEaten.CurrentHealth}", pendingTextSettings);
+                var foodScreenPos = Camera.WorldToScreen(FoodBeingEaten.EatUIPosition);
+                var clickRect = new Rect(foodScreenPos);
+                clickRect = clickRect.Grow(20, 50, 20, 50).Offset(0, 10);
+                float scale01 = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - LastFoodClickTime, 0.25f));
+                float scale = AOMath.Lerp(1.5f, 1.0f, scale01);
+                clickRect = clickRect.Scale(scale, scale);
+                UI.Image(clickRect, null, Vector4.White, new UI.NineSlice());
+
+                float foodHealth01 = 1.0f - (float)Math.Clamp((float)FoodBeingEaten.CurrentHealth / (float)FoodBeingEaten.ClicksRequired, 0, 1);
+                FoodProgressLerp = AOMath.Lerp(FoodProgressLerp, foodHealth01, 20 * Time.DeltaTime);
+                var chewProgressRect = clickRect.SubRect(0, 0, FoodProgressLerp, 1, 0, 0, 0, 0);
+                UI.Image(chewProgressRect, null, Vector4.HSVLerp(Vector4.Red, Vector4.Green, FoodProgressLerp), new UI.NineSlice());
+
+                var pendingTextSettings = new UI.TextSettings()
+                {
+                    font = UI.TextSettings.Font.AlphaKind,
+                    size = 32,
+                    color = Vector4.White,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                    wordWrap = false,
+                    wordWrapOffset = 0,
+                    outline = true,
+                    outlineThickness = 2,
+                };
+                var colorEase = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - LastFoodClickTime, 0.25f));
+                pendingTextSettings.color.Y = colorEase;
+                pendingTextSettings.color.Z = colorEase;
+                pendingTextSettings.size = AOMath.Lerp(48, 32, colorEase);
+                UI.Text(clickRect, $"{FoodBeingEaten.CurrentHealth}", pendingTextSettings);
+            }
         }
         else
         {
@@ -568,12 +571,17 @@ public partial class FatPlayer : Player
 
         if (this.IsLocal) 
         {
-            if (FoodBeingEaten != null && Input.GetKeyDown(Input.Keycode.KEYCODE_ESCAPE, true))
+            if (FoodBeingEaten != null && Input.GetKeyDown(Input.Keycode.KEYCODE_ESCAPE, true, level: Input.CheckLevel.TextInput))
             {
-                CallServer_GiveUpEating();
+                CallServer_RequestGiveUpEating();
             }
 
-            if (CurrentBoss != null && Input.GetKeyDown(Input.Keycode.KEYCODE_ESCAPE, true))
+            if (FoodBeingEaten != null && (Input.GetKeyDown(Input.Keycode.KEYCODE_W, level: Input.CheckLevel.TextInput) || Input.GetKeyDown(Input.Keycode.KEYCODE_A, level: Input.CheckLevel.TextInput) || Input.GetKeyDown(Input.Keycode.KEYCODE_S, level: Input.CheckLevel.TextInput) || Input.GetKeyDown(Input.Keycode.KEYCODE_D, level: Input.CheckLevel.TextInput)))
+            {
+                CallServer_RequestGiveUpEating();
+            }
+
+            if (CurrentBoss != null && Input.GetKeyDown(Input.Keycode.KEYCODE_ESCAPE, true, level: Input.CheckLevel.TextInput))
             {
                 CallServer_GiveUpBossFight();
             }
@@ -799,12 +807,19 @@ public partial class FatPlayer : Player
     }
 
     [ServerRpc]
+    public void RequestGiveUpEating()
+    {
+        CallClient_GiveUpEating();
+    }
+
+    [ClientRpc]
     public void GiveUpEating()
     {
         if (FoodBeingEaten != null)
         {
-            FoodBeingEaten.CallClient_FinishEating(false);
+            FoodBeingEaten.FinishEating(false);
         }
+        FoodBeingEaten = null;
     }
 
     [ServerRpc]

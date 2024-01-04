@@ -66,6 +66,10 @@ public partial class Food : Component
     public long CurrentHealth;
     public long ClicksRequired;
 
+    public bool WasDynamicallySpawned;
+    [Serialized] public float RespawnTime;
+    public float RespawnTimer;
+
     public int FoodIndexInAreaDefinition; // only on server
 
     public event Action<Food> OnEat;
@@ -115,6 +119,11 @@ public partial class Food : Component
             return;
         }
 
+        if (SpriteRenderer == null)
+        {
+            SpriteRenderer = Entity.GetComponent<Sprite_Renderer>();
+        }
+
         SpriteRenderer.Sprite = Definition.Sprite;
         var interactable = Entity.GetComponent<Interactable>();
         interactable.OnInteract = (Player p) =>
@@ -147,8 +156,18 @@ public partial class Food : Component
             {
                 return false;
             }
+            if (CurrentHealth <= 0)
+            {
+                return false;
+            }
+            if (RespawnTimer > 0)
+            {
+                return false;
+            }
             return true;
         };
+
+        CurrentHealth = 1;
     }
 
     public override void Update()
@@ -169,12 +188,18 @@ public partial class Food : Component
             }
         }
 
-        if (CurrentEater != null)
+        if (Network.IsServer && CurrentHealth <= 0 && RespawnTimer <= 0)
         {
-            if (Network.IsClient) return;
-            if (CurrentHealth <= 0)
+            CallClient_FinishEating(true);
+        }
+
+        if (RespawnTimer > 0) 
+        {
+            RespawnTimer -= Time.DeltaTime;
+            if (RespawnTimer <= 0)
             {
-                CallClient_FinishEating(true);
+                Entity.SetEnabled(true);
+                CurrentHealth = 1;
             }
         }
     }
@@ -220,8 +245,17 @@ public partial class Food : Component
                 {
                     CurrentEater.CurrentQuest.OnFoodEatenServer(this);
                 }
-                Network.Despawn(this.Entity);
-                this.Entity.Destroy();
+                
+                if (WasDynamicallySpawned)
+                {
+                    Network.Despawn(this.Entity);
+                    this.Entity.Destroy();
+                }
+            }
+
+            if (!WasDynamicallySpawned)
+            {
+                Entity.SetEnabled(false);
             }
         }
         

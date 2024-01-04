@@ -20,6 +20,8 @@ public class FoodClickParticleSystem : System<FoodClickParticleSystem>
 
     public override void Update()
     {
+        if (Network.IsServer) return;
+        
         UI.PushLayerRelative(2);
         using var _2 = AllOut.Defer(UI.PopLayer);
 

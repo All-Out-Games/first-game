@@ -5,8 +5,8 @@
   "name": "Zone3Spawn",
   "local_enabled": true,
   "local_position": {
-    "X": 0,
-    "Y": -32
+    "X": 0.1948242187500000,
+    "Y": -65.7029800415039062
   },
   "local_rotation": 0,
   "local_scale": {

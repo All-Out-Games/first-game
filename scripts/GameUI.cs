@@ -285,10 +285,10 @@ public class GameUI : System<GameUI>
             return buttonResult.clicked;
         }
 
-        if (drawSidebarButton("Store", References.Instance.Shop)) 
-        {
-            IsShowingShopWindow = !IsShowingShopWindow;
-        }
+        // if (drawSidebarButton("Store", References.Instance.Shop)) 
+        // {
+        //     IsShowingShopWindow = !IsShowingShopWindow;
+        // }
 
         if (drawSidebarButton("Upgrade", References.Instance.Upgrade)) 
         {
@@ -305,10 +305,10 @@ public class GameUI : System<GameUI>
             IsShowingPetsWindow = !IsShowingPetsWindow;
         }
 
-        if (drawSidebarButton("Stats", References.Instance.Stats)) 
-        {
+        // if (drawSidebarButton("Stats", References.Instance.Stats)) 
+        // {
 
-        }
+        // }
 
         UI.PopId();
 

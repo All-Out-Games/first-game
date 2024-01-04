@@ -5,8 +5,8 @@
   "name": "Egg",
   "local_enabled": true,
   "local_position": {
-    "X": 18.5211944580078125,
-    "Y": 5.3967590332031250
+    "X": 5.5330200195312500,
+    "Y": 17.4847640991210938
   },
   "local_rotation": 0,
   "local_scale": {

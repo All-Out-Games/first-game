@@ -5,8 +5,8 @@
   "name": "Boss3",
   "local_enabled": true,
   "local_position": {
-    "X": -7.6524186134338379,
-    "Y": 0.2242295742034912
+    "X": 13.8861865997314453,
+    "Y": 4.9368371963500977
   },
   "local_rotation": 0,
   "local_scale": {

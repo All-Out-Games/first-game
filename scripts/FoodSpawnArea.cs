@@ -216,6 +216,7 @@ public class FoodSpawnArea : Component
                     var food = newFoodEntity.GetComponent<Food>();
                     food.FoodId = AreaDefinition.FoodsToSpawn[lowestFoodIndex];
                     food.FoodIndexInAreaDefinition = lowestFoodIndex;
+                    food.WasDynamicallySpawned = true;
                     newFoodEntity.Position = slot.Position;
                     newFoodEntity.X += ((float)rng.NextDouble() * 2 - 1) * HalfCellSize.X;
                     newFoodEntity.Y += ((float)rng.NextDouble() * 2 - 1) * HalfCellSize.Y;

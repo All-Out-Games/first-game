@@ -166,6 +166,8 @@ public partial class PetManager : Component
             if (!pet.Equipped) continue;
             if (Pet.AllPets.Any(p => p.OwnerId == Player.Entity.NetworkId && p.PetId == pet.Id)) continue;
 
+            if (!PetData.Pets.ContainsKey(pet.DefinitionId)) continue;
+
             var petEntity = Entity.Instantiate(References.Instance.PetPrefab);
             var p = petEntity.GetComponent<Pet>();
             p.OwnerId = Player.Entity.NetworkId;
