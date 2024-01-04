@@ -12,6 +12,7 @@ public class References : Component
 
     [Serialized] public Texture MenuIcon;
     [Serialized] public Texture TopBarBg;
+    [Serialized] public Texture BossBarBg;
 
     [Serialized] public Texture GreenButton;
     [Serialized] public Texture RedButton;
@@ -85,10 +86,11 @@ public class References : Component
     [Serialized] public Texture IconFruitJellySlimePet;
     [Serialized] public Texture IconPizzaMonsterPet;
 
-    public UI.NineSlice DarkFrameSlice  = new UI.NineSlice() { slice = new Vector4(8, 8, 8, 8), sliceScale = 1f };
+    public UI.NineSlice DarkFrameSlice  = new UI.NineSlice() { slice = new Vector4(8, 8, 8, 8),     sliceScale = 1f };
     public UI.NineSlice WhiteFrameSlice = new UI.NineSlice() { slice = new Vector4(45, 45, 45, 45), sliceScale = 1f };
-    public UI.NineSlice ButtonSlice = new UI.NineSlice() { slice = new Vector4(30, 30, 30, 30), sliceScale = 1f };
-    public UI.NineSlice TopBarSlice = new UI.NineSlice() { slice = new Vector4(40, 40, 40, 40), sliceScale = 1f };
+    public UI.NineSlice ButtonSlice     = new UI.NineSlice() { slice = new Vector4(30, 30, 30, 30), sliceScale = 1f };
+    public UI.NineSlice TopBarSlice     = new UI.NineSlice() { slice = new Vector4(34, 34, 34, 34), sliceScale = 1f };
+    public UI.NineSlice BossBarSlice    = new UI.NineSlice() { slice = new Vector4(34, 34, 34, 34), sliceScale = 1f };
 
     public UI.TextSettings NoTextSettings = new UI.TextSettings() { size = 0, color = Vector4.Zero };
 

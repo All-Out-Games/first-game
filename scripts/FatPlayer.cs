@@ -534,16 +534,17 @@ public partial class FatPlayer : Player
             {
                 var foodScreenPos = Camera.WorldToScreen(FoodBeingEaten.EatUIPosition);
                 var clickRect = new Rect(foodScreenPos);
-                clickRect = clickRect.Grow(20, 50, 20, 50).Offset(0, 10);
+                clickRect = clickRect.Grow(10, 50, 10, 50).Offset(0, 10);
                 float scale01 = Ease.OutQuart(Ease.T(Time.TimeSinceStartup - LastFoodClickTime, 0.25f));
                 float scale = AOMath.Lerp(1.5f, 1.0f, scale01);
                 clickRect = clickRect.Scale(scale, scale);
-                UI.Image(clickRect, null, Vector4.White, new UI.NineSlice());
+                UI.Image(clickRect, References.Instance.BossBarBg, Vector4.White, References.Instance.BossBarSlice);
 
                 float foodHealth01 = 1.0f - (float)Math.Clamp((float)FoodBeingEaten.CurrentHealth / (float)FoodBeingEaten.ClicksRequired, 0, 1);
                 FoodProgressLerp = AOMath.Lerp(FoodProgressLerp, foodHealth01, 20 * Time.DeltaTime);
-                var chewProgressRect = clickRect.SubRect(0, 0, FoodProgressLerp, 1, 0, 0, 0, 0);
-                UI.Image(chewProgressRect, null, Vector4.HSVLerp(Vector4.Red, Vector4.Green, FoodProgressLerp), new UI.NineSlice());
+                float progress01 = AOMath.Lerp(0.2f, 1.0f, FoodProgressLerp);
+                var chewProgressRect = clickRect.SubRect(0, 0, progress01, 1, 0, 0, 0, 0);
+                UI.Image(chewProgressRect, References.Instance.BossBarBg, Vector4.HSVLerp(Vector4.Red, Vector4.Green, FoodProgressLerp), References.Instance.BossBarSlice);
 
                 var pendingTextSettings = new UI.TextSettings()
                 {
@@ -832,7 +833,7 @@ public partial class FatPlayer : Player
     }
 
     [ClientRpc]
-    public void StartBossFight(ulong bossNetworkId)
+    public void StartBossFight(ulong bossNetworkId, Vector2 position)
     {
         Log.Info("Really starting boss fight");
         var entity = Entity.FindByNetworkId(bossNetworkId);
@@ -849,6 +850,8 @@ public partial class FatPlayer : Player
         DoingBossIntro = true;
         Util.Assert(CurrentBoss != null);
         Coroutine.Start(Entity, BossIntroCoroutine());
+
+        Entity.Position = position;
     }
 
     public double Trophies

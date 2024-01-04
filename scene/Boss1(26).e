@@ -25,8 +25,7 @@
   "data": {
     "WorldIndex": 1,
     "BossIndex": 0,
-    "Name": "Big Boss",
-    "SpineAnimator": "0:0"
+    "Name": "Big Boss"
   }
 },
 {

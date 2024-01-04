@@ -66,7 +66,14 @@ public class Boss : Component
 
             if (Network.IsServer) {
                 Log.Info("Starting boss fight with " + player.Name);
-                player.CallClient_StartBossFight(Entity.NetworkId);
+                var pos = Entity.Position;
+                if (player.Entity.Position.X < Entity.Position.X) {
+                    pos.X -= 2;
+                }
+                else {
+                    pos.X += 2;
+                }
+                player.CallClient_StartBossFight(Entity.NetworkId, pos);
             }
         };
 

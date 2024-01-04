@@ -933,29 +933,25 @@ public class GameUI : System<GameUI>
 
         if (localPlayer.CurrentBoss != null)
         {
-            var clickPowerRect = UI.GetPlayerRect(localPlayer);
-            clickPowerRect = clickPowerRect.Grow(100, 50, 0, 50).Offset(0, 10);
+            var playerRectPos = Camera.WorldToScreen(localPlayer.Entity.Position - new Vector2(0, 0.5f));
+            var myRect = new Rect(playerRectPos, playerRectPos).Grow(25, 100, 25, 100);
 
-            var myRect = clickPowerRect.CutLeftUnscaled(clickPowerRect.Width * 0.5f).Inset(0, 10, 0, 0);
-            var bossRect = clickPowerRect.Inset(0, 0, 0, 10);
+            var bossRectPos = Camera.WorldToScreen(localPlayer.CurrentBoss.Entity.Position - new Vector2(0, 0.5f));
+            var bossRect = new Rect(bossRectPos, bossRectPos).Grow(25, 100, 25, 100);
 
-            double myProgress   = Math.Min(1.0, (double)localPlayer.MyProgress   / (double)localPlayer.CurrentBoss.AmountToWin);
-            double bossProgress = Math.Min(1.0, (double)localPlayer.BossProgress / (double)localPlayer.CurrentBoss.AmountToWin);
+            double myProgress   = AOMath.Lerp(0.25f, 1.0f, (float)Math.Min(1.0, (double)localPlayer.MyProgress   / (double)localPlayer.CurrentBoss.AmountToWin));
+            double bossProgress = AOMath.Lerp(0.25f, 1.0f, (float)Math.Min(1.0, (double)localPlayer.BossProgress / (double)localPlayer.CurrentBoss.AmountToWin));
 
-            var myProgressRect   = myRect.Inset(5).SubRect(0, 0, 1, (float)myProgress, 0, 0, 0, 0);
-            var bossProgressRect = bossRect.Inset(5).SubRect(0, 0, 1, (float)bossProgress, 0, 0, 0, 0);
+            var myProgressRect   = myRect  .SubRect(0, 0, (float)myProgress,   1, 0, 0, 0, 0);
+            var bossProgressRect = bossRect.SubRect(0, 0, (float)bossProgress, 1, 0, 0, 0, 0);
 
-            UI.Image(myRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
-            UI.Image(myProgressRect, References.Instance.GreenFill, Vector4.White);
+            UI.Image(myRect, References.Instance.BossBarBg, Vector4.White, References.Instance.BossBarSlice);
+            UI.Image(myProgressRect, References.Instance.BossBarBg, Vector4.Green, References.Instance.BossBarSlice);
+            UI.Text(myRect, $"{localPlayer.MyProgress}", textSettings);
 
-            UI.Image(bossRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
-            UI.Image(bossProgressRect, References.Instance.RedFill, Vector4.White);
-
-            var myTextRect = myRect.SubRect(0, 0, 1, 0, 0, 0, 0, 0).GrowBottom(50);
-            var bossTextRect = bossRect.SubRect(0, 0, 1, 0, 0, 0, 0, 0).GrowBottom(50);
-
-            UI.Text(myTextRect, $"{localPlayer.MyProgress}", textSettings);
-            UI.Text(bossTextRect, $"{localPlayer.BossProgress}", textSettings);
+            UI.Image(bossRect, References.Instance.BossBarBg, Vector4.White, References.Instance.BossBarSlice);
+            UI.Image(bossProgressRect, References.Instance.BossBarBg, Vector4.Red, References.Instance.BossBarSlice);
+            UI.Text(bossRect, $"{localPlayer.BossProgress}", textSettings);
         }
     }
 

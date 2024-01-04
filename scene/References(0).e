@@ -29,6 +29,7 @@
     "ChewSpeedIcon": "ui2/Icons/chew_speed_icon.png",
     "MenuIcon": "ui2/menu-icon.png",
     "TopBarBg": "ui2/topbar_bg.png",
+    "BossBarBg": "ui2/boss_bar.png",
     "GreenButton": "ui2/green_button.png",
     "RedButton": "ui2/red_button.png",
     "BlueButton": "ui2/blue_button.png",
