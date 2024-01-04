@@ -36,11 +36,11 @@ public class GameUI : System<GameUI>
 
     public List<EggOpeningAnimation> EggOpeningAnimations = new List<EggOpeningAnimation>();
 
-    public Vector4 RarityColorCommon    = new Vector4(0.8f, 0.8f, 0.8f, 1.0f);
-    public Vector4 RarityColorUncommon  = new Vector4(0.5f, 0.8f, 0.5f, 1.0f);
-    public Vector4 RarityColorRare      = new Vector4(0.5f, 0.5f, 0.8f, 1.0f);
-    public Vector4 RarityColorEpic      = new Vector4(0.8f, 0.5f, 0.8f, 1.0f);
-    public Vector4 RarityColorLegendary = new Vector4(0.8f, 0.8f, 0.5f, 1.0f);
+    public static Vector4 RarityColorCommon    = new Vector4(0.8f, 0.8f, 0.8f, 1.0f);
+    public static Vector4 RarityColorUncommon  = new Vector4(0.5f, 0.8f, 0.5f, 1.0f);
+    public static Vector4 RarityColorRare      = new Vector4(0.5f, 0.5f, 0.8f, 1.0f);
+    public static Vector4 RarityColorEpic      = new Vector4(0.8f, 0.5f, 0.8f, 1.0f);
+    public static Vector4 RarityColorLegendary = new Vector4(0.8f, 0.8f, 0.5f, 1.0f);
 
     public void DoSingleStatUI(ref Rect rect, string id, UI.TextSettings textSettings, string str, string tooltipText = null, string text2 = null, string text3 = null, string text4 = null)
     {
@@ -93,7 +93,7 @@ public class GameUI : System<GameUI>
         }
     }
 
-    public (string, Vector4) BuildStatModifierText(StatModifier modifier)
+    public static (string, Vector4) BuildStatModifierText(StatModifier modifier)
     {
         Vector4 col = Vector4.White;
         string text = "";
@@ -126,6 +126,19 @@ public class GameUI : System<GameUI>
     public void AddEggToOpen(string eggId, string resultPetId)
     {
         EggOpeningAnimations.Add(new EggOpeningAnimation() { EggId = eggId, ResultPetId = resultPetId });
+    }
+
+    public static Vector4 GetRarityColor(PetData.Rarity rarity)
+    {
+        var rarityColor = rarity switch
+        {
+            PetData.Rarity.Uncommon => RarityColorUncommon,
+            PetData.Rarity.Rare => RarityColorRare,
+            PetData.Rarity.Epic => RarityColorEpic,
+            PetData.Rarity.Legendary => RarityColorLegendary,
+            _ => RarityColorCommon,
+        };
+        return rarityColor;
     }
 
     public override void Update()
@@ -521,14 +534,7 @@ public class GameUI : System<GameUI>
                 petIconRect = petIconRect.Inset(10, 10, 10, 10).Offset(10, 0);
                 UI.Image(petIconRect.FitAspect(petDefn.IconSprite.Aspect), petDefn.IconSprite, Vector4.White);
 
-                var rarityColor = petDefn.Rarity switch
-                {
-                    PetData.Rarity.Uncommon => RarityColorUncommon,
-                    PetData.Rarity.Rare => RarityColorRare,
-                    PetData.Rarity.Epic => RarityColorEpic,
-                    PetData.Rarity.Legendary => RarityColorLegendary,
-                    _ => RarityColorCommon,
-                };
+                var rarityColor = GetRarityColor(petDefn.Rarity);
                 var rarityRect = infoRect.CutTop(50);
                 UI.Text(rarityRect, petDefn.Rarity.ToString(), new UI.TextSettings(){
                     color = rarityColor,

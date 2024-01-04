@@ -1154,6 +1154,19 @@ public partial class FatPlayer : Player
 
     public void UpdateAndDrawEggSkeletonUI(float fadeT, SpineSkeleton eggSkeleton, float eggDropT, SpineSkeleton petSkeleton, float petAlpha, PetData.PetDefinition petDefinition, bool showEggCount)
     {
+        var ts = new UI.TextSettings()
+        {
+            font = UI.TextSettings.Font.AlphaKind,
+            size = 36,
+            color = Vector4.White,
+            horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+            verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom,
+            wordWrap = false,
+            wordWrapOffset = 0,
+            outline = true,
+            outlineThickness = 2,
+        };
+
         Rect eggRect = UI.ScreenRect.Slide(0, 1.0f - Ease.OutQuart(eggDropT)).Offset(0, -100).Scale(0.45f);
         if (eggSkeleton != null) eggSkeleton.Update(Time.DeltaTime);
         if (petSkeleton != null) petSkeleton.Update(Time.DeltaTime);
@@ -1162,23 +1175,32 @@ public partial class FatPlayer : Player
         {
             Rect petRect = eggRect.Offset(0, petDefinition.EggOpenAnimYOffset);
             UI.DrawSkeleton(petRect.Scale(petAlpha), petSkeleton, Vector4.White * petAlpha, new Vector2(100, 100), (float)Math.Sin(2 * Math.PI * Time.TimeSinceStartup * 0.5) * 8);
+
+            var petNameTs = ts;
+            petNameTs.size = 100;
+            petNameTs.color = GameUI.GetRarityColor(petDefinition.Rarity) * petAlpha;
+            Rect nameTextRect = UI.Text(UI.ScreenRect.BottomCenterRect().Offset(0, 175), petDefinition.Name, petNameTs);
+
+            var infoRect = UI.ScreenRect.SubRect(0.5f, 0.5f, 1, 0.5f, 0, 0, 0, 0);
+            foreach(var modifier in petDefinition.StatModifiers)
+            {
+                var statModRect = infoRect.CutTop(50);
+                var (text, col) = GameUI.BuildStatModifierText(modifier);
+
+                UI.Text(statModRect, text, new UI.TextSettings() {
+                    color = col * petAlpha,
+                    outline = true,
+                    outlineThickness = 2,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom,
+                    size = 48
+                });
+            }
         }
         if (eggSkeleton != null) UI.DrawSkeleton(eggRect, eggSkeleton, Vector4.White, new Vector2(100, 100), 0);
 
         if (showEggCount)
         {
-            var ts = new UI.TextSettings()
-            {
-                font = UI.TextSettings.Font.AlphaKind,
-                size = 36,
-                color = Vector4.White,
-                horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
-                verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom,
-                wordWrap = false,
-                wordWrapOffset = 0,
-                outline = true,
-                outlineThickness = 2,
-            };
             UI.Text(UI.ScreenRect.BottomCenterRect().Offset(0, 25), $"{EggsToOpenHighWaterMark-EggsToOpen.Count}/{EggsToOpenHighWaterMark} eggs", ts);
         }
     }
@@ -1190,7 +1212,7 @@ public partial class FatPlayer : Player
         var ts = new UI.TextSettings()
         {
             font = UI.TextSettings.Font.AlphaKind,
-            size = 68,
+            size = 48,
             color = Vector4.White,
             horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
             verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom,
