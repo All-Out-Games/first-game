@@ -87,7 +87,7 @@ public class References : Component
     [Serialized] public Texture IconPizzaMonsterPet;
 
     public UI.NineSlice DarkFrameSlice  = new UI.NineSlice() { slice = new Vector4(8, 8, 8, 8),     sliceScale = 1f };
-    public UI.NineSlice WhiteFrameSlice = new UI.NineSlice() { slice = new Vector4(45, 45, 45, 45), sliceScale = 1f };
+    public UI.NineSlice WhiteFrameSlice = new UI.NineSlice() { slice = new Vector4(45, 45, 45, 45), sliceScale = 0.5f };
     public UI.NineSlice ButtonSlice     = new UI.NineSlice() { slice = new Vector4(30, 30, 30, 30), sliceScale = 1f };
     public UI.NineSlice TopBarSlice     = new UI.NineSlice() { slice = new Vector4(34, 34, 34, 34), sliceScale = 1f };
     public UI.NineSlice BossBarSlice    = new UI.NineSlice() { slice = new Vector4(34, 34, 34, 34), sliceScale = 1f };

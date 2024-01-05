@@ -1361,7 +1361,10 @@ public partial class FatPlayer : Player
         var rbd = global::Rebirth.Instance.GetRebirthData(rebirth);
         
         this.Rebirth = rebirth;
-        Notifications.Show($"You have been reborn! You are now a {rbd.RankName}!");
+        if (IsLocal)
+        {
+            Notifications.Show($"You have been reborn! You are now a {rbd.RankName}!");
+        }
         // TODO show an anim or something
     }
 

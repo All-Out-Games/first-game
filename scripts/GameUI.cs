@@ -489,7 +489,7 @@ public class GameUI : System<GameUI>
                 var equippedCapacityRect = windowRect.TopRightRect().Offset(-250, 0).Grow(20, 115, 20, 115);
                 var equippedCapacityRectHeight = equippedCapacityRect.Height;
                 UI.Image(equippedCapacityRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
-                var equippedCapacityIconRect = equippedCapacityRect.LeftRect().Grow(0, equippedCapacityRectHeight/2, 0, equippedCapacityRectHeight/2).Grow(10, 10, 10, 10);
+                var equippedCapacityIconRect = equippedCapacityRect.LeftRect().Grow(0, 100, 0, 100).FitAspect(References.Instance.Backpack.Aspect, Rect.FitAspectKind.KeepHeight).Grow(10, 10, 10, 10);
                 UI.Image(equippedCapacityIconRect, References.Instance.Backpack, Vector4.White);
                 var equippedCapacityTextRect = equippedCapacityRect.LeftRect().Offset(85, 0);
                 UI.Text(equippedCapacityTextRect, $"{equippedPetsCount}/{localPlayer.MaxEquippedPets}", new UI.TextSettings(){
@@ -504,9 +504,9 @@ public class GameUI : System<GameUI>
                 increaseEquippedCapacityRect = increaseEquippedCapacityRect.Offset(-equippedCapacityRectHeight/2, 0).Inset(5, 10, 5, 0);
                 if (UI.Button(increaseEquippedCapacityRect.FitAspect(References.Instance.Plus.Aspect), "increase_equipped_capacity", new UI.ButtonSettings(){ sprite = References.Instance.Plus }, new UI.TextSettings(){size = 0, color = Vector4.Zero}).clicked)
                 {
-                    IsShowingPetsWindow = false;
-                    IsShowingShopWindow = true;
-                    Shop.Instance.ScrollToIAP = "pet_equip_cap_3";
+                    // IsShowingPetsWindow = false;
+                    // IsShowingShopWindow = true;
+                    // Shop.Instance.ScrollToIAP = "pet_equip_cap_3";
                 }
             }
 
@@ -682,9 +682,9 @@ public class GameUI : System<GameUI>
                     var petButtonResult = UI.Button(petRect, $"+{petsInColdStorage} in storage", buttonSettings, coldStorageTextSettings);
                     if (petButtonResult.clicked)
                     {
-                        IsShowingPetsWindow = false;
-                        IsShowingShopWindow = true;
-                        Shop.Instance.ScrollToIAP = "pet_storage_cap_1";
+                        // IsShowingPetsWindow = false;
+                        // IsShowingShopWindow = true;
+                        // Shop.Instance.ScrollToIAP = "pet_storage_cap_1";
                     }
                 }
 

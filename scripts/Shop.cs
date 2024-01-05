@@ -198,7 +198,7 @@ public class Shop : System<Shop>
                                 UI.Text(titleTextRect, product.Name, new UI.TextSettings() { size = 72, color = Vector4.White, outline = true, outlineThickness = 2, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom, wordWrap = true });
 
                                 var descriptionAndIconRect = entryCutRect.CutTop(150).Offset(0, -25);
-                                var iconRect = descriptionAndIconRect.CutLeft(descriptionAndIconRect.Width * 0.4f).FitAspect(1.0f, Rect.FitAspectKind.KEEP_WIDTH).Offset(20, 0);
+                                var iconRect = descriptionAndIconRect.CutLeft(descriptionAndIconRect.Width * 0.4f).FitAspect(1.0f, Rect.FitAspectKind.KeepWidth).Offset(20, 0);
                                 var descriptionRect = descriptionAndIconRect.Inset(0, 10, 0, 10);
                                 UI.Image(iconRect, product.Icon, Vector4.White);
                                 UI.Text(descriptionRect, product.Description, new UI.TextSettings() { size = 42, color = Vector4.White, outline = true, outlineThickness = 2, wordWrap = true, horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center, verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom });
