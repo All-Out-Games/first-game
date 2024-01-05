@@ -168,6 +168,19 @@ public class FatGameManager : Component
             }
         });
 
+        Player.OnPlayerJoin += (Player player) =>
+        {
+            List<ulong> disabledFoods = new List<ulong>();
+            foreach (var food in Food.AllFoods)
+            {
+                if (!food.WasDynamicallySpawned && food.HasBeenEaten)
+                {
+                    disabledFoods.Add(food.Entity.NetworkId);
+                }
+            }
+            ((FatPlayer)player).CallClient_DisableInSceneFoods(disabledFoods.ToArray());
+        };
+
         Chat.RegisterChatCommandHandler(RunChatCommand);
     }
 }

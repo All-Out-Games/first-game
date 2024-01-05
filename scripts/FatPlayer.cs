@@ -95,6 +95,8 @@ public partial class FatPlayer : Player
 
     public bool IsBusy => CurrentBoss != null || FoodBeingEaten != null || EggHatchCoroutine.Alive();
 
+    public double BossInteractCooldownTimer;
+
     public IEnumerator BossIntroCoroutine()
     {
         var ts = new UI.TextSettings()
@@ -180,6 +182,22 @@ public partial class FatPlayer : Player
 
     public override void Start()
     {
+    }
+
+    [ClientRpc]
+    public void DisableInSceneFoods(ulong[] foodNetworkIds)
+    {
+        if (!this.IsLocal) return;
+        foreach (var foodNetworkId in foodNetworkIds)
+        {
+            var food = Entity.FindByNetworkId(foodNetworkId);
+            if (food == null)
+            {
+                Log.Error($"Failed to find food with network id {foodNetworkId}");
+                continue;
+            }
+            food.SetEnabled(false);
+        }
     }
 
     [ClientRpc]
@@ -484,6 +502,8 @@ public partial class FatPlayer : Player
             pet.Arrived = false;
         }
 
+        BossInteractCooldownTimer -= Time.DeltaTime;
+
         if (CurrentBoss != null)
         {
             if (!DoingBossIntro)
@@ -505,12 +525,22 @@ public partial class FatPlayer : Player
                 if (this.IsInputDown(Input.UnifiedInput.MOUSE_LEFT) || this.IsInputDown(Input.UnifiedInput.KEYCODE_E))
                 {
                     MyProgress += progressPerClick;
+
+                    if (Network.IsClient)
+                    {
+                        SpawnParticles(Entity.Position, 1, ResourceParticleKind.Food, Entity);
+                    }
                 }
 
                 BossAccumulator += Time.DeltaTime;
                 while (Util.Timer(ref BossAccumulator, CurrentBoss.Definition.TimeBetweenClicks))
                 {
                     BossProgress += CurrentBoss.Definition.AmountPerClick;
+
+                    if (Network.IsClient && this.IsLocal)
+                    {
+                        SpawnParticles(CurrentBoss.Entity.Position, 5, ResourceParticleKind.Food, CurrentBoss.Entity);
+                    }
                 }
 
                 if (Network.IsServer)
@@ -518,6 +548,7 @@ public partial class FatPlayer : Player
                     if (MyProgress >= CurrentBoss.AmountToWin || BossProgress >= CurrentBoss.AmountToWin)
                     {
                         CallClient_BossFightOver(MyProgress > BossProgress);
+                        BossInteractCooldownTimer = 1;
                     }
                 }
             }
