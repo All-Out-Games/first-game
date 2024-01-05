@@ -118,7 +118,7 @@ public partial class FatPlayer : Player
         while (Coroutine.Timer(ref timer, 1))
         {
             ts.color = Vector4.White * Ease.OutQuart(1.0f - timer);
-            UI.Text(textRect, "Ready..", ts);
+            if (IsLocal) UI.Text(textRect, "Ready..", ts);
             yield return null;
         }
 
@@ -126,7 +126,7 @@ public partial class FatPlayer : Player
         while (Coroutine.Timer(ref timer, 1))
         {
             ts.color = Vector4.White * Ease.OutQuart(1.0f - timer);
-            UI.Text(textRect, "Set..", ts);
+            if (IsLocal) UI.Text(textRect, "Set..", ts);
             yield return null;
         }
 
@@ -141,7 +141,7 @@ public partial class FatPlayer : Player
             ts.size = 128;
             var offset = new Vector2((float)rng.NextDouble() * 2 - 1, (float)rng.NextDouble() * 2 - 1) * 8;
             var rect = textRect.Offset(offset.X, offset.Y);
-            UI.Text(rect, "EAT!!!", ts);
+            if (IsLocal) UI.Text(rect, "EAT!!!", ts);
             yield return null;
         }
     }

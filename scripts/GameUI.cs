@@ -103,19 +103,19 @@ public class GameUI : System<GameUI>
             case StatModifierKind.StomachSize:
             {
                 col = References.Instance.RedText;
-                text = $"{modifier.MultiplyValue:0.#}x Stomach Size";
+                text = $"{modifier.MultiplyValue:F2}x Stomach Size";
                 break;
             }
             case StatModifierKind.ClickPower:
             {
                 col = References.Instance.GreenText;
-                text = $"{modifier.MultiplyValue:0.#}x Click Power";
+                text = $"{modifier.MultiplyValue:F2}x Click Power";
                 break;
             }
             case StatModifierKind.MouthSize:
             {
                 col = References.Instance.BlueText;
-                text = $"{modifier.MultiplyValue:0.#}x Mouth Size";
+                text = $"{modifier.MultiplyValue:F2}x Mouth Size";
                 break;
             }
         }
