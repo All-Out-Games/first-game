@@ -169,6 +169,7 @@ public partial class PetManager : Component
             if (!PetData.Pets.ContainsKey(pet.DefinitionId)) continue;
 
             var petEntity = Entity.Instantiate(References.Instance.PetPrefab);
+            petEntity.Position = Player.Entity.Position;
             var p = petEntity.GetComponent<Pet>();
             p.OwnerId = Player.Entity.NetworkId;
             p.DefinitionId = pet.DefinitionId;

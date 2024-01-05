@@ -412,7 +412,7 @@ public class GameUI : System<GameUI>
                     using var _1 = UI.PUSH_COLOR(upgradeStomachResult.ColorMultiplier);
 
                     var costTextRect = buttonRect.BottomRect().Offset(15, 25);
-                    var realCostTextRect = UI.Text(costTextRect, $"{cost}", new UI.TextSettings(){
+                    var realCostTextRect = UI.Text(costTextRect, $"{Util.FormatDouble(cost)}", new UI.TextSettings(){
                         color = References.Instance.YellowText,
                         font = UI.TextSettings.Font.Barlow,
                         outline = true,

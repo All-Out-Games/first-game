@@ -210,16 +210,16 @@ public partial class Food : Component
         {
             float progress01 = (float)CurrentHealth / (float)ClicksRequired;
             float eased = AOMath.Lerp(0.5f, 1.0f, progress01);
-            Entity.Scale = new Vector2(0.33f, 0.33f) * eased;
+            Entity.LocalScale = new Vector2(0.33f, 0.33f) * eased;
         }
         else
         {
-            Entity.Scale = new Vector2(0.33f, 0.33f);
+            Entity.LocalScale = new Vector2(0.33f, 0.33f);
         }
 
         float rotationAnimTime = (Time.TimeSinceStartup - TimeLastClicked) * 4.0f;
         float rot = ((float)Math.Sin(100.0f * rotationAnimTime)) / (1.0f + 10.0f * (float)Math.Pow(rotationAnimTime, 4));
-        Entity.Rotation = 15 * rot;
+        Entity.LocalRotation = 15 * rot;
     }
 
     public override void OnDestroy()
