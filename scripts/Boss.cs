@@ -31,11 +31,11 @@ public class Boss : Component
         }
 
         SpineAnimator = Entity.GetComponent<Spine_Animator>();
-
         if (SpineAnimator != null)
         {
             SpineAnimator.SetAnimation("Idle", true);
             SpineAnimator.SetSkin(Definition.SpineSkin);
+            SpineAnimator.SetCrewchsia(BossIndex);
         }
 
         var interactable = Entity.GetComponent<Interactable>();
