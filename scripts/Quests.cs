@@ -46,6 +46,10 @@ public partial class CarePackage : Component
         interactable.CanUseCallback = (Player p) =>
         {
             var player = (FatPlayer)p;
+            if (player.IsBusy)
+            {
+                return false;
+            }
             if (Claimed)
             {
                 return false;

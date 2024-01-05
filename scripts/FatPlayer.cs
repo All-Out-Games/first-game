@@ -399,10 +399,15 @@ public partial class FatPlayer : Player
                                 break;
                             }
                             case ResourceParticleKind.SellFood: {
+                                // nothing
                                 break;
                             }
                             case ResourceParticleKind.Coins: {
                                 LastCoinParticleArriveTime = Time.TimeSinceStartup;
+                                break;
+                            }
+                            case ResourceParticleKind.BossFood: {
+                                // nothing
                                 break;
                             }
                             default: {
@@ -528,7 +533,7 @@ public partial class FatPlayer : Player
 
                     if (Network.IsClient)
                     {
-                        SpawnParticles(Entity.Position, 1, ResourceParticleKind.Food, Entity);
+                        SpawnParticles(Entity.Position, 1, ResourceParticleKind.BossFood, Entity);
                     }
                 }
 
@@ -539,7 +544,7 @@ public partial class FatPlayer : Player
 
                     if (Network.IsClient && this.IsLocal)
                     {
-                        SpawnParticles(CurrentBoss.Entity.Position, 5, ResourceParticleKind.Food, CurrentBoss.Entity);
+                        SpawnParticles(CurrentBoss.Entity.Position, 5, ResourceParticleKind.BossFood, CurrentBoss.Entity);
                     }
                 }
 
@@ -549,6 +554,14 @@ public partial class FatPlayer : Player
                     {
                         CallClient_BossFightOver(MyProgress > BossProgress);
                         BossInteractCooldownTimer = 1;
+                    }
+                    else
+                    {
+                        if (IsInputDown(Input.UnifiedInput.MOUSE_RIGHT))
+                        {
+                            CallClient_BossFightOver(false);
+                            BossInteractCooldownTimer = 1;
+                        }
                     }
                 }
             }
@@ -599,6 +612,20 @@ public partial class FatPlayer : Player
                 pendingTextSettings.color.Z = colorEase;
                 pendingTextSettings.size = AOMath.Lerp(48, 32, colorEase);
                 UI.Text(clickRect, $"{FoodBeingEaten.CurrentHealth}", pendingTextSettings);
+
+                var instructionsTextSettings = new UI.TextSettings()
+                {
+                    font = UI.TextSettings.Font.AlphaKind,
+                    size = 32,
+                    color = Vector4.White,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
+                    wordWrap = true,
+                    outline = true,
+                    outlineThickness = 2,
+                };
+
+                UI.Text(new Rect(foodScreenPos).Offset(0, -100).Grow(0, 1000, 0, 1000), "EAT: Left Click/E\nQUIT: Right Click", instructionsTextSettings);
             }
         }
         else
@@ -606,21 +633,16 @@ public partial class FatPlayer : Player
             FoodProgressLerp = 0;
         }
 
-        if (this.IsLocal) 
+        if (Network.IsServer)
         {
-            if (FoodBeingEaten != null && Input.GetKeyDown(Input.Keycode.KEYCODE_ESCAPE, true, level: Input.CheckLevel.TextInput))
+            if (FoodBeingEaten.Alive() && IsInputDown(Input.UnifiedInput.MOUSE_RIGHT))
             {
-                CallServer_RequestGiveUpEating();
+                FoodBeingEaten.CallClient_FinishEating(false);
             }
 
-            if (FoodBeingEaten != null && (Input.GetKeyDown(Input.Keycode.KEYCODE_W, level: Input.CheckLevel.TextInput) || Input.GetKeyDown(Input.Keycode.KEYCODE_A, level: Input.CheckLevel.TextInput) || Input.GetKeyDown(Input.Keycode.KEYCODE_S, level: Input.CheckLevel.TextInput) || Input.GetKeyDown(Input.Keycode.KEYCODE_D, level: Input.CheckLevel.TextInput)))
+            if (CurrentBoss.Alive() && IsInputDown(Input.UnifiedInput.MOUSE_RIGHT))
             {
-                CallServer_RequestGiveUpEating();
-            }
-
-            if (CurrentBoss != null && Input.GetKeyDown(Input.Keycode.KEYCODE_ESCAPE, true, level: Input.CheckLevel.TextInput))
-            {
-                CallServer_GiveUpBossFight();
+                CallClient_BossFightOver(false);
             }
         }
     }
@@ -646,6 +668,10 @@ public partial class FatPlayer : Player
             }
             case ResourceParticleKind.Coins: {
                 tex = References.Instance.CoinIcon;
+                break;
+            }
+            case ResourceParticleKind.BossFood: {
+                tex = References.Instance.FoodIcon;
                 break;
             }
             default: {
@@ -843,12 +869,6 @@ public partial class FatPlayer : Player
         CurrentQuest = null;
     }
 
-    [ServerRpc]
-    public void RequestGiveUpEating()
-    {
-        CallClient_GiveUpEating();
-    }
-
     [ClientRpc]
     public void GiveUpEating()
     {
@@ -857,15 +877,6 @@ public partial class FatPlayer : Player
             FoodBeingEaten.FinishEating(false);
         }
         FoodBeingEaten = null;
-    }
-
-    [ServerRpc]
-    public void GiveUpBossFight()
-    {
-        if (CurrentBoss != null)
-        {
-            CallClient_BossFightOver(false);
-        }
     }
 
     [ClientRpc]
@@ -1285,7 +1296,7 @@ public partial class FatPlayer : Player
             UpdateAndDrawEggSkeletonUI(Ease.T(timer0, 0.75f), null, 0, null, 0, null, false);
             UI.PopLayer();
             yield return null;
-            if (this.IsInputDown(Input.UnifiedInput.MOUSE_LEFT))
+            if (IsInputDown(Input.UnifiedInput.MOUSE_LEFT))
             {
                 break;
             }
@@ -1661,6 +1672,7 @@ public enum ResourceParticleKind
     Trophy,
     SellFood,
     Coins,
+    BossFood,
 }
 
 public struct ResourceParticle

@@ -5,8 +5,8 @@
   "name": "Boss4",
   "local_enabled": true,
   "local_position": {
-    "X": -11.4576406478881836,
-    "Y": -8.3877401351928711
+    "X": -6.7095236778259277,
+    "Y": -13.5645103454589844
   },
   "local_rotation": 0,
   "local_scale": {

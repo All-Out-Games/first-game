@@ -1,0 +1,56 @@
+9
+1249835483137
+664911185115611 1704485226835896400
+{
+  "name": "FireHydrant",
+  "local_enabled": true,
+  "local_position": {
+    "X": 7.6406273841857910,
+    "Y": -16.3138065338134766
+  },
+  "local_rotation": 0,
+  "local_scale": {
+    "X": 0.3300000131130219,
+    "Y": 0.3300000131130219
+  },
+  "sibling_index": 36,
+  "parent": "1061428169402263:1704383905668996700",
+  "spawn_as_networked_entity": true
+},
+{
+  "cid": 1,
+  "aoid": "664911185530571:1704485226836004800",
+  "component_type": "Mono_Component",
+  "mono_component_type": "Food",
+  "data": {
+    "SpriteRenderer": "0:0",
+    "FoodId": "fire_hydrant",
+    "RespawnTime": 10
+  }
+},
+{
+  "cid": 2,
+  "aoid": "664911185676453:1704485226836043100",
+  "component_type": "Internal_Component",
+  "internal_component_type": "Interactable",
+  "data": {
+
+  }
+},
+{
+  "cid": 3,
+  "aoid": "664911185953701:1704485226836116100",
+  "component_type": "Internal_Component",
+  "internal_component_type": "Sprite_Renderer",
+  "data": {
+    "texture": "food_items/fire_hydrant.png",
+    "depth_offset": 0,
+    "tint": {
+      "X": 1,
+      "Y": 1,
+      "Z": 1,
+      "W": 1
+    },
+    "layer": 0
+  }
+}

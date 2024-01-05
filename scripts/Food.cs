@@ -21,21 +21,21 @@ public partial class Food : Component
 
     public static List<FoodDefinition> FoodDefinitions = new()
     {
-        new FoodDefinition(){Id = "apple",                 Name = "Apple",                   ConsumptionTime = 1,  RequiredMouthSize = 1,   StomachSpace = 1,    SellValue = 2,  Sprite = Assets.GetAsset<Texture>("food_items/apple.png") },
-        new FoodDefinition(){Id = "feastable_bar",         Name = "Feastable Bar",           ConsumptionTime = 2,  RequiredMouthSize = 5,   StomachSpace = 2,    SellValue = 4,  Sprite = Assets.GetAsset<Texture>("food_items/feastable_bar.png") },
-        new FoodDefinition(){Id = "PB&J_Sandwich",         Name = "PB&J Sandwich",           ConsumptionTime = 2,  RequiredMouthSize = 10,  StomachSpace = 5,    SellValue = 8,  Sprite = Assets.GetAsset<Texture>("food_items/PB&J_Sandwich.png") },
-        new FoodDefinition(){Id = "popcorn",               Name = "Popcorn",                 ConsumptionTime = 3,  RequiredMouthSize = 15,  StomachSpace = 7,    SellValue = 12, Sprite = Assets.GetAsset<Texture>("food_items/popcorn.png") },
-        new FoodDefinition(){Id = "grimace_shake_small",   Name = "Grimace Shake",           ConsumptionTime = 5,  RequiredMouthSize = 25,  StomachSpace = 9,    SellValue = 18, Sprite = Assets.GetAsset<Texture>("food_items/grimace_shake_small.png") },
-        new FoodDefinition(){Id = "milk_jug",              Name = "Milk Jug",                ConsumptionTime = 7,  RequiredMouthSize = 35,  StomachSpace = 13,   SellValue = 24, Sprite = Assets.GetAsset<Texture>("food_items/milk_jug.png") },
-        new FoodDefinition(){Id = "doggy_poop_bin",        Name = "Dog Poop",                ConsumptionTime = 9,  RequiredMouthSize = 45,  StomachSpace = 17,   SellValue = 32, Sprite = Assets.GetAsset<Texture>("food_items/doggy_poop_bin.png") },
-        new FoodDefinition(){Id = "fire_hydrant",          Name = "Fire Hydrant",            ConsumptionTime = 11, RequiredMouthSize = 60,  StomachSpace = 21,   SellValue = 40, Sprite = Assets.GetAsset<Texture>("food_items/fire_hydrant.png") },
-        new FoodDefinition(){Id = "trash_bag",             Name = "Trash Bag",               ConsumptionTime = 13, RequiredMouthSize = 75,  StomachSpace = 25,   SellValue = 50, Sprite = Assets.GetAsset<Texture>("food_items/trash_bag.png") },
-        new FoodDefinition(){Id = "infinity_gauntlet",     Name = "Infinity Gauntlet",       ConsumptionTime = 15, RequiredMouthSize = 95,  StomachSpace = 29,   SellValue = 62, Sprite = Assets.GetAsset<Texture>("food_items/infinity_gauntlet.png") },
+        new FoodDefinition(){Id = "apple",                 Name = "Apple",                 ConsumptionTime = 1,  RequiredMouthSize = 1,   StomachSpace = 1,    SellValue = 2,  Sprite = Assets.GetAsset<Texture>("food_items/apple.png") },
+        new FoodDefinition(){Id = "feastable_bar",         Name = "Feastable Bar",         ConsumptionTime = 2,  RequiredMouthSize = 5,   StomachSpace = 2,    SellValue = 4,  Sprite = Assets.GetAsset<Texture>("food_items/feastable_bar.png") },
+        new FoodDefinition(){Id = "PB&J_Sandwich",         Name = "PB&J Sandwich",         ConsumptionTime = 2,  RequiredMouthSize = 10,  StomachSpace = 5,    SellValue = 8,  Sprite = Assets.GetAsset<Texture>("food_items/PB&J_Sandwich.png") },
+        new FoodDefinition(){Id = "popcorn",               Name = "Popcorn",               ConsumptionTime = 3,  RequiredMouthSize = 15,  StomachSpace = 7,    SellValue = 12, Sprite = Assets.GetAsset<Texture>("food_items/popcorn3.png") },
+        new FoodDefinition(){Id = "grimace_shake_small",   Name = "Grimace Shake",         ConsumptionTime = 5,  RequiredMouthSize = 25,  StomachSpace = 9,    SellValue = 18, Sprite = Assets.GetAsset<Texture>("food_items/grimace_shake_small.png") },
+        new FoodDefinition(){Id = "milk_jug",              Name = "Milk Jug",              ConsumptionTime = 7,  RequiredMouthSize = 35,  StomachSpace = 13,   SellValue = 24, Sprite = Assets.GetAsset<Texture>("food_items/milk_jug.png") },
+        new FoodDefinition(){Id = "doggy_poop_bin",        Name = "Dog Poop",              ConsumptionTime = 9,  RequiredMouthSize = 45,  StomachSpace = 17,   SellValue = 32, Sprite = Assets.GetAsset<Texture>("food_items/doggy_poop_bin.png") },
+        new FoodDefinition(){Id = "fire_hydrant",          Name = "Fire Hydrant",          ConsumptionTime = 11, RequiredMouthSize = 60,  StomachSpace = 21,   SellValue = 40, Sprite = Assets.GetAsset<Texture>("food_items/fire_hydrant.png") },
+        new FoodDefinition(){Id = "trash_bag",             Name = "Trash Bag",             ConsumptionTime = 13, RequiredMouthSize = 75,  StomachSpace = 25,   SellValue = 50, Sprite = Assets.GetAsset<Texture>("food_items/trash_bag.png") },
+        new FoodDefinition(){Id = "infinity_gauntlet",     Name = "Infinity Gauntlet",     ConsumptionTime = 15, RequiredMouthSize = 95,  StomachSpace = 29,   SellValue = 62, Sprite = Assets.GetAsset<Texture>("food_items/infinity_gauntlet.png") },
 
         new FoodDefinition(){Id = "Underwear2",            Name = "Underwear",             ConsumptionTime = 50,  RequiredMouthSize = 400, StomachSpace = 15,   SellValue = 300,     Sprite = Assets.GetAsset<Texture>("food_items/Underwear.png") },
         new FoodDefinition(){Id = "Burger2",               Name = "Burger",                ConsumptionTime = 55,  RequiredMouthSize = 420, StomachSpace = 17,   SellValue = 455,     Sprite = Assets.GetAsset<Texture>("food_items/Burger.png") },
         new FoodDefinition(){Id = "Pizza2",                Name = "Pizza",                 ConsumptionTime = 60,  RequiredMouthSize = 440, StomachSpace = 19,   SellValue = 628,     Sprite = Assets.GetAsset<Texture>("food_items/Pizza.png") },
-        new FoodDefinition(){Id = "Popcorn2",              Name = "Popcorn",               ConsumptionTime = 70,  RequiredMouthSize = 480, StomachSpace = 23,   SellValue = 942,     Sprite = Assets.GetAsset<Texture>("food_items/popcorn.png") },
+        new FoodDefinition(){Id = "Popcorn2",              Name = "Popcorn",               ConsumptionTime = 70,  RequiredMouthSize = 480, StomachSpace = 23,   SellValue = 942,     Sprite = Assets.GetAsset<Texture>("food_items/popcorn3.png") },
         new FoodDefinition(){Id = "Watermelon2",           Name = "Watermelon",            ConsumptionTime = 80,  RequiredMouthSize = 520, StomachSpace = 27,   SellValue = 1256,    Sprite = Assets.GetAsset<Texture>("food_items/Watermelon.png") },
         new FoodDefinition(){Id = "fire_hydrant_normal2",  Name = "fire_hydrant_normal",   ConsumptionTime = 95,  RequiredMouthSize = 560, StomachSpace = 33,   SellValue = 1570,    Sprite = Assets.GetAsset<Texture>("food_items/fire_hydrant_normal.png") },
         new FoodDefinition(){Id = "Potted_Tree2",          Name = "Potted_Tree",           ConsumptionTime = 110, RequiredMouthSize = 600, StomachSpace = 39,   SellValue = 1884,    Sprite = Assets.GetAsset<Texture>("food_items/Potted_Tree.png") },
@@ -82,6 +82,8 @@ public partial class Food : Component
     public event Action<Food> OnEat;
 
     public Vector2 EatUIPosition => Entity.Position + new Vector2(0, 1);
+
+    public float TimeLastClicked;
 
     public bool PlayerCanEatThis(FatPlayer player, out string reason, bool giveReason = false) // giveReason is for perf reasons when we dont need the reason
     {
@@ -203,6 +205,21 @@ public partial class Food : Component
         {
             CallClient_Respawn();
         }
+
+        if (CurrentEater.Alive())
+        {
+            float progress01 = (float)CurrentHealth / (float)ClicksRequired;
+            float eased = AOMath.Lerp(0.5f, 1.0f, progress01);
+            Entity.Scale = new Vector2(0.33f, 0.33f) * eased;
+        }
+        else
+        {
+            Entity.Scale = new Vector2(0.33f, 0.33f);
+        }
+
+        float rotationAnimTime = (Time.TimeSinceStartup - TimeLastClicked) * 4.0f;
+        float rot = ((float)Math.Sin(100.0f * rotationAnimTime)) / (1.0f + 10.0f * (float)Math.Pow(rotationAnimTime, 4));
+        Entity.Rotation = 15 * rot;
     }
 
     public override void OnDestroy()
@@ -222,6 +239,7 @@ public partial class Food : Component
         {
             FoodClickParticleSystem.Instance.SpawnParticle(EatUIPosition);
         }
+        TimeLastClicked = Time.TimeSinceStartup;
     }
 
     [ClientRpc]

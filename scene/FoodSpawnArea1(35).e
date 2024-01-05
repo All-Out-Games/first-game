@@ -3,7 +3,7 @@
 42347967936764 1701806595502535800
 {
   "name": "FoodSpawnArea1",
-  "local_enabled": true,
+  "local_enabled": false,
   "local_position": {
     "X": 0,
     "Y": 0
