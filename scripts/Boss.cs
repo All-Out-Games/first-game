@@ -60,6 +60,11 @@ public class Boss : Component
                 NotifyRequirementNotMetLocal(player, "Stomach Size", player.StomachSizeLevel, Definition.RequiredLevel);
             }
 
+            if (player.BossInteractCooldownTimer > 0)
+            {
+                meetsReq = false;
+            }
+
             if (!meetsReq)
             {
                 return;

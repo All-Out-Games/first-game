@@ -1,5 +1,9 @@
 using AO;
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+
 public class FoodDefinition
 {
     public Texture Sprite;
@@ -13,6 +17,8 @@ public class FoodDefinition
 
 public partial class Food : Component
 {
+    public static List<Food> AllFoods = new List<Food>();
+
     public static List<FoodDefinition> FoodDefinitions = new()
     {
         new FoodDefinition(){Id = "apple",                 Name = "Apple",                   ConsumptionTime = 1,  RequiredMouthSize = 1,   StomachSpace = 1,    SellValue = 2,  Sprite = Assets.GetAsset<Texture>("food_items/apple.png") },
@@ -68,7 +74,8 @@ public partial class Food : Component
 
     public bool WasDynamicallySpawned;
     [Serialized] public float RespawnTime;
-    public float RespawnTimer;
+    public float NextRespawnTime;
+    public bool HasBeenEaten;
 
     public int FoodIndexInAreaDefinition; // only on server
 
@@ -156,11 +163,7 @@ public partial class Food : Component
             {
                 return false;
             }
-            if (CurrentHealth <= 0)
-            {
-                return false;
-            }
-            if (RespawnTimer > 0)
+            if (HasBeenEaten)
             {
                 return false;
             }
@@ -168,12 +171,15 @@ public partial class Food : Component
         };
 
         CurrentHealth = 1;
+
+        AllFoods.Add(this);
     }
+
 
     public override void Update()
     {
         var localPlayer = (FatPlayer) Network.LocalPlayer;
-        if (localPlayer != null)
+        if (localPlayer != null && !HasBeenEaten)
         {
             if (PlayerCanEatThis(localPlayer, out string reason))
             {
@@ -188,20 +194,20 @@ public partial class Food : Component
             }
         }
 
-        if (Network.IsServer && CurrentHealth <= 0 && RespawnTimer <= 0)
+        if (Network.IsServer && !HasBeenEaten && CurrentHealth <= 0)
         {
             CallClient_FinishEating(true);
         }
 
-        if (RespawnTimer > 0) 
+        if (Network.IsServer && HasBeenEaten && Time.TimeSinceStartup >= NextRespawnTime) 
         {
-            RespawnTimer -= Time.DeltaTime;
-            if (RespawnTimer <= 0)
-            {
-                Entity.SetEnabled(true);
-                CurrentHealth = 1;
-            }
+            CallClient_Respawn();
         }
+    }
+
+    public override void OnDestroy()
+    {
+        AllFoods.Remove(this);
     }
 
     public void OnClick(FatPlayer player)
@@ -216,6 +222,14 @@ public partial class Food : Component
         {
             FoodClickParticleSystem.Instance.SpawnParticle(EatUIPosition);
         }
+    }
+
+    [ClientRpc]
+    public void Respawn()
+    {
+        SpriteRenderer.Tint = Vector4.White;
+        CurrentHealth = 1;
+        HasBeenEaten = false;
     }
 
     [ClientRpc]
@@ -256,7 +270,9 @@ public partial class Food : Component
 
             if (!WasDynamicallySpawned)
             {
-                Entity.SetEnabled(false);
+                SpriteRenderer.Tint = new Vector4(0,0,0,0);
+                NextRespawnTime = RespawnTime + Time.TimeSinceStartup;
+                HasBeenEaten = true;
             }
         }
         
