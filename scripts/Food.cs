@@ -131,9 +131,9 @@ public partial class Food : Component
             var player = (FatPlayer) p;
             if (!PlayerCanEatThis(player, out string reason, true))
             {
-                if (player.IsLocal)
+                if (Network.IsServer)
                 {
-                    Notifications.Show(reason);
+                    Chat.SendMessage(reason, player);
                 }
                 return;
             }
