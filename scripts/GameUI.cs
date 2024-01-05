@@ -323,7 +323,7 @@ public class GameUI : System<GameUI>
             }
 
             var windowRect = UI.SafeRect.CenterRect();
-            windowRect = windowRect.Grow(350, 550, 350, 550);
+            windowRect = windowRect.Grow(300, 600, 300, 600);
             UI.Blocker(windowRect, "upgrades");
             UI.Image(windowRect, References.Instance.FrameWhite, Vector4.White, References.Instance.WhiteFrameSlice);
 
@@ -346,10 +346,10 @@ public class GameUI : System<GameUI>
                 IsShowingUpgradesWindow = false;
             }
 
-            var gridRect = windowRect.Inset(100, 75, 100, 75);
+            var gridRect = windowRect.Inset(50, 25, 25, 25);
             var grid = UI.GridLayout.Make(gridRect, 1, 3, UI.GridLayout.SizeSource.GRID_SIZE);
             
-            bool drawStatUpgrade(string title, string description, double cost, Texture icon)
+            bool drawStatUpgrade(string title, string description, double cost, long currentLevel, Texture icon)
             {
                 using var _ = UI.PUSH_ID(title);
 
@@ -362,77 +362,91 @@ public class GameUI : System<GameUI>
                 var titleRect = iconRect.TopRightRect().Offset(10, -5);
                 var realTitleRect = UI.Text(titleRect, title, new UI.TextSettings(){
                     color = Vector4.Black,
-                    font = UI.TextSettings.Font.AlphaKind,
+                    font = UI.TextSettings.Font.BarlowBold,
                     horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
                     verticalAlignment = UI.TextSettings.VerticalAlignment.Top,
-                    size = 42,
+                    size = 36,
                 });
 
-                var descriptionRect = realTitleRect.BottomLeftRect().GrowRight(350).Offset(0, -3);
-                UI.Text(descriptionRect, description, new UI.TextSettings(){
-                    color = Vector4.Black,
-                    font = UI.TextSettings.Font.AlphaKind,
-                    wordWrap = true,
+                var currentLeveRect = realTitleRect.BottomLeftRect();
+                UI.Text(currentLeveRect, $"Level: {currentLevel}", new UI.TextSettings(){
+                    color = new Vector4(0.5f, 1, 0.5f, 1),
+                    font = UI.TextSettings.Font.BarlowBold,
+                    outline = true,
+                    outlineThickness = 2,
                     horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
                     verticalAlignment = UI.TextSettings.VerticalAlignment.Top,
                     size = 26,
                 });
 
-                var buttonRect = upgradeRect.RightRect().GrowLeftUnscaled(250).Inset(13);
+                var descriptionRect = iconRect.BottomRightRect().Offset(10, 15);
+                UI.Text(descriptionRect, description, new UI.TextSettings(){
+                    color = Vector4.Black,
+                    font = UI.TextSettings.Font.Asap,
+                    horizontalAlignment = UI.TextSettings.HorizontalAlignment.Left,
+                    verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom,
+                    size = 26,
+                });
+
+                var buttonRect = upgradeRect.RightRect().GrowLeft(300).Inset(13);
                 var bts = new UI.TextSettings()
                 {
                     color = Vector4.White,
                     outline = true,
                     outlineThickness = 2,
-                    font = UI.TextSettings.Font.AlphaKind,
+                    font = UI.TextSettings.Font.Barlow,
                     horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
                     verticalAlignment = UI.TextSettings.VerticalAlignment.Center,
-                    offset = new Vector2(0, 18),
+                    offset = new Vector2(0, 20),
                     size = 42,
                 };
-                var upgradeStomachResult = UI.Button(buttonRect, $"Upgrade!", buttonSettings, bts);
+                var bs = buttonSettings;
+                var canAfford = cost <= localPlayer.Coins;
+                if (!canAfford)
+                {
+                    bs.sprite = References.Instance.RedButton;
+                }
 
+                var upgradeStomachResult = UI.Button(buttonRect, $"Upgrade!", bs, bts);
                 {
                     using var _1 = UI.PUSH_COLOR(upgradeStomachResult.ColorMultiplier);
 
-                    var costTextRect = buttonRect.BottomRect().Offset(0, 15).Offset(15, 0);
+                    var costTextRect = buttonRect.BottomRect().Offset(15, 25);
                     var realCostTextRect = UI.Text(costTextRect, $"{cost}", new UI.TextSettings(){
                         color = References.Instance.YellowText,
-                        font = UI.TextSettings.Font.AlphaKind,
+                        font = UI.TextSettings.Font.Barlow,
                         outline = true,
                         outlineThickness = 2,
                         horizontalAlignment = UI.TextSettings.HorizontalAlignment.Center,
                         verticalAlignment = UI.TextSettings.VerticalAlignment.Bottom,
                         size = 30,
                     });
-                    UI.Image(realCostTextRect.LeftRect().GrowLeftUnscaled(realCostTextRect.Height).Offset(-2, 0), References.Instance.CoinIcon, Vector4.White);
+                    var coinRect = realCostTextRect.LeftRect().FitAspect(References.Instance.CoinIcon.Aspect, Rect.FitAspectKind.KeepHeight).Offset(-15, 0);
+                    UI.Image(coinRect, References.Instance.CoinIcon, Vector4.White);
                 }
 
-                return upgradeStomachResult.clicked;
+                return canAfford && upgradeStomachResult.clicked;
             }
             
 
             
             double nextMouthSizeCost = -1;
-            if (localPlayer.MouthSizeLevel < FatPlayer.MouthSizeByLevel.Length)
-                nextMouthSizeCost = FatPlayer.MouthSizeByLevel[localPlayer.MouthSizeLevel].Cost;
-            if (drawStatUpgrade("Mouth Size", "Fit larger items in your mouth", nextMouthSizeCost, References.Instance.MouthSizeIcon)) 
+            if (localPlayer.MouthSizeLevel < FatPlayer.MouthSizeByLevel.Length) nextMouthSizeCost = FatPlayer.MouthSizeByLevel[localPlayer.MouthSizeLevel].Cost;
+            if (drawStatUpgrade("Mouth Size", "Fit larger items in your mouth", nextMouthSizeCost, localPlayer.MouthSizeLevel, References.Instance.MouthSizeIcon))
             {
                 localPlayer.CallServer_RequestPurchaseMouthSize();
             }
 
             double nextStomachSizeCost = -1;
-            if (localPlayer.StomachSizeLevel < FatPlayer.StomachSizeByLevel.Length)
-                nextStomachSizeCost = FatPlayer.StomachSizeByLevel[localPlayer.StomachSizeLevel].Cost;
-            if (drawStatUpgrade("Stomach Size", "Fit more food in your stomach", nextStomachSizeCost, References.Instance.StomachSizeIcon))
+            if (localPlayer.StomachSizeLevel < FatPlayer.StomachSizeByLevel.Length) nextStomachSizeCost = FatPlayer.StomachSizeByLevel[localPlayer.StomachSizeLevel].Cost;
+            if (drawStatUpgrade("Stomach Size", "Fit more food in your stomach", nextStomachSizeCost, localPlayer.StomachSizeLevel, References.Instance.StomachSizeIcon))
             {
                 localPlayer.CallServer_RequestPurchaseStomachSize();
             }
 
             double nextClickPowerCost = -1;
-            if (localPlayer.ClickPowerLevel < FatPlayer.ClickPowerByLevel.Length)
-                nextClickPowerCost = FatPlayer.ClickPowerByLevel[localPlayer.ClickPowerLevel].Cost;
-            if (drawStatUpgrade("Click Power", "Eat more food with each click", nextClickPowerCost, References.Instance.ChewSpeedIcon))
+            if (localPlayer.ClickPowerLevel < FatPlayer.ClickPowerByLevel.Length) nextClickPowerCost = FatPlayer.ClickPowerByLevel[localPlayer.ClickPowerLevel].Cost;
+            if (drawStatUpgrade("Click Power", "Eat more food with each click", nextClickPowerCost, localPlayer.ClickPowerLevel, References.Instance.ChewSpeedIcon))
             {
                 localPlayer.CallServer_RequestPurchaseClickPower();
             }
