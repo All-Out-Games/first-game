@@ -244,7 +244,6 @@ public partial class FatPlayer : Player
 
         CurrentBoss.SpineAnimator.SetAnimation("Idle", true);
         SpineAnimator.StateMachine.SetTrigger("RESET");
-        // SpineAnimator.SetAnimation("Idle", true);
         CurrentBoss.CurrentlyBattling = null;
         CurrentBoss = null;
         this.RemoveFreezeReason("BossFight");
@@ -1218,7 +1217,7 @@ public partial class FatPlayer : Player
         RemoveFreezeReason("EggHatchAnimation");
     }
 
-    public void UpdateAndDrawEggSkeletonUI(float fadeT, SpineSkeleton eggSkeleton, float eggDropT, SpineSkeleton petSkeleton, float petAlpha, PetData.PetDefinition petDefinition, bool showEggCount)
+    public void UpdateAndDrawEggSkeletonUI(float fadeT, SpineInstance eggSkeleton, float eggDropT, SpineInstance petSkeleton, float petAlpha, PetData.PetDefinition petDefinition, bool showEggCount)
     {
         var ts = new UI.TextSettings()
         {
@@ -1308,10 +1307,10 @@ public partial class FatPlayer : Player
             var eggDefinition = eggToOpen.Egg;
             var petDefinition = eggToOpen.Pet;
 
-            var eggSkeleton = SpineSkeleton.Make(References.Instance.EggOpenAnimSkeleton);
+            var eggSkeleton = SpineInstance.Make(References.Instance.EggOpenAnimSkeleton);
             eggSkeleton.SetSkin(eggDefinition.EggHatchAnimSkin);
             eggSkeleton.SetAnimation("idle", true);
-            var petSkeleton = SpineSkeleton.Make(petDefinition.Spine);
+            var petSkeleton = SpineInstance.Make(petDefinition.Spine);
             petSkeleton.SetSkin(petDefinition.Skin);
             petSkeleton.SetAnimation("idle", true);
 
