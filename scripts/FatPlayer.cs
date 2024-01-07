@@ -132,7 +132,7 @@ public partial class FatPlayer : Player
 
         DoingBossIntro = false;
         CurrentBoss.SpineAnimator.SetAnimation("FAT_001/small/eating_loop", true);
-        SpineAnimator.SetAnimation("FAT_001/small/eating_loop", true);
+        SpineAnimator.StateMachine.SetTrigger("start_eating");
         var rng = new Random();
         timer = 0;
         while (Coroutine.Timer(ref timer, 2))
@@ -242,9 +242,9 @@ public partial class FatPlayer : Player
             }
         }
 
-
         CurrentBoss.SpineAnimator.SetAnimation("Idle", true);
-        SpineAnimator.SetAnimation("Idle", true);
+        SpineAnimator.StateMachine.SetTrigger("RESET");
+        // SpineAnimator.SetAnimation("Idle", true);
         CurrentBoss.CurrentlyBattling = null;
         CurrentBoss = null;
         this.RemoveFreezeReason("BossFight");

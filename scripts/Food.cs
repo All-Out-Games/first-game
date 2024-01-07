@@ -259,7 +259,7 @@ public partial class Food : Component
         CurrentEater = player;
         CurrentEater.AddFreezeReason(EatingFreezeReason);
         CurrentEater.FoodBeingEaten = this;
-        CurrentEater.SpineAnimator.SetAnimation("FAT_001/small/eating_loop", true);
+        CurrentEater.SpineAnimator.StateMachine.SetTrigger("start_eating");
         CurrentHealth  = clicksRequired;
         ClicksRequired = clicksRequired;
         OnClick(CurrentEater);
@@ -296,7 +296,7 @@ public partial class Food : Component
         
         CurrentEater.RemoveFreezeReason(EatingFreezeReason);
         CurrentEater.FoodBeingEaten = null;
-        CurrentEater.SpineAnimator.SetAnimation("Idle", true);
+        CurrentEater.SpineAnimator.StateMachine.SetTrigger("RESET");
         CurrentEater = null;
     }
 }
