@@ -1309,9 +1309,11 @@ public partial class FatPlayer : Player
 
             var eggSkeleton = SpineInstance.Make(References.Instance.EggOpenAnimSkeleton);
             eggSkeleton.SetSkin(eggDefinition.EggHatchAnimSkin);
+            eggSkeleton.RefreshSkins();
             eggSkeleton.SetAnimation("idle", true);
             var petSkeleton = SpineInstance.Make(petDefinition.Spine);
             petSkeleton.SetSkin(petDefinition.Skin);
+            petSkeleton.RefreshSkins();
             petSkeleton.SetAnimation("idle", true);
 
             float startTime1 = Time.TimeSinceStartup;

@@ -25,6 +25,7 @@ public class Pet : Component
         SpineAnimator = Entity.GetComponent<Spine_Animator>();
         SpineAnimator.Skeleton = Definition.Spine;
         SpineAnimator.SetSkin(Definition.Skin);
+        // SpineAnimator.RefreshSkins();
         SpineAnimator.SetAnimation("idle", true);
     }
 

@@ -35,6 +35,7 @@ public class Boss : Component
         {
             SpineAnimator.SetAnimation("Idle", true);
             SpineAnimator.SetSkin(Definition.SpineSkin);
+            // SpineAnimator.RefreshSkins();
             SpineAnimator.SetCrewchsia(BossIndex);
         }
 
