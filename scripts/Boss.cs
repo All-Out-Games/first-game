@@ -33,8 +33,31 @@ public class Boss : Component
         SpineAnimator = Entity.GetComponent<Spine_Animator>();
         if (SpineAnimator != null)
         {
-            SpineAnimator.SetAnimation("Idle", true);
-            SpineAnimator.SetSkin(Definition.SpineSkin);
+            Util.Assert(SpineAnimator.SpineInstance != null);
+
+            var sm = StateMachine.Make();
+
+            var mainLayer = sm.CreateLayer("main");
+
+            var varStartEating = sm.CreateVariable("start_eating", StateMachineVariableKind.TRIGGER);
+            var varThumbsUp    = sm.CreateVariable("thumbs_up", StateMachineVariableKind.TRIGGER);
+            var varRESET       = sm.CreateVariable("RESET", StateMachineVariableKind.TRIGGER);
+
+            var idle = mainLayer.CreateState("Idle", 0, true);
+            mainLayer.SetInitialState(idle);
+
+            var eatingLoop = mainLayer.CreateState("FAT_001/small/eating_loop", 0, true);
+            mainLayer.CreateGlobalTransition(eatingLoop).CreateTriggerCondition(varStartEating);
+
+            var thumbsUp = mainLayer.CreateState("Emote/Thumbs_Up", 0, false);
+            mainLayer.CreateGlobalTransition(thumbsUp).CreateTriggerCondition(varThumbsUp);
+            mainLayer.CreateTransition(thumbsUp, idle, true);
+
+            mainLayer.CreateGlobalTransition(idle).CreateTriggerCondition(varRESET);
+
+            SpineAnimator.SpineInstance.SetStateMachine(sm, true);
+            SpineAnimator.SpineInstance.SetSkin(Definition.SpineSkin);
+            SpineAnimator.SpineInstance.RefreshSkins();
             SpineAnimator.SetCrewchsia(BossIndex);
         }
 

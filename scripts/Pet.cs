@@ -23,9 +23,10 @@ public class Pet : Component
         AllPets.Add(this);
 
         SpineAnimator = Entity.GetComponent<Spine_Animator>();
-        SpineAnimator.Skeleton = Definition.Spine;
-        SpineAnimator.SetSkin(Definition.Skin);
-        SpineAnimator.SetAnimation("idle", true);
+        SpineAnimator.SpineInstance.SetSkeleton(Definition.Spine);
+        SpineAnimator.SpineInstance.SetSkin(Definition.Skin);
+        SpineAnimator.SpineInstance.RefreshSkins();
+        SpineAnimator.SpineInstance.SetAnimation("idle", true);
     }
 
     public override void Update()
@@ -102,19 +103,12 @@ public class Pet : Component
         if (Velocity.Length > 0.25f && !isRunning)
         {
             isRunning = true;
-            if (SpineAnimator.HasAnimation(Definition.RunAnimName))
-            {
-                SpineAnimator.SetAnimation(Definition.RunAnimName, true);
-            }
-            else
-            {
-                Log.Warn($"Unknown run animation for pet {Definition.Name}: {Definition.RunAnimName}");
-            }
+            SpineAnimator.SpineInstance.SetAnimation(Definition.RunAnimName, true);
         }
         else if (Velocity.Length <= 0.25f && isRunning)
         {
             isRunning = false;
-            SpineAnimator.SetAnimation("idle", true);
+            SpineAnimator.SpineInstance.SetAnimation("idle", true);
         }
     }
 

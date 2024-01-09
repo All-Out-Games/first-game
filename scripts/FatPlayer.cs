@@ -131,8 +131,8 @@ public partial class FatPlayer : Player
         }
 
         DoingBossIntro = false;
-        CurrentBoss.SpineAnimator.SetAnimation("FAT_001/small/eating_loop", true);
-        SpineAnimator.StateMachine.SetTrigger("start_eating");
+        CurrentBoss.SpineAnimator.SpineInstance.StateMachine.SetTrigger("start_eating");
+        SpineAnimator.SpineInstance.StateMachine.SetTrigger("start_eating");
         var rng = new Random();
         timer = 0;
         while (Coroutine.Timer(ref timer, 2))
@@ -233,6 +233,8 @@ public partial class FatPlayer : Player
                     CurrentQuest.OnBossBeatenServer(CurrentBoss);
                 }
             }
+            SpineAnimator.SpineInstance.StateMachine.SetTrigger("thumbs_up");
+            CurrentBoss.SpineAnimator.SpineInstance.StateMachine.SetTrigger("RESET");
         }
         else 
         {
@@ -240,10 +242,10 @@ public partial class FatPlayer : Player
             {
                 Notifications.Show("You lost the boss fight!");
             }
+            CurrentBoss.SpineAnimator.SpineInstance.StateMachine.SetTrigger("thumbs_up");
+            SpineAnimator.SpineInstance.StateMachine.SetTrigger("RESET");
         }
 
-        CurrentBoss.SpineAnimator.SetAnimation("Idle", true);
-        SpineAnimator.StateMachine.SetTrigger("RESET");
         CurrentBoss.CurrentlyBattling = null;
         CurrentBoss = null;
         this.RemoveFreezeReason("BossFight");
@@ -730,8 +732,14 @@ public partial class FatPlayer : Player
 
     public override void OnDestroy()
     {
-        if (FoodBeingEaten != null && Network.IsServer) {
+        if (FoodBeingEaten != null && Network.IsServer)
+        {
             FoodBeingEaten.CallClient_FinishEating(false);
+        }
+
+        if (CurrentBoss != null && Network.IsServer)
+        {
+            CallClient_BossFightOver(false);
         }
 
         Pet.AllPets.RemoveAll(p => p.OwnerId == this.Entity.NetworkId);
@@ -1307,11 +1315,15 @@ public partial class FatPlayer : Player
             var eggDefinition = eggToOpen.Egg;
             var petDefinition = eggToOpen.Pet;
 
-            var eggSkeleton = SpineInstance.Make(References.Instance.EggOpenAnimSkeleton);
+            var eggSkeleton = SpineInstance.Make();
+            eggSkeleton.SetSkeleton(References.Instance.EggOpenAnimSkeleton);
             eggSkeleton.SetSkin(eggDefinition.EggHatchAnimSkin);
+            eggSkeleton.RefreshSkins();
             eggSkeleton.SetAnimation("idle", true);
-            var petSkeleton = SpineInstance.Make(petDefinition.Spine);
+            var petSkeleton = SpineInstance.Make();
+            petSkeleton.SetSkeleton(petDefinition.Spine);
             petSkeleton.SetSkin(petDefinition.Skin);
+            petSkeleton.RefreshSkins();
             petSkeleton.SetAnimation("idle", true);
 
             float startTime1 = Time.TimeSinceStartup;
