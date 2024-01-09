@@ -131,7 +131,7 @@ public partial class FatPlayer : Player
         }
 
         DoingBossIntro = false;
-        CurrentBoss.SpineAnimator.SpineInstance.SetAnimation("FAT_001/small/eating_loop", true);
+        CurrentBoss.SpineAnimator.SpineInstance.StateMachine.SetTrigger("start_eating");
         SpineAnimator.SpineInstance.StateMachine.SetTrigger("start_eating");
         var rng = new Random();
         timer = 0;
@@ -233,6 +233,8 @@ public partial class FatPlayer : Player
                     CurrentQuest.OnBossBeatenServer(CurrentBoss);
                 }
             }
+            SpineAnimator.SpineInstance.StateMachine.SetTrigger("thumbs_up");
+            CurrentBoss.SpineAnimator.SpineInstance.StateMachine.SetTrigger("RESET");
         }
         else 
         {
@@ -240,10 +242,10 @@ public partial class FatPlayer : Player
             {
                 Notifications.Show("You lost the boss fight!");
             }
+            CurrentBoss.SpineAnimator.SpineInstance.StateMachine.SetTrigger("thumbs_up");
+            SpineAnimator.SpineInstance.StateMachine.SetTrigger("RESET");
         }
 
-        CurrentBoss.SpineAnimator.SpineInstance.SetAnimation("Idle", true);
-        SpineAnimator.SpineInstance.StateMachine.SetTrigger("RESET");
         CurrentBoss.CurrentlyBattling = null;
         CurrentBoss = null;
         this.RemoveFreezeReason("BossFight");
@@ -730,8 +732,14 @@ public partial class FatPlayer : Player
 
     public override void OnDestroy()
     {
-        if (FoodBeingEaten != null && Network.IsServer) {
+        if (FoodBeingEaten != null && Network.IsServer)
+        {
             FoodBeingEaten.CallClient_FinishEating(false);
+        }
+
+        if (CurrentBoss != null && Network.IsServer)
+        {
+            CallClient_BossFightOver(false);
         }
 
         Pet.AllPets.RemoveAll(p => p.OwnerId == this.Entity.NetworkId);
