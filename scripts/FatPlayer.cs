@@ -200,6 +200,14 @@ public partial class FatPlayer : Player
         }
     }
 
+    public IEnumerator DoThumbsUp()
+    {
+        SpineAnimator.SpineInstance.StateMachine.SetTrigger("thumbs_up");
+        AddFreezeReason("thumbs_up");
+        yield return new WaitForSeconds(1.75f);
+        RemoveFreezeReason("thumbs_up");
+    }
+
     [ClientRpc]
     public void BossFightOver(bool won)
     {
@@ -233,7 +241,7 @@ public partial class FatPlayer : Player
                     CurrentQuest.OnBossBeatenServer(CurrentBoss);
                 }
             }
-            SpineAnimator.SpineInstance.StateMachine.SetTrigger("thumbs_up");
+            Coroutine.Start(Entity, DoThumbsUp());
             CurrentBoss.SpineAnimator.SpineInstance.StateMachine.SetTrigger("RESET");
         }
         else 
