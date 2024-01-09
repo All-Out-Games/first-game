@@ -135,6 +135,7 @@ public partial class Food : Component
 
         SpriteRenderer.Sprite = Definition.Sprite;
         var interactable = Entity.GetComponent<Interactable>();
+        interactable.Text = "Eat";
         interactable.OnInteract = (Player p) =>
         {
             var player = (FatPlayer) p;
