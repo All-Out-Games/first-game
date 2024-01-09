@@ -131,8 +131,8 @@ public partial class FatPlayer : Player
         }
 
         DoingBossIntro = false;
-        CurrentBoss.SpineAnimator.SetAnimation("FAT_001/small/eating_loop", true);
-        SpineAnimator.StateMachine.SetTrigger("start_eating");
+        CurrentBoss.SpineAnimator.SpineInstance.SetAnimation("FAT_001/small/eating_loop", true);
+        SpineAnimator.SpineInstance.StateMachine.SetTrigger("start_eating");
         var rng = new Random();
         timer = 0;
         while (Coroutine.Timer(ref timer, 2))
@@ -242,8 +242,8 @@ public partial class FatPlayer : Player
             }
         }
 
-        CurrentBoss.SpineAnimator.SetAnimation("Idle", true);
-        SpineAnimator.StateMachine.SetTrigger("RESET");
+        CurrentBoss.SpineAnimator.SpineInstance.SetAnimation("Idle", true);
+        SpineAnimator.SpineInstance.StateMachine.SetTrigger("RESET");
         CurrentBoss.CurrentlyBattling = null;
         CurrentBoss = null;
         this.RemoveFreezeReason("BossFight");
@@ -1307,11 +1307,13 @@ public partial class FatPlayer : Player
             var eggDefinition = eggToOpen.Egg;
             var petDefinition = eggToOpen.Pet;
 
-            var eggSkeleton = SpineInstance.Make(References.Instance.EggOpenAnimSkeleton);
+            var eggSkeleton = SpineInstance.Make();
+            eggSkeleton.SetSkeleton(References.Instance.EggOpenAnimSkeleton);
             eggSkeleton.SetSkin(eggDefinition.EggHatchAnimSkin);
             eggSkeleton.RefreshSkins();
             eggSkeleton.SetAnimation("idle", true);
-            var petSkeleton = SpineInstance.Make(petDefinition.Spine);
+            var petSkeleton = SpineInstance.Make();
+            petSkeleton.SetSkeleton(petDefinition.Spine);
             petSkeleton.SetSkin(petDefinition.Skin);
             petSkeleton.RefreshSkins();
             petSkeleton.SetAnimation("idle", true);

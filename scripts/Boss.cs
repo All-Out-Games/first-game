@@ -33,9 +33,10 @@ public class Boss : Component
         SpineAnimator = Entity.GetComponent<Spine_Animator>();
         if (SpineAnimator != null)
         {
-            SpineAnimator.SetAnimation("Idle", true);
-            SpineAnimator.SetSkin(Definition.SpineSkin);
-            // SpineAnimator.RefreshSkins();
+            Util.Assert(SpineAnimator.SpineInstance != null);
+            SpineAnimator.SpineInstance.SetAnimation("Idle", true);
+            SpineAnimator.SpineInstance.SetSkin(Definition.SpineSkin);
+            SpineAnimator.SpineInstance.RefreshSkins();
             SpineAnimator.SetCrewchsia(BossIndex);
         }
 
